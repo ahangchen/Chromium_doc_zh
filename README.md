@@ -1,2 +1,6 @@
 # Chromium_doc_zh
 Chromium中文文档
+
+chromium版本 ad84897bf2b633ed9246e4486a779823a312f260
+
+翻译之加强对android webview理解
