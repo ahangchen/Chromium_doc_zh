@@ -1,18 +1,15 @@
-# Logging #
+# Log #
 
 [TOC]
 
 
-## Overview
+## 概要
 
-Logging used to be done using Android's [android.util.Log]
-(http://developer.android.com/reference/android/util/Log.html).
+Log曾经由Android的[android.util.Log](http://developer.android.com/reference/android/util/Log.html)来实现。
 
-A wrapper on that is now available: org.chromium.base.Log. It is designed to
-write logs as belonging to logical groups going beyond single classes, and to
-make it easy to switch logging on or off for individual groups.
+现在有一个新的wrapper可以用：org.chromium.base.Log。它设计用于在单一的类之外，作为同一个逻辑族来写日志，并且使得为不同的族打开和关闭日志变得容易。
 
-Usage:
+用法:
 
 ```java
 private static final String TAG = "YourModuleTag";
@@ -28,23 +25,18 @@ I/cr_YourModuleTag: ( 999): Logged INFO message
 D/cr_YourModuleTag: ( 999): [MyClass.java:42] Some DEBUG info: data.toString
 ```
 
-Here, **TAG** will be a feature or package name, "MediaRemote" or "NFC" for
-example. In most cases, the class name is not needed. It will be prepended by
-the "cr_" prefix to make obvious which logs are coming from Chrome.
+在这里，**TAG**可以是一个特性或者package的名字，比如“MediaRemote”或“NFC”。在大多数情况下，类名是不需要的。chromium会预先考虑使用"cr_"前缀来标记来自chrome的那些log。
 
-### Verbose and Debug logs have special handling ###
+### Verbose和Debug类型的log有特殊的处理 ###
 
-*   `Log.v` and `Log.d` Calls made using `org.chromium.base.Log` are stripped
-    out of production binaries using Proguard. There is no way to get those logs
-    in release builds.
+*   `org.chromium.base.Log`对`Log.v`和`Log.d`的调用会被Proguard从二进制的程序中剥离出来，在release版本中，没有办法可以获得这些log。
 
-*   The file name and line number will be prepended to the log message.
-    For higher priority logs, those are not added for performance concerns.
+*   文件名和行号不会出现在log信息中。
+    对于高优先级的日志，处于性能考虑，它们也不会被添加。
 
-### An exception trace is printed when the exception is the last parameter ###
+### 当异常作为最后的参数时，打印异常堆栈 ###
 
-As with `java.util.Log`, putting a throwable as last parameter will dump the
-corresponding stack trace:
+像`java.util.Log`，那样，把一个throwable对象作为最后一个参数，可以dump出对应的堆栈：
 
 ```java
 Log.i(TAG, "An error happened: %s", e)
@@ -57,33 +49,23 @@ I/cr_YourModuleTag: ( 999):     at foo.bar.MyClass.test(MyClass.java:42)
 I/cr_YourModuleTag: ( 999):     ...
 ```
 
-Having the exception as last parameter doesn't prevent it from being used for
-string formatting.
+把exception作为最后的参数不会妨碍它用于string格式化。
 
-## Logging Best Practices
+## Log最佳实践
 
 ### Rule #1: Never log PII (Personal Identification Information):
 
-This is a huge concern, because other applications can access the log and
-extract a lot of data from your own by doing so. Even if JellyBean restricted
-this, people are going to run your application on rooted devices and allow some
-apps to access it. Also anyone with USB access to the device can use ADB to get
-the full logcat and get the same data right now.
+这是一个大的担忧，因为其他程序可以访问日志并通过这种方式提取大量的数据。即使JellyBean下限制了这种新闻，人们也可以在你的root设备上运行你的程序并允许一些app去访问它们。另外，任何有设备USB权限的人可以用adb获得完整的logcat，并且立即获得相同的数据。
 
-If you really need to print something , print a series of Xs instead
-(e.g. "XXXXXX"), or print a truncated hash of the PII instead. Truncation is
-required to make it harder for an attacker to recover the full data through
-rainbow tables and similar methods.
+如果你真的需要记录一些东西，相反地，你可以打一串X(e.g."XXXXXXX")，或者打印PII的truncated hash。Truncation是需要的，这能让攻击者更难通过彩虹表或者相似的手段恢复完整的数据。
 
-Similarly, avoid dumping API keys, cookies, etc...
+类似的，避免dump API key， cookies，等等……
 
-### Rule #2: Do not build debug logs in production code:
+### Rule #2: 不要在产品代码里打debug日志:
 
-The log methods are removed in release builds using Proguard. Because log
-messages might not be written, the cost of creating them should also be avoided.
-This can be done using three complementary ways:
+在release构建中，用Proguard移除日志方法。因为日志信息不可写，所以创建它们的代价需要避免。这可以用三种补充方式来完成：
 
-#### Use string formatting instead of concatenations
+#### 使用string formatting而非concate
 
 ```java
 // BAD
@@ -92,17 +74,11 @@ Log.d(TAG, "I " + preference + " writing logs.");
 // BETTER
 Log.d(TAG, "I %s writing logs.", preference);
 ```
+Progurad删除了Log的方法，但不会对参数做任何事情，方法参数仍然会被计算并作为输入提供。上面的第一种调用总是会导致`StringBuilder`的创建以及一些连接，而第二种方法只是传递参数，不需要做那样的事情。
 
-Proguard removes the method call itself, but doesn't do anything about the
-arguments. The method's arguments will still be computed and provided as
-input. The first call above will always lead to the creation of a
-`StringBuilder` and a few concatenations, while the second just passes the
-arguments and won't need that.
+#### 排除昂贵的调用
 
-#### Guard expensive calls
-
-Sometimes the values to log aren't readily available and need to be computed
-specially. This should be avoided when logging is disabled.
+有时候log的内容并非确实可用，需要特殊的计算，当日志被关掉时，这应当避免。
 
 ```java
 static private final boolean DEBUG = false;  // debug toggle.
@@ -112,19 +88,11 @@ if (DEBUG) {
 }
 ```
 
-Because the variable is a `static final` that can be evaluated at compile
-time, the Java compiler will optimize out all guarded calls from the
-generated `.class` file. Changing it however requires editing each of the
-files for which debug should be enabled and recompiling.
+因为变量DEBUG是`static final`的，需要在编译时计算，java编译器会在生成的`.class`文件中，优化掉所有被debug排除的调用。然而这种修改需要编辑每个需要debug的文件并且重新编译。
 
-#### Annotate debug functions with the `@RemovableInRelease` annotation.
+#### 为debug函数使用`@RemovableInRelease`注解
 
-That annotation tells Proguard to assume that a given function has no side
-effects, and is called only for its returned value. If this value is unused,
-the call will be removed. If the function is not called at all, it will also
-be removed. Since Proguard is already used to strip debug and verbose calls
-out of release builds, this annotation allows it to have a deeper action by
-removing also function calls used to generate the log call's arguments.
+这个注解告诉Proguard给定的这个函数没有边缘效应，它的调用只是为了它的返回值。如果这个值没有被使用，这个调用可用被移除。如果函数根本没有被调用，它也会被移除。因为Proguard已经习惯于对debug构建剥离debug和verbose调用，这个注解允许Proguard做更深入的操作，即，移除生成log调用参数的生成方法。
 
 ```java
 /* If that function is only used in Log.d calls, proguard should
@@ -146,20 +114,11 @@ public void bar() {
 }
 ```
 
-Again, this is useful only if the input to that function are variables
-already available in the scope. The idea is to move computations,
-concatenations, etc. to a place where that can be removed when not needed,
-without invading the main function's logic. It can then have a similar
-effect as guarding with a static final property that would be enabled in
-Debug and disabled in Release.
+我们再次看到，只有在函数的输入是局域中已经可用的变量时，这才是有用的。这个想法是把计算，连接，等等操作放到一个不需要用到时无法移除的地方，而不影响主方法的逻辑。这跟监控一个在debug中可用在release中不可用的static final属性有相似的效果。
 
-### Rule #3: Favor small log messages
+### Rule #3: 多用短日志
 
-This is still related to the global fixed-sized kernel buffer used to keep all
-logs. Try to make your log information as terse as possible. This reduces the
-risk of pushing interesting log data out of the buffer when something really
-nasty happens. It's really better to have a single-line log message, than
-several ones. I.e. don't use:
+这与全局的用于保存所有日志的固定长度内核buffer有关。试着让你的日志信息尽可能简洁。这能在一些淘气的事情发生时，减少他人感兴趣的日志数据溢出缓冲区的风险。使用单行日志比多行日志更好，比如，不要使用：
 
 ```java
 Log.GROUP.d(TAG, "field1 = %s", value1);
@@ -167,57 +126,42 @@ Log.GROUP.d(TAG, "field2 = %s", value2);
 Log.GROUP.d(TAG, "field3 = %s", value3);
 ```
 
-Instead, write this as:
+相反地，这样些：
 
 ```java
 Log.d(TAG, "field1 = %s, field2 = %s, field3 = %s", value1, value2, value3);
 ```
 
-That doesn't seem to be much different if you count overall character counts,
-but each independent log entry also implies a small, but non-trivial header, in
-the kernel log buffer. And since every byte count, you can also try something
-even shorter, as in:
+如果你数字符个数，似乎没什么不同，但每个独立日志入口也在内核log buffer中实现了一个小的，但不可忽视的header。因为每个字节都会占用空间，你也能试一些短的东西，比如：
 
 ```java
 Log.d(TAG, "fields [%s,%s,%s]", value1, value2, value3);
 ```
 
-## Filtering logs
+## 过滤日志
 
-Logcat allows filtering by specifying tags and the associated level:
+Logcat允许通过指定tag和相关的level来执行过滤
 
 ```shell
 adb logcat [TAG_EXPR:LEVEL]...
 adb logcat cr_YourModuleTag:D *:S
 ```
 
-This shows only logs having a level higher or equal to DEBUG for
-`cr_YourModuleTag`, and SILENT (nothing is logged at this level or higher, so it
-silences the tags) for everything else. You can persist a filter by setting an
-environment variable:
+这些命令只会为`cr_YourModuleTag`输出与DEBUG等级相同或者比DEBUG等级高的日志，并让其他任何东西保持缄默（这个等级或更高等级上，没有东西被输出，所以说它使其他tag缄默了）。你可以通过设置一个环境变量来一直使用一个过滤器：
 
 ```shell
 export ANDROID_LOG_TAGS="cr_YourModuleTag:D *:S"
 ```
 
-The syntax does not support tag expansion or regular expressions other than `*`
-for all tags. Please use `grep` or a similar tool to refine your filters
-further.
+这种语法不支持tag泛化或者正则表达式（除了`*`，代表所有tag）。如果要进一步提炼你的过滤器，使用`grep`或者类似的工具。
 
-For more, see the [related page on developer.android.com]
-(http://developer.android.com/tools/debugging/debugging-log.html#filteringOutput)
+更多内容，可以参考[related page on developer.android.com](http://developer.android.com/tools/debugging/debugging-log.html#filteringOutput)
 
-## Logs in JUnit tests
+## JUnit测试中的Log
 
-We use [robolectric](http://robolectric.org/) to run our JUnit tests. It
-replaces some of the Android framework classes with "Shadow" classes
-to ensure that we can run our code in a regular JVM. `android.util.Log` is one
-of those replaced classes, and by default calling `Log` methods doesn't print
-anything.
+我们使用[robolectric](http://robolectric.org)来运行JUnit测试。它用“Shadow”类代替了一些android framework类，以确保我们可以在标准的JVM运行我们的代码，默认情况下，调用`Log`方法不会打印任何东西。
 
-That default is not changed in the normal configuration, but if you need to
-enable logging locally or for a specific test, just add those few lines to your
-test:
+这种默认设置在通常的设置中是不能修改的，但如果你需要在局部启用日志或者进行一种特殊的测试，只要添加下面几行代码到你的测试中：
 
 ```java
 @Before
