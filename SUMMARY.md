@@ -2,17 +2,17 @@
 
 - Start Here: Background Reading
 
- - Multi-process Architecture: Describes the high-level architecture of Chromium 
+ - Multi-process Architecture: Describes the high-level architecture of Chromium
 
    **Note**: Most of the rest of the design documents assume familiarity with the concepts explained in this document.
 
  - How Chromium Displays Web Pages: Bottom-to-top overview of how WebKit is embedded in Chromium
 
-##See Also: Design docs in source code
+- See Also: Design docs in source code
 
 - https://chromium.googlesource.com/chromium/src/+/master/docs/
 
-##General Architecture
+- General Architecture
 
 - Conventions and patterns for multi-platform development
 
@@ -43,7 +43,7 @@
 Also see the documentation for V8, which is the JavaScript engine used within Chromium.
 
 
-##UI Framework
+- UI Framework
 
 - UI Development Practices: Best practices for UI development inside and outside of Chrome's content areas.
 
@@ -56,7 +56,7 @@ Also see the documentation for V8, which is the JavaScript engine used within Ch
 - NativeControls: using platform-native widgets in views.
 Focus and Activation with Views and Aura.
 
-##Graphics
+- Graphics
 
 - Overview
 
@@ -88,7 +88,7 @@ Focus and Activation with Views and Aura.
 
 
 
-##Network stack
+- Network stack
 
 - Overview
 
@@ -116,7 +116,7 @@ Focus and Activation with Views and Aura.
 
 - Cookie storage and retrieval
 
-##Security
+- Security
 
 - Security Overview
 
@@ -132,11 +132,11 @@ Focus and Activation with Views and Aura.
 
 - Encrypted Partition Recovery
 
-##Input
+- Input
 
 - See chromium input for design docs and other resources.
 
-##Rendering
+- Rendering
 
 - Multi-column layout
 
@@ -144,7 +144,7 @@ Focus and Activation with Views and Aura.
 
 - Blink Coordinate Spaces
 
-##Building
+- Building
 
 - IDL build
 
@@ -153,7 +153,7 @@ Focus and Activation with Views and Aura.
 See also the documentation for GYP, which is the build script generation tool.
 
 
-##Testing
+- Testing
 
 - Layout test results dashboard
 
@@ -161,7 +161,7 @@ See also the documentation for GYP, which is the build script generation tool.
 
 - Moving LayoutTests fully upstream
 
-##Feature-Specific
+- Feature-Specific
 
 - about:conflicts
 
@@ -277,7 +277,7 @@ User scripts: Information on Chromium's support for user scripts.
 
 
 
-##OS-Specific
+- OS-Specific
 
 - Android
 
@@ -323,7 +323,7 @@ User scripts: Information on Chromium's support for user scripts.
 
 
 
-##Other
+- Other
 
 - 64-bit Support
 
