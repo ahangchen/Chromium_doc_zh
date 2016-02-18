@@ -6,7 +6,7 @@
 
  - How Chromium Displays Web Pages
 
-- [Design docs in source code](https://chromium.googlesource.com/chromium/src/+/master/docs/)
+- [Design docs in source code](https://chromium.googlesource.com/chromium/src/+/master/docs/README.md)
 
 - General Architecture
 
