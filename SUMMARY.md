@@ -12,17 +12,17 @@
 
  - Conventions and patterns for multi-platform development
 
- - Extension Security Architecture: How the extension system helps reduce the severity of extension vulnerabilities
+ - Extension Security Architecture
 
  - HW Video Acceleration in Chrom{e,ium}{,OS}
 
- - Inter-process Communication: How the browser, renderer, and plugin processes communicate
+ - Inter-process Communication
 
- - Multi-process Resource Loading: How pages and images are loaded from the network into the renderer
+ - Multi-process Resource Loading
 
  - Plugin Architecture
 
- - Process Models: Our strategies for creating new renderer processes
+ - Process Models
 
  - Profile Architecture
 
@@ -30,27 +30,26 @@
 
  - Sandbox
 
- - Security Architecture: How Chromium's sandboxed rendering engine helps protect against malware
+ - Security Architecture
 
  - Startup
 
- - Threading: How to use threads in Chromium
+ - Threading
 
  - JavaScript engine
 
 
 - UI Framework
 
- - UI Development Practices: Best practices for UI development inside and outside of Chrome's content areas.
+ - UI Development Practices
 
- - Views framework: Our UI layout layer used on Windows/Chrome OS.
+ - Views framework
 
- - views Windowing system: How to build dialog boxes and other windowed UI using views.
+ - views Windowing system
 
- - Aura: Chrome's next generation hardware accelerated UI framework, and the new ChromeOS window manager built using it.
+ - Aura
 
- - NativeControls: using platform-native widgets in views.
-Focus and Activation with Views and Aura.
+ - NativeControls
 
 - Graphics
 
@@ -70,7 +69,7 @@ Focus and Activation with Views and Aura.
 
  - GPU Program Caching
 
- - Compositing in Blink/WebCore: from WebCore::RenderLayer to cc::Layer
+ - Compositing in Blink/WebCore
 
  - Compositor Thread Architecture
 
@@ -130,7 +129,8 @@ Focus and Activation with Views and Aura.
 
 - Input
 
-  - See chromium input for design docs and other resources.
+  - chromium input
+  
 
 - Rendering
 
@@ -161,12 +161,12 @@ Focus and Activation with Views and Aura.
 
  - about:conflicts
 
- - Accessibility: An outline of current (and coming) accessibility support.
+ - Accessibility
  - Auto-Throttled Screen Capture and Mirroring
 
  - Browser Window
 
- - Chromium Print Proxy: Enables a cloud print service for legacy printers and future cloud-aware printers.
+ - Chromium Print Proxy
 
  - Constrained Popup Windows
 
@@ -174,7 +174,7 @@ Focus and Activation with Views and Aura.
 
  - DirectWrite Font Cache for Chrome on Windows
 
- - DNS Prefetching: Reducing perceived latency by resolving domain names before a user tries to follow a link
+ - DNS Prefetching
 
  - Embedding Flash Fullscreen in the Browser Window
 
@@ -182,9 +182,9 @@ Focus and Activation with Views and Aura.
 
  - Find Bar
 
- - Form Autofill: A feature to automatically fill out an html form with appropriate data.
+ - Form Autofill
 
- - Geolocation: Adding support for W3C Geolocation API using native WebKit bindings.
+ - Geolocation
 
  - IDN in Google Chrome
 
@@ -192,23 +192,23 @@ Focus and Activation with Views and Aura.
 
  - Info Bars
 
- - Installer: Registry entries and shortcuts
+ - Installer
 
  - Instant
 
  - Isolated Sites
 
- - Linux Resources and Localized Strings: Loading data resources and localized strings on Linux.
+ - Linux Resources and Localized Strings
 
  - Media Router & Web Presentation API
 
- - Memory Usage Backgrounder: Some information on how we measure memory in Chromium.
+ - Memory Usage Backgrounder
 
  - Mouse Lock
 
- - Omnibox Autocomplete: While typing into the omnibox, Chromium searches for and suggests possible completions.
+ - Omnibox Autocomplete
 
-   - HistoryQuickProvider: Suggests completions from the user's historical site visits.
+   - HistoryQuickProvider
 
  - Omnibox/IME Coordination
 
@@ -228,19 +228,19 @@ Focus and Activation with Views and Aura.
 
  - Printing
 
- - Rect-based event targeting in views: Making it easier to target views elements with touch.
+ - Rect-based event targeting in views
 
  - Replace the modal cookie prompt
 
  - SafeSearch
 
- - Sane Time: Determining an accurate time in Chrome
+ - Sane Time
 
  - Secure Web Proxy
 
  - Service Processes
 
- - Site Isolation: In-progress effort to improve Chromium's process model for security between web sites.
+ - Site Isolation
 
  - Software Updates: Courgette
 
@@ -248,23 +248,24 @@ Focus and Activation with Views and Aura.
 
  - Tab Helpers
 
- - Tab to search: How to have the Omnibox automatically provide tab to search for your site.
+ - Tab to search
 
  - Tabtastic2 Requirements
 
  - Temporary downloads
 
- - Time Sources: Determining the time on a Chrome OS device
+ - Time Sources
 
- - TimeTicks: How our monotonic timer, TimeTicks, works on different OSes
- - UI Mirroring Infrastructure: Describes the UI framework in ChromeViews that allows mirroring the browser UI in RTL locales such as Hebrew and Arabic.
+ - TimeTicks
+ 
+ - UI Mirroring Infrastructure
 
- - UI Localization: Describes how localized strings get added to Chromium. 
- - User scripts: Information on Chromium's support for user scripts.
+ - UI Localization
+ - User scripts
 
  - Video
 
- - WebSocket: Enables Web applications to maintain bidirectional communications with server-side processes.
+ - WebSocket
 
  - Web MIDI
 
@@ -283,7 +284,7 @@ Focus and Activation with Views and Aura.
 
  - Chrome OS
 
-   - See the Chrome OS design documents section.
+   - Chrome OS design documents section.
 
  - Mac OS X
 
