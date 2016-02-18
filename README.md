@@ -11,7 +11,7 @@ https://www.chromium.org/developers/design-documents
 
  - Multi-process Architecture: Describes the high-level architecture of Chromium 
 
-   Note: Most of the rest of the design documents assume familiarity with the concepts explained in this document.
+   **Note**: Most of the rest of the design documents assume familiarity with the concepts explained in this document.
 
  - How Chromium Displays Web Pages: Bottom-to-top overview of how WebKit is embedded in Chromium
 
@@ -21,266 +21,266 @@ https://www.chromium.org/developers/design-documents
 
 ##General Architecture
 
-Conventions and patterns for multi-platform development
+- Conventions and patterns for multi-platform development
 
-Extension Security Architecture: How the extension system helps reduce the severity of extension vulnerabilities
+- Extension Security Architecture: How the extension system helps reduce the severity of extension vulnerabilities
 
-HW Video Acceleration in Chrom{e,ium}{,OS}
+- HW Video Acceleration in Chrom{e,ium}{,OS}
 
-Inter-process Communication: How the browser, renderer, and plugin processes communicate
+- Inter-process Communication: How the browser, renderer, and plugin processes communicate
 
-Multi-process Resource Loading: How pages and images are loaded from the network into the renderer
+- Multi-process Resource Loading: How pages and images are loaded from the network into the renderer
 
-Plugin Architecture
+- Plugin Architecture
 
-Process Models: Our strategies for creating new renderer processes
+- Process Models: Our strategies for creating new renderer processes
 
-Profile Architecture
+- Profile Architecture
 
-SafeBrowsing
+- SafeBrowsing
 
-Sandbox
+- Sandbox
 
-Security Architecture: How Chromium's sandboxed rendering engine helps protect against malware
+- Security Architecture: How Chromium's sandboxed rendering engine helps protect against malware
 
-Startup
+- Startup
 
-Threading: How to use threads in Chromium
+- Threading: How to use threads in Chromium
 
 Also see the documentation for V8, which is the JavaScript engine used within Chromium.
 
 
-UI Framework
+##UI Framework
 
-UI Development Practices: Best practices for UI development inside and outside of Chrome's content areas.
+- UI Development Practices: Best practices for UI development inside and outside of Chrome's content areas.
 
-Views framework: Our UI layout layer used on Windows/Chrome OS.
+- Views framework: Our UI layout layer used on Windows/Chrome OS.
 
-views Windowing system: How to build dialog boxes and other windowed UI using views.
+- views Windowing system: How to build dialog boxes and other windowed UI using views.
 
-Aura: Chrome's next generation hardware accelerated UI framework, and the new ChromeOS window manager built using it.
+- Aura: Chrome's next generation hardware accelerated UI framework, and the new ChromeOS window manager built using it.
 
-NativeControls: using platform-native widgets in views.
+- NativeControls: using platform-native widgets in views.
 Focus and Activation with Views and Aura.
 
-Graphics
+##Graphics
 
-Overview
+- Overview
 
-GPU Accelerated Compositing in Chrome
+- GPU Accelerated Compositing in Chrome
 
-GPU Feature Status Dashboard
+- GPU Feature Status Dashboard
 
-Rendering Architecture Diagrams
+- Rendering Architecture Diagrams
 
-Graphics and Skia
+- Graphics and Skia
 
-RenderText and Chrome UI text drawing
+- RenderText and Chrome UI text drawing
 
-GPU Command Buffer
+- GPU Command Buffer
 
-GPU Program Caching
+- GPU Program Caching
 
-Compositing in Blink/WebCore: from WebCore::RenderLayer to cc::Layer
+- Compositing in Blink/WebCore: from WebCore::RenderLayer to cc::Layer
 
-Compositor Thread Architecture
+- Compositor Thread Architecture
 
-Rendering Benchmarks
+- Rendering Benchmarks
 
-Impl-side Painting
+- Impl-side Painting
 
-Video Playback and Compositor
+- Video Playback and Compositor
 
-ANGLE architecture presentation
+- ANGLE architecture presentation
 
 
 
-Network stack
+##Network stack
 
-Overview
+- Overview
 
-Network Stack Objectives
+- Network Stack Objectives
 
-Crypto
+- Crypto
 
-Disk Cache
+- Disk Cache
 
-HTTP Cache
+- HTTP Cache
 
-Out of Process Proxy Resolving Draft [unimplemented]
+- Out of Process Proxy Resolving Draft [unimplemented]
 
-Proxy Settings and Fallback
+- Proxy Settings and Fallback
 
-Debugging network proxy problems
+- Debugging network proxy problems
 
-HTTP Authentication
+- HTTP Authentication
 
-View network internals tool
+- View network internals tool
 
-Make the web faster with SPDY pages
+- Make the web faster with SPDY pages
 
-Make the web even faster with QUIC pages
+-  the web even faster with QUIC pages
 
-Cookie storage and retrieval
+- Cookie storage and retrieval
 
-Security
+##Security
 
-Security Overview
+- Security Overview
 
-Protecting Cached User Data
+- Protecting Cached User Data
 
-System Hardening
+- System Hardening
 
-Chaps Technical Design
+- Chaps Technical Design
 
-TPM Usage
+- TPM Usage
 
-Per-page Suborigins
+- Per-page Suborigins
 
-Encrypted Partition Recovery
+- Encrypted Partition Recovery
 
-Input
+##Input
 
-See chromium input for design docs and other resources.
+- See chromium input for design docs and other resources.
 
-Rendering
+##Rendering
 
-Multi-column layout
+- Multi-column layout
 
-Style Invalidation in Blink
+- Style Invalidation in Blink
 
-Blink Coordinate Spaces
+- Blink Coordinate Spaces
 
-Building
+##Building
 
-IDL build
+- IDL build
 
-IDL compiler
+- IDL compiler
 
 See also the documentation for GYP, which is the build script generation tool.
 
 
-Testing
+##Testing
 
-Layout test results dashboard
+- Layout test results dashboard
 
-Generic theme for Test Shell
+- Generic theme for Test Shell
 
-Moving LayoutTests fully upstream
+- Moving LayoutTests fully upstream
 
-Feature-Specific
+##Feature-Specific
 
-about:conflicts
+- about:conflicts
 
-Accessibility: An outline of current (and coming) accessibility support.
-Auto-Throttled Screen Capture and Mirroring
+- Accessibility: An outline of current (and coming) accessibility support.
+- Auto-Throttled Screen Capture and Mirroring
 
-Browser Window
+- Browser Window
 
-Chromium Print Proxy: Enables a cloud print service for legacy printers and future cloud-aware printers.
+- Chromium Print Proxy: Enables a cloud print service for legacy printers and future cloud-aware printers.
 
-Constrained Popup Windows
+- Constrained Popup Windows
 
-Desktop Notifications
+- Desktop Notifications
 
-DirectWrite Font Cache for Chrome on Windows
+- DirectWrite Font Cache for Chrome on Windows
 
-DNS Prefetching: Reducing perceived latency by resolving domain names before a user tries to follow a link
+- DNS Prefetching: Reducing perceived latency by resolving domain names before a user tries to follow a link
 
-Embedding Flash Fullscreen in the Browser Window
+- Embedding Flash Fullscreen in the Browser Window
 
-Extensions: Design documents and proposed APIs.
+- Extensions: Design documents and proposed APIs.
 
 
-Find Bar
+- Find Bar
 
-Form Autofill: A feature to automatically fill out an html form with appropriate data.
+- Form Autofill: A feature to automatically fill out an html form with appropriate data.
 
-Geolocation: Adding support for W3C Geolocation API using native WebKit bindings.
+- Geolocation: Adding support for W3C Geolocation API using native WebKit bindings.
 
-IDN in Google Chrome
+- IDN in Google Chrome
 
-IndexedDB (early draft)
+- IndexedDB (early draft)
 
-Info Bars
+- Info Bars
 
-Installer: Registry entries and shortcuts
+- Installer: Registry entries and shortcuts
 
-Instant
+- Instant
 
-Isolated Sites
+- Isolated Sites
 
-Linux Resources and Localized Strings: Loading data resources and localized strings on Linux.
+- Linux Resources and Localized Strings: Loading data resources and localized strings on Linux.
 
-Media Router & Web Presentation API
+- Media Router & Web Presentation API
 
-Memory Usage Backgrounder: Some information on how we measure memory in Chromium.
+- Memory Usage Backgrounder: Some information on how we measure memory in Chromium.
 
-Mouse Lock
+- Mouse Lock
 
-Omnibox Autocomplete: While typing into the omnibox, Chromium searches for and suggests possible completions.
+- Omnibox Autocomplete: While typing into the omnibox, Chromium searches for and suggests possible completions.
 
-HistoryQuickProvider: Suggests completions from the user's historical site visits.
+  - HistoryQuickProvider: Suggests completions from the user's historical site visits.
 
-Omnibox/IME Coordination
+- Omnibox/IME Coordination
 
-Ozone Porting Abstraction
+- Ozone Porting Abstraction
 
-Password Generation
+- Password Generation
 
-Pepper plugin implementation
+- Pepper plugin implementation
 
-Plugin Power Saver
+- Plugin Power Saver
 
-Preferences
+- Preferences
 
-Prerender
+- Prerender
 
-Print Preview
+- Print Preview
 
-Printing
+- Printing
 
-Rect-based event targeting in views: Making it easier to target views elements with touch.
+- Rect-based event targeting in views: Making it easier to target views elements with touch.
 
-Replace the modal cookie prompt
+- Replace the modal cookie prompt
 
-SafeSearch
+- SafeSearch
 
-Sane Time: Determining an accurate time in Chrome
+- Sane Time: Determining an accurate time in Chrome
 
-Secure Web Proxy
+- Secure Web Proxy
 
-Service Processes
+- Service Processes
 
-Site Isolation: In-progress effort to improve Chromium's process model for security between web sites.
+- Site Isolation: In-progress effort to improve Chromium's process model for security between web sites.
 
-Software Updates: Courgette
+- Software Updates: Courgette
 
-Sync
+- Sync
 
-Tab Helpers
+- Tab Helpers
 
-Tab to search: How to have the Omnibox automatically provide tab to search for your site.
+- Tab to search: How to have the Omnibox automatically provide tab to search for your site.
 
-Tabtastic2 Requirements
+- Tabtastic2 Requirements
 
-Temporary downloads
+- Temporary downloads
 
-Time Sources: Determining the time on a Chrome OS device
+- Time Sources: Determining the time on a Chrome OS device
 
-TimeTicks: How our monotonic timer, TimeTicks, works on different OSes
+- TimeTicks: How our monotonic timer, TimeTicks, works on different OSes
 UI Mirroring Infrastructure: Describes the UI framework in ChromeViews that allows mirroring the browser UI in RTL locales such as Hebrew and Arabic.
 
-UI Localization: Describes how localized strings get added to Chromium.
+- UI Localization: Describes how localized strings get added to Chromium.
 User scripts: Information on Chromium's support for user scripts.
 
-Video
+- Video
 
-WebSocket: Enables Web applications to maintain bidirectional communications with server-side processes.
+- WebSocket: Enables Web applications to maintain bidirectional communications with server-side processes.
 
-Web MIDI
+- Web MIDI
 
-WebNavigation API internals
+- WebNavigation API internals
 
 
 
