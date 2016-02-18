@@ -284,67 +284,67 @@ User scripts: Information on Chromium's support for user scripts.
 
 
 
-OS-Specific
+##OS-Specific
 
-Android
+- Android
 
-Java Resources on Android
+  - Java Resources on Android
 
-JNI Bindings
+  - JNI Bindings
 
-WebView code organization
+  - WebView code organization
 
-Chrome OS
+- Chrome OS
 
-See the Chrome OS design documents section.
+  - See the Chrome OS design documents section.
 
-Mac OS X
+- Mac OS X
 
-AppleScript Support
+  - AppleScript Support
 
-BrowserWindowController Object Ownership
+  - BrowserWindowController Object Ownership
 
-Confirm to Quit
+  - Confirm to Quit
 
-Mac App Mode (Draft)
+  - Mac App Mode (Draft)
 
-Mac Fullscreen Mode (Draft)
+  - Mac Fullscreen Mode (Draft)
 
-Mac NPAPI Plugin Hosting
+  - Mac NPAPI Plugin Hosting
 
-Mac specific notes on UI Localization
+  - Mac specific notes on UI Localization
 
-Menus, Hotkeys, & Command Dispatch
+  - Menus, Hotkeys, & Command Dispatch
 
-Notes from meeting on IOSurface usage and semantics
+  - Notes from meeting on IOSurface usage and semantics
 
-OS X Interprocess Communication (Obsolete)
+  - OS X Interprocess Communication (Obsolete)
 
-Password Manager/Keychain Integration
+  - Password Manager/Keychain Integration
 
-Sandboxing Design
+  - Sandboxing Design
 
-Tab Strip Design (Includes tab layout and tab dragging)
+  - Tab Strip Design (Includes tab layout and tab dragging)
 
-Wrench Menu Buttons
+  - Wrench Menu Buttons
 
 
 
-Other
+##Other
 
-64-bit Support
+- 64-bit Support
 
-Browser Components / Layered Components
+- Browser Components / Layered Components
 
-Closure Compiling Chrome Code
+- Closure Compiling Chrome Code
 
-content module / content API
+- content module / content API
 
-Design docs that still need to be written (wiki)
+- Design docs that still need to be written (wiki)
 
-In progress refactoring of key browser-process architecture for porting
+- In progress refactoring of key browser-process architecture for porting
 
-Network Experiments
+- Network Experiments
 
-Transitioning InlineBoxes from floats to LayoutUnits
+- Transitioning InlineBoxes from floats to LayoutUnits
 
