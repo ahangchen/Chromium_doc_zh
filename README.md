@@ -7,19 +7,19 @@ https://www.chromium.org/developers/design-documents
 
 ##Design Documents
 
-Start Here: Background Reading
+- Start Here: Background Reading
 
-Multi-process Architecture: Describes the high-level architecture of Chromium 
+ - Multi-process Architecture: Describes the high-level architecture of Chromium 
 
-Note: Most of the rest of the design documents assume familiarity with the concepts explained in this document.
+   Note: Most of the rest of the design documents assume familiarity with the concepts explained in this document.
 
-How Chromium Displays Web Pages: Bottom-to-top overview of how WebKit is embedded in Chromium
+ - How Chromium Displays Web Pages: Bottom-to-top overview of how WebKit is embedded in Chromium
 
-See Also: Design docs in source code
+##See Also: Design docs in source code
 
-https://chromium.googlesource.com/chromium/src/+/master/docs/
+- https://chromium.googlesource.com/chromium/src/+/master/docs/
 
-General Architecture
+##General Architecture
 
 Conventions and patterns for multi-platform development
 
