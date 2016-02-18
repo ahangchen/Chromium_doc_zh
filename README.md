@@ -5,7 +5,7 @@ https://www.chromium.org/developers/design-documents
 
 翻译之加强对android webview理解
 
-Design Documents
+##Design Documents
 
 Start Here: Background Reading
 
@@ -237,63 +237,114 @@ Preferences
 Prerender
 
 Print Preview
+
 Printing
+
 Rect-based event targeting in views: Making it easier to target views elements with touch.
+
 Replace the modal cookie prompt
+
 SafeSearch
+
 Sane Time: Determining an accurate time in Chrome
+
 Secure Web Proxy
+
 Service Processes
+
 Site Isolation: In-progress effort to improve Chromium's process model for security between web sites.
+
 Software Updates: Courgette
+
 Sync
+
 Tab Helpers
+
 Tab to search: How to have the Omnibox automatically provide tab to search for your site.
+
 Tabtastic2 Requirements
+
 Temporary downloads
+
 Time Sources: Determining the time on a Chrome OS device
+
 TimeTicks: How our monotonic timer, TimeTicks, works on different OSes
 UI Mirroring Infrastructure: Describes the UI framework in ChromeViews that allows mirroring the browser UI in RTL locales such as Hebrew and Arabic.
+
 UI Localization: Describes how localized strings get added to Chromium.
 User scripts: Information on Chromium's support for user scripts.
+
 Video
+
 WebSocket: Enables Web applications to maintain bidirectional communications with server-side processes.
+
 Web MIDI
+
 WebNavigation API internals
+
 
 
 OS-Specific
 
 Android
+
 Java Resources on Android
+
 JNI Bindings
+
 WebView code organization
+
 Chrome OS
+
 See the Chrome OS design documents section.
+
 Mac OS X
+
 AppleScript Support
+
 BrowserWindowController Object Ownership
+
 Confirm to Quit
+
 Mac App Mode (Draft)
+
 Mac Fullscreen Mode (Draft)
+
 Mac NPAPI Plugin Hosting
+
 Mac specific notes on UI Localization
+
 Menus, Hotkeys, & Command Dispatch
+
 Notes from meeting on IOSurface usage and semantics
+
 OS X Interprocess Communication (Obsolete)
+
 Password Manager/Keychain Integration
+
 Sandboxing Design
+
 Tab Strip Design (Includes tab layout and tab dragging)
+
 Wrench Menu Buttons
+
 
 
 Other
 
 64-bit Support
+
 Browser Components / Layered Components
+
 Closure Compiling Chrome Code
+
 content module / content API
+
 Design docs that still need to be written (wiki)
+
 In progress refactoring of key browser-process architecture for porting
+
 Network Experiments
+
 Transitioning InlineBoxes from floats to LayoutUnits
+
