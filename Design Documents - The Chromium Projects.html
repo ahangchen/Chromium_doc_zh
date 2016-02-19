@@ -1,0 +1,831 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0052)https://www.chromium.org/developers/design-documents -->
+<html xmlns="http://www.w3.org/1999/xhtml" itemscope="" itemtype="http://schema.org/WebPage"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<script async="" src="./Design Documents - The Chromium Projects_files/analytics.js"></script><script type="text/javascript">/* Copyright 2008 Google. */ (function() { var e="wtsrt_",g="tbsd_",h="tbnd_",k="start",l="_wtsrt",m="_tbnd",n="CSI/";(function(){function f(a){this.t={};this.tick=function(a,c,b){this.t[a]=[void 0!=b?b:(new Date).getTime(),c];if(void 0==b)try{window.console.timeStamp(n+a)}catch(d){}};this.tick(k,null,a)}var a;window.performance&&(a=window.performance.timing);var p=a?new f(a.responseStart):new f;window.jstiming={Timer:f,load:p};if(a){var c=a.navigationStart,d=a.responseStart;0<c&&d>=c&&(window.jstiming.srt=d-c)}if(a){var b=window.jstiming.load;0<c&&d>=c&&(b.tick(l,void 0,c),b.tick(e,l,d),b.tick(g,e))}try{a=null,
+window.chrome&&window.chrome.csi&&(a=Math.floor(window.chrome.csi().pageT),b&&0<c&&(b.tick(m,void 0,window.chrome.csi().startE),b.tick(h,m,c))),null==a&&window.gtbExternal&&(a=window.gtbExternal.pageT()),null==a&&window.external&&(a=window.external.pageT,b&&0<c&&(b.tick(m,void 0,window.external.startE),b.tick(h,m,c))),a&&(window.jstiming.pt=a)}catch(q){}})(); })()
+</script>
+<link rel="shortcut icon" href="https://www.chromium.org/_/rsrc/1354323194313/favicon.ico" type="image/x-icon">
+<link rel="apple-touch-icon" href="https://ssl.gstatic.com/sites/p/77c5f6/system/app/images/apple-touch-icon.png" type="image/png">
+<script type="text/javascript">/* Copyright 2008 Google. */ (function() { var d="",g="__duration__",h="function";function k(c){return document.getElementById(c)}window.byId=k;function l(c){return c.replace(/^\s+|\s+$/g,d)}window.trim=l;var m=[],n=0;window.JOT_addListener=function(c,a,b){var e=new String(n++);c={eventName:c,handler:a,compId:b,key:e};m.push(c);return e};window.JOT_removeListenerByKey=function(c){for(var a=0;a<m.length;a++)if(m[a].key==c){m.splice(a,1);break}};
+window.JOT_removeAllListenersForName=function(c){for(var a=0;a<m.length;a++)m[a].eventName==c&&m.splice(a,1)};window.JOT_postEvent=function(c,a,b){var e={eventName:c,eventSrc:a||{},payload:b||{}};if(window.JOT_fullyLoaded)for(a=m.length,b=0;b<a&&b<m.length;b++){var f=m[b];f&&f.eventName==c&&(e.listenerCompId=f.compId||d,(f=typeof f.handler==h?f.handler:window[f.handler])&&f(e))}else window.JOT_delayedEvents.push({eventName:c,eventSrc:a,payload:b})};window.JOT_delayedEvents=[];
+window.JOT_fullyLoaded=!1;window.JOT_formatRelativeToNow=function(c,a){var b=((new Date).getTime()-c)/6E4;if(1440<=b||0>b)return null;var e=0;60<=b&&(b/=60,e=2);2<=b&&e++;return a?window.JOT_siteRelTimeStrs[e].replace(g,Math.floor(b)):window.JOT_userRelTimeStrs[e].replace(g,Math.floor(b))}; })()
+</script>
+<script>
+
+  
+
+  var breadcrumbs = [{"path":"/developers","deleted":false,"title":"For Developers","dir":"ltr"},{"path":"/developers/design-documents","deleted":false,"title":"Design Documents","dir":"ltr"}];
+  var JOT_clearDotPath = 'https://ssl.gstatic.com/sites/p/77c5f6/system/app/images/cleardot.gif';
+
+  
+  var JOT_userRelTimeStrs = ["1 \u5206\u949f\u524d","__duration__ \u5206\u949f\u4e4b\u524d","1 \u5c0f\u65f6\u524d","__duration__ \u5c0f\u65f6\u524d"];
+
+  
+  
+
+  
+
+  var webspace = {"enableAnalytics":true,"pageSharingId":"jotspot_page","enableUniversalAnalytics":false,"sharingPolicy":"OPENED_WITH_INDICATOR","siteTitle":"The Chromium Projects","isStartPageEnabled":true,"adsensePublisherId":null,"features":{"validateClientGvizDataSourceUrls":true,"contactStoreMigrationPollForGapi":true,"gapiLoaderUtil":true,"moreMobileStyleImprovements":true,"gadgetsInStratus":false,"accumulativeBubblePanelCreation":true,"domainAnalyticsInGAOnly":true,"noCaptcha":true,"enableNewImageSlider":false,"templatesInStratus":false,"fileCabinetScreenReaderFix":true,"updatedTosAndPrivacyLinks":null,"useTitleAsTemplateIndicator":false,"pageDrafts":false,"mobileOrientationFix":true,"plusBadge":false,"pdfEmbedSupport":false,"jsClickFix":true,"updatedReportAbuseForm":false},"isPublic":true,"isConsumer":false,"serverFlags":{"cajaBaseUrl":"//www.gstatic.com/caja","cajaDebugMode":false},"onepickBaseUrl":"https://docs.google.com","domainAnalyticsAccountId":"","plusPageId":"","signInUrl":"https://www.google.com/a/SelectSession?continue\u003dhttps://sites.google.com/a/chromium.org/dev/developers/design-documents\u0026service\u003djotspot","analyticsAccountId":"UA-5484340-1","scottyUrl":"/_/upload","homePath":"/","siteNoticeUrlEnabled":null,"plusPageUrl":"","adsensePromoClickedOrSiteIneligible":true,"csiReportUri":"https://gg.google.com/csi","sharingId":"jotspot","termsUrl":"//www.google.com/intl/zh/policies/terms/","gvizVersion":1,"editorResources":{"sitelayout":["https://ssl.gstatic.com/sites/p/77c5f6/system/app/css/sitelayouteditor.css"],"text":["https://ssl.gstatic.com/sites/p/77c5f6/system/js/codemirror.js","https://ssl.gstatic.com/sites/p/77c5f6/system/app/css/codemirror_css.css","https://ssl.gstatic.com/sites/p/77c5f6/system/js/trog_edit__zh_cn.js","https://ssl.gstatic.com/sites/p/77c5f6/system/app/css/trogedit.css","/_/rsrc/1454889826000/system/app/css/editor.css","https://ssl.gstatic.com/sites/p/77c5f6/system/app/css/codeeditor.css","/_/rsrc/1454889826000/system/app/css/camelot/editor-jfk.css"]},"sharingUrlPrefix":"/_/sharing","isAdsenseEnabled":true,"domain":"chromium.org","baseUri":"","name":"dev","siteTemplateId":false,"siteNoticeRevision":null,"siteNoticeUrlAddress":null,"siteNoticeMessage":null,"page":{"isRtlLocale":false,"canDeleteWebspace":null,"isPageDraft":null,"parentPath":"/developers","parentWuid":"wuid:gx:982466121d9f2cd","siteLocale":"zh_CN","timeZone":"Asia/Hong_Kong","type":"text","title":"Design Documents","locale":"zh_CN","wuid":"wuid:gx:359ef223e0fb14ac","revision":196,"path":"/developers/design-documents","isSiteRtlLocale":false,"pageInheritsPermissions":null,"name":"design-documents","canChangePath":true,"state":"","properties":{},"bidiEnabled":false,"currentTemplate":{"path":"/system/app/pagetemplates/text","title":"\u7f51\u9875"}},"canPublishScriptToAnyone":true,"user":{"keyboardShortcuts":true,"sessionIndex":"","guest_":true,"displayNameOrEmail":"guest","userName":"guest","uid":"","renderMobile":false,"domain":"","namespace":"","hasWriteAccess":false,"namespaceUser":false,"primaryEmail":"guest","hasAdminAccess":false},"gadgets":{"baseUri":"/system/app/pages/gadgets"}};
+  webspace.page.breadcrumbs = breadcrumbs;
+
+  
+  var JOT_siteRelTimeStrs = ["1 \u5206\u949f\u524d","__duration__ \u5206\u949f\u4e4b\u524d","1 \u5c0f\u65f6\u524d","__duration__ \u5c0f\u65f6\u524d"];
+
+</script>
+<script type="text/javascript">
+                window.jstiming.load.tick('scl');
+              </script>
+<meta name="title" content="Design Documents - The Chromium Projects">
+<meta itemprop="name" content="Design Documents - The Chromium Projects">
+<meta property="og:title" content="Design Documents - The Chromium Projects">
+<meta name="description" content="Home of the Chromium Open Source Project">
+<meta itemprop="description" content="Home of the Chromium Open Source Project">
+<meta id="meta-tag-description" property="og:description" content="Home of the Chromium Open Source Project">
+<style type="text/css">
+</style>
+<link rel="stylesheet" type="text/css" href="./Design Documents - The Chromium Projects_files/standard-css-beigeandblue-ltr-ltr.css">
+<link rel="stylesheet" type="text/css" href="./Design Documents - The Chromium Projects_files/overlay.css">
+<link rel="stylesheet" type="text/css" href="./Design Documents - The Chromium Projects_files/allthemes-view.css">
+<!--[if IE]>
+          <link rel="stylesheet" type="text/css" href="/system/app/css/camelot/allthemes%2die.css" />
+        <![endif]-->
+<title>Design Documents - The Chromium Projects</title>
+<meta itemprop="image" content="/_/rsrc/1438879449147/config/customLogo.gif?revision=3">
+<meta property="og:image" content="/_/rsrc/1438879449147/config/customLogo.gif?revision=3">
+<script type="text/javascript">
+                window.jstiming.load.tick('cl');
+              </script>
+<script src="./Design Documents - The Chromium Projects_files/ga.js"></script><style type="text/css">#yddContainer{display:block;font-family:Microsoft YaHei;position:relative;width:100%;height:100%;top:-4px;left:-4px;font-size:12px;border:1px solid}#yddTop{display:block;height:22px}#yddTopBorderlr{display:block;position:static;height:17px;padding:2px 28px;line-height:17px;font-size:12px;color:#5079bb;font-weight:bold;border-style:none solid;border-width:1px}#yddTopBorderlr .ydd-sp{position:absolute;top:2px;height:0;overflow:hidden}.ydd-icon{left:5px;width:17px;padding:0px 0px 0px 0px;padding-top:17px;background-position:-16px -44px}.ydd-close{right:5px;width:16px;padding-top:16px;background-position:left -44px}#yddKeyTitle{float:left;text-decoration:none}#yddMiddle{display:block;margin-bottom:10px}.ydd-tabs{display:block;margin:5px 0;padding:0 5px;height:18px;border-bottom:1px solid}.ydd-tab{display:block;float:left;height:18px;margin:0 5px -1px 0;padding:0 4px;line-height:18px;border:1px solid;border-bottom:none}.ydd-trans-container{display:block;line-height:160%}.ydd-trans-container a{text-decoration:none;}#yddBottom{position:absolute;bottom:0;left:0;width:100%;height:22px;line-height:22px;overflow:hidden;background-position:left -22px}.ydd-padding010{padding:0 10px}#yddWrapper{color:#252525;z-index:10001;background:url(chrome-extension://eopjamdnofihpioajgfdikhhbobonhbb/ab20.png);}#yddContainer{background:#fff;border-color:#4b7598}#yddTopBorderlr{border-color:#f0f8fc}#yddWrapper .ydd-sp{background-image:url(chrome-extension://eopjamdnofihpioajgfdikhhbobonhbb/ydd-sprite.png)}#yddWrapper a,#yddWrapper a:hover,#yddWrapper a:visited{color:#50799b}#yddWrapper .ydd-tabs{color:#959595}.ydd-tabs,.ydd-tab{background:#fff;border-color:#d5e7f3}#yddBottom{color:#363636}#yddWrapper{min-width:250px;max-width:400px;}</style></head>
+<body xmlns="http://www.google.com/ns/jotspot" id="body" class=" zh_CN            ">
+<div id="sites-page-toolbar" class="sites-header-divider">
+<div xmlns="http://www.w3.org/1999/xhtml" id="sites-status" class="sites-status" style="display:none;"><div id="sites-notice" class="sites-notice" role="status" aria-live="assertive"> </div></div>
+</div>
+<div id="sites-chrome-everything-scrollbar">
+<div id="sites-chrome-everything" class="">
+<div id="sites-chrome-page-wrapper" style="direction: ltr">
+<div id="sites-chrome-page-wrapper-inside">
+<div xmlns="http://www.w3.org/1999/xhtml" id="sites-chrome-header-wrapper" style="height:auto;">
+<table id="sites-chrome-header" class="sites-layout-hbox" cellspacing="0" style="height:auto;">
+<tbody><tr class="sites-header-primary-row" id="sites-chrome-userheader">
+<td id="sites-header-title" class="" role="banner"><div class="sites-header-cell-buffer-wrapper"><a href="https://www.chromium.org/" id="sites-chrome-userheader-logo"><img id="logo-img-id" src="./Design Documents - The Chromium Projects_files/customLogo.gif" alt="The Chromium Projects" class="sites-logo  "></a><h2><a href="https://www.chromium.org/" dir="ltr" id="sites-chrome-userheader-title">The Chromium Projects</a></h2></div></td><td class="sites-layout-searchbox  "><div class="sites-header-cell-buffer-wrapper"><form id="sites-searchbox-form" action="https://www.chromium.org/system/app/pages/search" role="search"><input type="hidden" id="sites-searchbox-scope" name="scope" value="search-site"><input type="text" id="jot-ui-searchInput" name="q" size="20" value="" aria-label="搜索此网站"><div id="sites-searchbox-button-set" class="goog-inline-block"><div role="button" id="sites-searchbox-search-button" class="goog-inline-block jfk-button jfk-button-standard" tabindex="0" style="-webkit-user-select: none;">搜索此网站</div></div></form></div></td>
+</tr>
+<tr class="sites-header-secondary-row" id="sites-chrome-horizontal-nav">
+<td colspan="2" id="sites-chrome-header-horizontal-nav-container" role="navigation">
+</td>
+</tr>
+</tbody></table>
+</div>
+<div id="sites-chrome-main-wrapper">
+<div id="sites-chrome-main-wrapper-inside">
+<table id="sites-chrome-main" class="sites-layout-hbox" cellspacing="0" cellpadding="{scmCellpadding}" border="0">
+<tbody><tr>
+<td id="sites-chrome-sidebar-left" class="sites-layout-sidebar-left initial" style="width:150px">
+<div xmlns="http://www.w3.org/1999/xhtml" id="COMP_7648876402527094" class="sites-embed" role="navigation"><div class="sites-embed-content sites-sidebar-nav"><ul role="navigation" jotid="navList"><li class="nav-first "><div dir="ltr" style="padding-left: 5px;"><a href="https://www.chromium.org/chromium-projects" jotid="wuid:gx:10ae433dadbbab13" class="sites-navigation-link">Home</a></div></li><li class=""><div dir="ltr" style="padding-left: 5px;"><a href="https://www.chromium.org/Home" jotid="wuid:gx:43582b9d2029d3af" class="sites-navigation-link">Chromium</a></div></li><li class=""><div dir="ltr" style="padding-left: 5px;"><a href="https://www.chromium.org/chromium-os" jotid="wuid:gx:83df2ab1f8880ba" class="sites-navigation-link">Chromium OS</a></div></li></ul></div></div>
+<div xmlns="http://www.w3.org/1999/xhtml" id="COMP_14720868319272995" class="sites-embed" role="navigation"><h4 class="sites-embed-title">Quick links</h4><div class="sites-embed-content sites-sidebar-nav"><ul role="navigation" jotid="navList"><li class="nav-first "><div dir="ltr" style="padding-left: 5px;"><a href="http://www.chromium.org/for-testers/bug-reporting-guidelines" class="sites-navigation-link">Report bugs</a></div></li><li class=""><div dir="ltr" style="padding-left: 5px;"><a href="http://www.chromium.org/developers/discussion-groups" class="sites-navigation-link">Discuss</a></div></li><li class=""><div dir="ltr" style="padding-left: 5px;"><a href="https://www.chromium.org/system/app/pages/sitemap/hierarchy" jotid="wuid:gx:6a308b7fcf57fc58" class="sites-navigation-link">Sitemap</a></div></li></ul></div></div>
+<div xmlns="http://www.w3.org/1999/xhtml" id="COMP_19690813310444355" class="sites-embed" role="navigation"><h4 class="sites-embed-title">Other sites</h4><div class="sites-embed-content sites-sidebar-nav"><ul role="navigation" jotid="navList"><li class="nav-first "><div dir="ltr" style="padding-left: 5px;"><a href="http://blog.chromium.org/" class="sites-navigation-link">Chromium Blog</a></div></li><li class=""><div dir="ltr" style="padding-left: 5px;"><a href="http://code.google.com/chrome/extensions/" class="sites-navigation-link">Google Chrome Extensions</a></div></li><li class=""><div dir="ltr" style="padding-left: 5px;"><a href="https://developers.google.com/chrome/chrome-frame/" class="sites-navigation-link">Google Chrome Frame</a></div></li></ul></div></div>
+<div xmlns="http://www.w3.org/1999/xhtml" id="COMP_19695218559354544" class="sites-embed" role="complementary"><h4 class="sites-embed-title"></h4><div class="sites-embed-content sites-embed-content-sidebar-textbox"><div dir="ltr"><span style="font-size:x-small">Except as otherwise </span><a href="http://developers.google.com/site-policies.html#restrictions"><span style="font-size:x-small">noted</span></a><span style="font-size:x-small">, the content of this page is licensed under a </span><a href="http://creativecommons.org/licenses/by/2.5/"><span style="font-size:x-small">Creative Commons Attribution 2.5 license</span></a><span style="font-size:x-small">, and examples are licensed under the </span><a href="http://src.chromium.org/viewvc/chrome/trunk/src/LICENSE" target="_blank"><span style="font-size:x-small">BSD License</span></a><span style="font-size:x-small">.<br></span></div></div></div>
+</td>
+<td id="sites-canvas-wrapper">
+<div id="sites-canvas" role="main">
+<div id="goog-ws-editor-toolbar-container"> </div>
+<div xmlns="http://www.w3.org/1999/xhtml" id="title-crumbs" style="">
+<a href="https://www.chromium.org/developers" dir="ltr">For Developers</a>‎ &gt; ‎
+  </div>
+<h3 xmlns="http://www.w3.org/1999/xhtml" id="sites-page-title-header" style="" align="left">
+<span id="sites-page-title" dir="ltr" tabindex="-1" style="outline: none">Design Documents</span>
+</h3>
+<div id="sites-canvas-main" class="sites-canvas-main">
+<div id="sites-canvas-main-content">
+<table xmlns="http://www.w3.org/1999/xhtml" cellspacing="0" class="sites-layout-name-one-column sites-layout-hbox"><tbody><tr><td class="sites-layout-tile sites-tile-name-content-1"><div dir="ltr"><div><font size="4"><b><div></div></b></font></div><h2><a name="TOC-Start-Here:-Background-Reading"></a><b style="font-size:large;background-color:transparent">Start Here: Background Reading</b></h2>
+<ul>
+<li><a href="https://www.chromium.org/developers/design-documents/multi-process-architecture">Multi-process Architecture</a>: Describes the high-level architecture of Chromium
+<br>
+<b>Note:</b> Most of the rest of the design documents assume familiarity with the concepts explained in this document.<br>
+</li>
+<li><a href="https://www.chromium.org/developers/design-documents/displaying-a-web-page-in-chrome">How Chromium Displays Web Pages</a>: Bottom-to-top overview of how WebKit is embedded in Chromium</li>
+</ul>
+<h2><a name="TOC-See-Also:-Design-docs-in-source-code"></a><font size="4">See Also: Design docs in source code</font></h2><h2><a name="TOC-https:-chromium.googlesource.com-chromium-src-master-docs-"></a><div style="font-size:13.3333px;font-weight:normal"><ul><li><a href="https://chromium.googlesource.com/chromium/src/+/master/docs/" style="font-size:large;background-color:transparent">https://chromium.googlesource.com/chromium/src/+/master/docs/</a></li></ul></div></h2><h2><a name="TOC-General-Architecture"></a><span style="background-color:transparent"><font size="4">General Architecture</font></span></h2>
+<ul>
+<li><a href="https://www.chromium.org/developers/design-documents/conventions-and-patterns-for-multi-platform-development">Conventions and patterns for multi-platform development</a><br></li><li><a href="http://webblaze.cs.berkeley.edu/2010/secureextensions/" rel="nofollow" style="font-size:10pt;background-color:transparent">Extension Security Architecture</a><span style="font-size:10pt;background-color:transparent">: How the extension system helps reduce the severity of extension vulnerabilities</span></li><li><a href="https://docs.google.com/a/chromium.org/document/d/1LUXNNv1CXkuQRj_2Qg79WUsPDLKfOUboi1IWfX2dyQE/preview#heading=h.c4hwvr7uzkfl" style="font-size:10pt;background-color:transparent" target="_blank">HW Video Acceleration in Chrom{e,ium}{,OS}</a></li><li><a href="https://www.chromium.org/developers/design-documents/inter-process-communication" style="font-size:10pt;background-color:transparent">Inter-process Communication</a><span style="font-size:10pt;background-color:transparent">: How the browser, renderer, and plugin processes communicate</span></li><li><a href="https://www.chromium.org/developers/design-documents/multi-process-resource-loading">Multi-process Resource Loading</a>: How pages and images are loaded from the network into the renderer</li><li><a href="https://www.chromium.org/developers/design-documents/plugin-architecture" style="font-size:10pt;background-color:transparent">Plugin Architecture</a></li><li><a href="https://www.chromium.org/developers/design-documents/process-models">Process Models</a>: Our strategies for creating new renderer processes</li>
+<li><a href="https://www.chromium.org/developers/design-documents/profile-architecture" style="font-size:10pt;background-color:transparent">Profile Architecture</a></li><li><a href="https://www.chromium.org/developers/design-documents/safebrowsing" style="font-size:10pt;background-color:transparent">SafeBrowsing</a></li><li><a href="https://www.chromium.org/developers/design-documents/sandbox" style="font-size:10pt;background-color:transparent">Sandbox</a></li><li><a href="http://crypto.stanford.edu/websec/chromium/" rel="nofollow" style="font-size:10pt;background-color:transparent">Security Architecture</a><span style="font-size:10pt;background-color:transparent">: How Chromium's sandboxed rendering engine helps protect against malware</span></li><li><a href="https://www.chromium.org/developers/design-documents/startup" style="font-size:10pt;background-color:transparent">Startup</a></li><li><a href="https://www.chromium.org/developers/design-documents/threading" style="font-size:10pt;background-color:transparent">Threading</a><span style="font-size:10pt;background-color:transparent">: How to use threads in Chromium</span></li>
+</ul>
+<div>Also see the documentation for <a href="http://code.google.com/apis/v8/">V8</a>, which is the JavaScript engine used within Chromium.</div>
+<h2><a name="TOC-1"></a><br></h2><h2><a name="TOC-UI-Framework"></a>UI Framework</h2>
+<div>
+<ul style="margin-left:10px"><li style="padding:1px 0px"><a href="https://www.chromium.org/developers/design-documents/ui-development-practices">UI Development Practices</a>: Best practices for UI development inside and outside of Chrome's content areas.</li><li style="padding:1px 0px"><a href="https://www.chromium.org/developers/design-documents/chromeviews">Views framework</a>: Our UI layout layer used on Windows/Chrome OS.</li>
+<li style="padding:1px 0px"><a href="https://www.chromium.org/developers/design-documents/views-windowing">views Windowing system</a>: How to build dialog boxes and other windowed UI using views.</li>
+<li style="padding:1px 0px"><a href="https://www.chromium.org/developers/design-documents/aura">Aura</a>: Chrome's next generation hardware accelerated UI framework, and the new ChromeOS window manager built using it.</li>
+<li style="padding:1px 0px"><a href="https://www.chromium.org/developers/design-documents/native-controls">NativeControls</a>: using platform-native widgets in views.</li>
+<li style="padding:1px 0px">Focus and Activation with Views and Aura.</li></ul><b style="background-color:transparent"><font size="4"><div><b style="background-color:transparent"><font size="4"><br></font></b></div>Graphics</font></b></div><h2><a name="TOC-OverviewGPU-Accelerated-Compositing-in-ChromeGPU-Feature-Status-DashboardRendering-Architecture-DiagramsGraphics-and-SkiaRenderText-and-Chrome-UI-text-drawingGPU-Command-BufferGPU-Program-CachingCompositing-in-Blink-WebCore:-from-WebCore::RenderLayer-to-cc"></a><ul style="font-size:13px"><li><span style="font-size:10pt;background-color:transparent;font-weight:normal"><a href="https://www.chromium.org/developers/design-documents/chromium-graphics">Overview</a></span></li><li style="font-weight:normal"><a href="https://www.chromium.org/developers/design-documents/gpu-accelerated-compositing-in-chrome" style="background-color:transparent">GPU Accelerated Compositing in Chrome</a></li><li style="font-weight:normal"><a href="https://www.chromium.org/developers/design-documents/gpu-accelerated-compositing-in-chrome/gpu-architecture-roadmap" style="background-color:transparent">GPU Feature Status Dashboard</a></li><li style="font-weight:normal"><a href="https://www.chromium.org/developers/design-documents/rendering-architecture-diagrams" style="background-color:transparent">Rendering Architecture Diagrams</a></li><li style="font-weight:normal"><a href="https://www.chromium.org/developers/design-documents/graphics-and-skia" style="background-color:transparent">Graphics and Skia</a></li><li style="font-weight:normal"><a href="https://www.chromium.org/developers/design-documents/rendertext" style="background-color:transparent">RenderText and Chrome UI text drawing</a></li><li style="font-weight:normal"><a href="https://www.chromium.org/developers/design-documents/gpu-command-buffer" style="background-color:transparent" target="_blank">GPU Command Buffer</a></li><li style="font-weight:normal"><a href="https://docs.google.com/a/chromium.org/document/d/1Vceem-nF4TCICoeGSh7OMXxfGuJEJYblGXRgN9V9hcE/edit" style="background-color:transparent" target="_blank">GPU Program Caching</a></li><li style="font-weight:normal"><a href="https://docs.google.com/presentation/d/1dDE5u76ZBIKmsqkWi2apx3BqV8HOcNf4xxBdyNywZR8/edit?usp=sharing" style="background-color:transparent">Compositing in Blink/WebCore: from WebCore::RenderLayer to cc::Layer</a></li><li style="font-weight:normal"><a href="https://www.chromium.org/developers/design-documents/compositor-thread-architecture" style="background-color:transparent">Compositor Thread Architecture</a></li><li style="font-weight:normal"><a href="https://www.chromium.org/developers/design-documents/rendering-benchmarks" style="background-color:transparent">Rendering Benchmarks</a></li><li style="font-weight:normal"><a href="https://www.chromium.org/developers/design-documents/impl-side-painting" style="background-color:transparent">Impl-side Painting</a></li><li style="font-weight:normal"><a href="http://www.chromium.org/developers/design-documents/video-playback-and-compositor" style="background-color:transparent">Video Playback and Compositor</a></li><li style="font-weight:normal"><a href="https://docs.google.com/presentation/d/1CucIsdGVDmdTWRUbg68IxLE5jXwCb2y1E9YVhQo0thg/pub?start=false&loop=false" style="background-color:transparent">ANGLE architecture presentation</a></li></ul></h2><h2><a name="TOC-2"></a><br></h2><div><b><font size="4"><span style="background-color:transparent">Network stack</span></font></b><br><ul><li><a href="https://www.chromium.org/developers/design-documents/network-stack" style="font-size:10pt;background-color:transparent">Overview</a></li><li><a href="https://www.chromium.org/developers/design-documents/network-stack/network-stack-objectives" style="font-size:10pt;background-color:transparent">Network Stack Objectives</a></li><li><a href="https://www.chromium.org/developers/design-documents/crypto" style="font-size:10pt;background-color:transparent">Crypto</a></li><li><a href="https://www.chromium.org/developers/design-documents/network-stack/disk-cache" style="font-size:10pt;background-color:transparent">Disk Cache</a></li><li><a href="https://www.chromium.org/developers/design-documents/network-stack/http-cache">HTTP Cache</a></li><li><a href="https://www.chromium.org/system/errors/NodeNotFound?suri=wuid:gx:65d9b5dc4876e3d3" style="font-size:10pt;background-color:transparent" class="disabled">Out of Process Proxy Resolving Draft [unimplemented]</a></li><li><a href="https://www.chromium.org/developers/design-documents/network-stack/proxy-settings-fallback" style="font-size:10pt;background-color:transparent">Proxy Settings and Fallback</a></li><li><a href="https://www.chromium.org/developers/design-documents/network-stack/debugging-net-proxy" style="font-size:10pt;background-color:transparent">Debugging network proxy problems</a></li><li><a href="https://www.chromium.org/developers/design-documents/http-authentication" style="font-size:10pt;background-color:transparent">HTTP Authentication</a></li><li><a href="https://www.chromium.org/system/errors/NodeNotFound?suri=wuid:gx:3a6b9e8797e40c67" style="font-size:10pt;background-color:transparent" class="disabled">View network internals tool</a></li><li><a href="http://www.chromium.org/spdy/" style="font-size:10pt;background-color:transparent">Make the web faster with SPDY</a><span style="font-size:10pt;background-color:transparent">&nbsp;</span><span style="font-size:10pt;background-color:transparent">pages</span></li><li><a href="https://www.chromium.org/quic" style="font-size:10pt;background-color:transparent">Make the web even faster with QUIC</a><span style="font-size:10pt;background-color:transparent">&nbsp;</span><span style="font-size:10pt;background-color:transparent">pages</span></li><li><a href="https://www.chromium.org/developers/design-documents/network-stack/cookiemonster" style="font-size:10pt;background-color:transparent">Cookie storage and retrieval</a></li></ul><div><b style="font-size:10pt;background-color:transparent"><br></b></div><div><b style="background-color:transparent"><font size="4">Security</font></b></div></div><div><ul><li><a href="https://www.chromium.org/chromium-os/chromiumos-design-docs/security-overview" style="font-size:10pt;background-color:transparent">Security Overview</a></li><li><a href="https://www.chromium.org/chromium-os/chromiumos-design-docs/protecting-cached-user-data" style="font-size:10pt;background-color:transparent">Protecting Cached User Data</a></li><li><a href="https://www.chromium.org/chromium-os/chromiumos-design-docs/system-hardening" style="font-size:10pt;background-color:transparent">System Hardening</a></li><li><a href="https://www.chromium.org/developers/design-documents/chaps-technical-design" style="font-size:10pt;background-color:transparent">Chaps Technical Design</a></li><li><a href="https://www.chromium.org/developers/design-documents/tpm-usage" style="font-size:10pt;background-color:transparent">TPM Usage</a></li><li><a href="https://www.chromium.org/developers/design-documents/per-page-suborigins" style="font-size:10pt;background-color:transparent" target="_blank">Per-page Suborigins</a></li><li><a href="https://www.chromium.org/developers/design-documents/encrypted-partition-recovery">Encrypted Partition Recovery</a></li></ul></div><h2><a name="TOC-Input"></a>Input</h2><div><ul><li>See <a href="https://www.chromium.org/developers/design-documents/input-dev">chromium input</a>&nbsp;for design docs and other resources.</li></ul></div><h2><a name="TOC-Rendering"></a>Rendering</h2><div><ul><li><a href="https://www.chromium.org/developers/design-documents/multi-column-layout">Multi-column layout</a></li><li><a href="https://docs.google.com/document/d/1vEW86DaeVs4uQzNFI5R-_xS9TcS1Cs_EUsHRSgCHGu8/" style="font-size:10pt;background-color:transparent">Style Invalidation in Blink</a></li><li><a href="https://www.chromium.org/developers/design-documents/blink-coordinate-spaces">Blink Coordinate Spaces</a><br></li></ul></div><div><h2><a name="TOC-Building"></a>Building</h2><div><ul><li><a href="https://www.chromium.org/developers/design-documents/idl-build">IDL build</a><br></li><li><a href="https://www.chromium.org/developers/design-documents/idl-compiler">IDL compiler</a></li></ul><div>See also the documentation for&nbsp;<a href="https://code.google.com/p/gyp/w/list">GYP</a><span style="font-size:10pt;background-color:transparent">, which is the build script generation tool.</span></div></div><h2><a name="TOC-3"></a><br></h2><h2><a name="TOC-Testing"></a>Testing</h2><div><ul><li><a href="https://www.chromium.org/developers/design-documents/layout-tests-results-dashboard">Layout test results dashboard</a></li><li><a href="https://www.chromium.org/developers/design-documents/generic-theme-for-test-shell">Generic theme for Test Shell</a><br></li><li><a href="https://www.chromium.org/system/errors/NodeNotFound?suri=wuid:gx:1d30517ccd9270c8" class="disabled">Moving LayoutTests fully upstream</a></li></ul><div><br></div></div></div><h2><a name="TOC-Feature-Specific"></a>Feature-Specific</h2>
+<ul>
+<li><a href="https://www.chromium.org/developers/design-documents/about-conflicts" style="font-size:10pt;background-color:transparent">about:conflicts</a></li><li><a href="https://www.chromium.org/developers/design-documents/accessibility" style="font-size:10pt;background-color:transparent">Accessibility</a><span style="font-size:10pt;background-color:transparent">: An outline of current (and coming) accessibility support.</span></li><li><span style="background-color:transparent"><a href="https://www.chromium.org/developers/design-documents/auto-throttled-screen-capture-and-mirroring">Auto-Throttled Screen Capture and Mirroring</a></span></li><li><a href="https://www.chromium.org/developers/design-documents/browser-window">Browser Window</a></li><li><a href="http://www.chromium.org/developers/design-documents/google-cloud-print-proxy-design" style="font-size:10pt;background-color:transparent">Chromium Print Proxy</a><span style="font-size:10pt;background-color:transparent">: Enables a cloud print service for legacy printers and future cloud-aware printers.</span></li>
+<li><a href="https://www.chromium.org/developers/design-documents/constrained-popup-windows">Constrained Popup Windows</a></li><li><a href="https://www.chromium.org/developers/design-documents/desktop-notifications" style="font-size:10pt;background-color:transparent">Desktop Notifications</a></li><li><a href="https://www.chromium.org/developers/design-documents/directwrite-font-cache" target="_blank">DirectWrite Font Cache for Chrome on Windows</a><br></li><li><a href="https://www.chromium.org/developers/design-documents/dns-prefetching" style="font-size:10pt;background-color:transparent">DNS Prefetching</a><span style="font-size:10pt;background-color:transparent">: Reducing perceived latency by resolving domain names before a user tries to follow a link</span></li><li><a href="https://www.chromium.org/developers/design-documents/embedding-flash-fullscreen-in-the-browser-window" style="font-size:10pt;background-color:transparent">Embedding Flash Fullscreen in the Browser Window</a></li><li><a href="https://www.chromium.org/developers/design-documents/extensions" style="font-size:10pt;background-color:transparent">Extensions</a><span style="font-size:10pt;background-color:transparent">: Design documents and proposed APIs.</span></li><li><a href="https://www.chromium.org/developers/design-documents/find-bar" style="font-size:10pt;background-color:transparent">Find Bar</a></li><li><a href="https://www.chromium.org/developers/design-documents/form-autofill">Form Autofill</a>: A feature to automatically fill out an html form with appropriate data.</li><li><a href="https://docs.google.com/a/chromium.org/document/pub?id=13rAaY1dG0nrlKpfy7Txlec4U6dsX3PE9aXHkvE37JZo" style="font-size:10pt;background-color:transparent" target="_blank">Geolocation</a><span style="font-size:10pt;background-color:transparent">: Adding support for&nbsp;</span><a href="http://www.w3.org/TR/geolocation-API/" rel="nofollow" style="font-size:10pt;background-color:transparent" target="_blank" title="W3C Geolocation API">W3C Geolocation API</a><span style="font-size:10pt;background-color:transparent">&nbsp;using native WebKit bindings.</span></li><li><a href="https://www.chromium.org/developers/design-documents/idn-in-google-chrome" style="font-size:10pt;background-color:transparent">IDN in Google Chrome</a></li><li><a href="https://www.chromium.org/developers/design-documents/indexeddb" style="font-size:10pt;background-color:transparent">IndexedDB</a><span style="font-size:10pt;background-color:transparent">&nbsp;(early draft)</span></li><li><a href="https://www.chromium.org/developers/design-documents/info-bars">Info Bars</a></li>
+<li><a href="https://www.chromium.org/developers/installer" style="font-size:10pt;background-color:transparent">Installer</a><span style="font-size:10pt;background-color:transparent">: Registry entries and shortcuts</span></li><li><a href="https://www.chromium.org/developers/design-documents/instant">Instant</a></li><li><a href="https://www.chromium.org/developers/design-documents/isolated-sites" style="font-size:10pt;background-color:transparent">Isolated Sites</a></li><li><a href="https://www.chromium.org/developers/design-documents/linuxresourcesandlocalizedstrings" style="font-size:10pt;background-color:transparent">Linux Resources and Localized Strings</a><span style="font-size:10pt;background-color:transparent">: Loading data resources and localized strings on Linux.</span></li><li><span style="font-size:10pt;background-color:transparent"><a href="https://www.chromium.org/developers/design-documents/media-router">Media Router &amp; Web Presentation API</a><br></span></li><li><a href="https://www.chromium.org/developers/memory-usage-backgrounder" style="font-size:10pt;background-color:transparent">Memory Usage Backgrounder:&nbsp;</a><span style="font-size:10pt;background-color:transparent">Some information on how we measure memory in Chromium.</span></li><li><a href="https://www.chromium.org/developers/design-documents/mouse-lock" style="font-size:10pt;background-color:transparent">Mouse Lock</a></li><li><span style="font-size:10pt;background-color:transparent">Omnibox Autocomplete: While typing into the omnibox, Chromium searches for and suggests possible completions.</span></li><ul><li><a href="https://www.chromium.org/omnibox-history-provider">HistoryQuickProvider</a>: Suggests completions from the user's historical site visits.</li></ul><li><a href="https://www.chromium.org/developers/design-documents/omnibox-ime-coordination">Omnibox/IME Coordination</a></li><li><a href="https://www.chromium.org/developers/design-documents/ozone" style="font-size:10pt;background-color:transparent">Ozone Porting Abstraction</a></li><li><a href="https://www.chromium.org/developers/design-documents/password-generation" style="font-size:10pt;background-color:transparent">Password Generation</a></li><li><a href="https://www.chromium.org/developers/design-documents/pepper-plugin-implementation" style="font-size:10pt;background-color:transparent">Pepper plugin implementation</a></li><li><a href="https://docs.google.com/document/d/1r4xFSsR4gtjBf1gOP4zHGWIFBV7WWZMgCiAHeepoHVw/edit?usp=sharing">Plugin Power Saver</a></li><li><a href="https://www.chromium.org/developers/design-documents/preferences" style="font-size:10pt;background-color:transparent">Preferences</a></li><li><a href="https://www.chromium.org/developers/design-documents/prerender">Prerender</a></li><li><a href="https://www.chromium.org/developers/design-documents/print-preview" style="font-size:10pt;background-color:transparent">Print Preview</a></li><li><a href="https://www.chromium.org/developers/design-documents/printing">Printing</a></li><li><a href="https://www.chromium.org/developers/design-documents/views-rect-based-targeting" style="font-size:10pt;background-color:transparent" target="_blank">Rect-based event targeting in views</a><span style="font-size:10pt;background-color:transparent">: Making it easier to target views elements with touch.</span></li><li><a href="https://www.chromium.org/developers/design-documents/cookie-prompt-replacement" style="font-size:10pt;background-color:transparent">Replace the modal cookie prompt</a></li><li><a href="https://www.chromium.org/developers/design-documents/safesearch">SafeSearch</a></li><li><a href="https://www.chromium.org/developers/design-documents/sane-time" style="font-size:10pt;background-color:transparent">Sane Time</a><span style="font-size:10pt;background-color:transparent">: Determining an accurate time in Chrome</span></li><li><a href="https://www.chromium.org/developers/design-documents/secure-web-proxy" style="font-size:10pt;background-color:transparent">Secure Web Proxy</a></li><li><a href="https://www.chromium.org/developers/design-documents/service-processes" style="font-size:10pt;background-color:transparent">Service Processes</a></li><li><a href="https://www.chromium.org/developers/design-documents/site-isolation" style="font-size:10pt;background-color:transparent">Site Isolation</a><span style="font-size:10pt;background-color:transparent">: In-progress effort to improve Chromium's process model for security between web sites.</span></li><li><a href="https://www.chromium.org/developers/design-documents/software-updates-courgette" style="font-size:10pt;background-color:transparent">Software Updates: Courgette</a></li><li><a href="https://www.chromium.org/developers/design-documents/sync">Sync</a></li><li><a href="https://www.chromium.org/system/errors/NodeNotFound?suri=wuid:gx:2629de0ef96a2d" class="disabled">Tab Helpers</a></li><li><a href="https://www.chromium.org/tab-to-search">Tab to search</a>: How to have the Omnibox automatically provide tab to search for your site.</li><li><a href="https://www.chromium.org/developers/design-documents/tabtastic-2-requirements" style="font-size:10pt;background-color:transparent">Tabtastic2 Requirements</a></li><li><a href="https://www.chromium.org/system/errors/NodeNotFound?suri=wuid:gx:4dd18379a0199270" style="font-size:10pt;background-color:transparent" class="disabled">Temporary downloads</a></li><li><a href="https://www.chromium.org/developers/design-documents/time-sources" style="font-size:10pt;background-color:transparent">Time Sources</a><span style="font-size:10pt;background-color:transparent">: Determining the time on a Chrome OS device</span></li><li><span style="font-size:10pt;background-color:transparent"><a href="https://docs.google.com/document/d/1ypBZPZnshJ612FWAjkkpSBQiII7vYEEDsRkDOkVjQFw/edit?usp=sharing">TimeTicks</a>: How our monotonic timer, TimeTicks, works on different OSes</span></li><li><a href="https://www.chromium.org/developers/design-documents/ui-mirroring-infrastructure" style="font-size:10pt;background-color:transparent">UI Mirroring Infrastructure</a><span style="font-size:10pt;background-color:transparent">: Describes the UI framework in ChromeViews that allows mirroring the browser UI in RTL locales such as Hebrew and Arabic.</span></li>
+<li><a href="https://www.chromium.org/developers/design-documents/ui-localization">UI Localization</a>: Describes how localized strings get added to Chromium.<br>
+</li>
+<li><a href="https://www.chromium.org/developers/design-documents/user-scripts" style="font-size:10pt;background-color:transparent">User scripts</a><span style="font-size:10pt;background-color:transparent">: Information on Chromium's support for user scripts.</span></li><li><a href="https://www.chromium.org/developers/design-documents/video" style="font-size:10pt;background-color:transparent">Video</a></li><li><a href="https://docs.google.com/document/d/1_R6YjCIrm4kikJ3YeapcOU2Keqr3lVUPd-OeaIJ93qQ/pub" style="font-size:10pt;background-color:transparent" target="_blank">WebSocket</a><span style="font-size:10pt;background-color:transparent">:&nbsp;Enables Web applications to maintain bidirectional communications with server-side processes.</span></li><li><span style="font-size:10pt;background-color:transparent"><a href="https://www.chromium.org/developers/design-documents/web-midi">Web MIDI</a></span></li>
+<li><a href="https://www.chromium.org/developers/design-documents/webnavigation-api-internals" style="font-size:10pt;background-color:transparent">WebNavigation API internals</a></li></ul><h2><a name="TOC-4"></a><br></h2><h2><a name="TOC-OS-Specific"></a>OS-Specific</h2><ul><li><span style="font-size:10pt;background-color:transparent"><b>Android</b></span></li><ul><li><a href="https://www.chromium.org/developers/design-documents/java-resources-on-android">Java Resources on Android</a></li><li><a href="https://www.chromium.org/developers/design-documents/android-jni">JNI Bindings</a></li><li><a href="https://docs.google.com/document/d/1a_cUP1dGIlRQFUSic8bhAOxfclj4Xzw-yRDljVk1wB0/edit?usp=sharing" target="_blank">WebView code organization</a></li></ul><li><span style="font-size:10pt;background-color:transparent"><b>Chrome OS</b></span></li><ul><li><span style="font-size:10pt;background-color:transparent">See the&nbsp;</span><a href="https://www.chromium.org/chromium-os/chromiumos-design-docs" style="font-size:10pt;background-color:transparent">Chrome OS design documents</a><span style="font-size:10pt;background-color:transparent">&nbsp;section.</span></li></ul><li><span style="font-size:10pt;background-color:transparent"><b>Mac OS X</b></span></li><ul><li><a href="https://www.chromium.org/developers/design-documents/applescript" style="font-size:10pt;background-color:transparent">AppleScript Support</a></li><li><a href="https://www.chromium.org/system/errors/NodeNotFound?suri=wuid:gx:a82d67d9a1d90b7" style="font-size:10pt;background-color:transparent" class="disabled">BrowserWindowController Object Ownership</a></li><li><a href="https://www.chromium.org/developers/design-documents/confirm-to-quit-experiment">Confirm to Quit</a></li><li><a href="http://dev.chromium.org/developers/design-documents/appmode-mac" style="font-size:10pt;background-color:transparent">Mac App Mode</a>&nbsp;(Draft)</li><li><a href="https://www.chromium.org/developers/design-documents/fullscreen-mac">Mac Fullscreen Mode</a>&nbsp;(Draft)</li><li><a href="https://www.chromium.org/developers/design-documents/mac-plugins" style="font-size:10pt;background-color:transparent">Mac NPAPI Plugin Hosting</a></li><li><a href="https://www.chromium.org/developers/design-documents/ui-localization/mac-notes">Mac specific notes on UI Localization</a></li><li><a href="https://www.chromium.org/developers/design-documents/command-dispatch-mac">Menus, Hotkeys, &amp; Command Dispatch</a></li><li><a href="https://www.chromium.org/developers/design-documents/iosurface-meeting-notes" style="font-size:10pt;background-color:transparent">Notes from meeting on IOSurface usage and semantics</a></li><li><a href="https://www.chromium.org/developers/design-documents/os-x-interprocess-communication" style="font-size:10pt;background-color:transparent">OS X Interprocess Communication (Obsolete)</a></li><li><a href="https://www.chromium.org/developers/design-documents/os-x-password-manager-keychain-integration" style="font-size:10pt;background-color:transparent">Password Manager/Keychain Integration</a></li><li><a href="https://www.chromium.org/developers/design-documents/sandbox/osx-sandboxing-design" style="font-size:10pt;background-color:transparent">Sandboxing Design</a></li><li><a href="https://www.chromium.org/developers/design-documents/tab-strip-mac">Tab Strip Design (Includes tab layout and tab dragging)</a></li><li><a href="https://www.chromium.org/developers/design-documents/wrench-menu-mac" style="font-size:10pt;background-color:transparent">Wrench Menu Buttons</a></li></ul></ul><h2><a name="TOC-5"></a><br></h2><h2><a name="TOC-Other"></a>Other</h2>
+<ul>
+<li><a href="https://www.chromium.org/developers/design-documents/64-bit-support" style="font-size:10pt;background-color:transparent">64-bit Support</a></li><li><a href="https://www.chromium.org/developers/design-documents/browser-components">Browser Components</a>&nbsp;/&nbsp;<a href="https://www.chromium.org/developers/design-documents/layered-components-design">Layered Components</a></li><li><a href="https://docs.google.com/a/chromium.org/document/d/1Ee9ggmp6U-lM-w9WmxN5cSLkK9B5YAq14939Woo-JY0/edit#heading=h.34wlp9l5bd5f">Closure Compiling Chrome Code</a></li><li><a href="https://www.chromium.org/developers/content-module">content module</a> / <a href="https://www.chromium.org/developers/content-module/content-api">content API</a></li>
+<li><a href="http://code.google.com/p/chromium/wiki/DesignDocsToWrite" target="_blank">Design docs that still need to be written</a>&nbsp;(wiki)</li><li><a href="https://www.chromium.org/developers/Web-page-views">In progress refactoring of key browser-process architecture for porting</a></li>
+<li><a href="https://www.chromium.org/network-speed-experiments" style="font-size:10pt;background-color:transparent">Network Experiments</a></li><li><a href="https://docs.google.com/a/chromium.org/document/d/1fro9Drq78rYBwr6K9CPK-y0TDSVxlBuXl6A54XnKAyE/edit" target="_blank">Transitioning InlineBoxes from floats to LayoutUnits</a></li>
+</ul><h2><a name="TOC-Full-listing-of-all-sub-pages:"></a>Full listing of all sub-pages:</h2><div><div>
+<div id="sites-toc-undefined" jotid="sites-toc-undefined" style="display:block; margin:5px auto 5px 0; text-align:left; width:auto;" class="goog-toc sites-sidebar-nav">
+<h4 class="">Subpage Listing</h4>
+<div class="nav-toc-content" onclick="JOT_SUBPAGE_click(event)" style="text-align: left;">
+<ul jotid="navList">
+<li class="topLevel nav-first"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/generic-theme-for-test-shell" jotid="wuid:gx:3e662fd3b40753e3" class="sites-navigation-link topLevel">A Generic theme for the Test Shell</a>
+</div></li>
+<li class="topLevel parent" wuid="gx:b340fba25ea4b88"><div dir="ltr" style="padding-left: 0px;"><div class="expander"></div><a href="https://www.chromium.org/developers/design-documents/accessibility" jotid="wuid:gx:b340fba25ea4b88" class="sites-navigation-link topLevel">Accessibility Technical Documentation</a>
+</div><ul>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/accessibility/tracker" jotid="wuid:gx:3adc698f6f4803ed" class="sites-navigation-link">Accessibility Issue Tracker</a>
+</div></li>
+</ul>
+</li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/advancedspellchecker" jotid="wuid:gx:1a649ef6291670ab" class="sites-navigation-link topLevel">Adaptive spell checking for multilingual users</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/applescript" jotid="wuid:gx:1c5be21631266694" class="sites-navigation-link topLevel">AppleScript Support</a>
+</div></li>
+<li class="topLevel parent" wuid="gx:25326da09c0d5abe"><div dir="ltr" style="padding-left: 0px;"><div class="expander"></div><a href="https://www.chromium.org/developers/design-documents/aura" jotid="wuid:gx:25326da09c0d5abe" class="sites-navigation-link topLevel">Aura</a>
+</div><ul>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/aura/ash-color-chooser" jotid="wuid:gx:1d5b3e4516aef249" class="sites-navigation-link">Ash Color Chooser</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/aura/aura-and-shell-dependencies" jotid="wuid:gx:2fd41d07ca27a53b" class="sites-navigation-link">Aura and Shell dependencies</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/aura/aura-overview" jotid="wuid:gx:28a6ad9c0126b4a4" class="sites-navigation-link">Aura Overview</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/aura/client-api" jotid="wuid:gx:7bece55a49409db4" class="sites-navigation-link">Client API</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/aura/event-handling" jotid="wuid:gx:35d1b2aa5944df53" class="sites-navigation-link">Event Handling</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/aura/focus-and-activation" jotid="wuid:gx:48a48bf255d772de" class="sites-navigation-link">Focus and Activation</a>
+</div></li>
+<li class="parent" wuid="gx:2c7e4a59a11a636a"><div dir="ltr" style="padding-left: 19px;"><div class="expander"></div><a href="https://www.chromium.org/developers/design-documents/aura/gesture-recognizer" jotid="wuid:gx:2c7e4a59a11a636a" class="sites-navigation-link">Gesture Recognizer</a>
+</div><ul>
+<li class=""><div dir="ltr" style="padding-left: 57px;"><a href="https://www.chromium.org/developers/design-documents/aura/gesture-recognizer/gesture-recognizer-tests" jotid="wuid:gx:1757a7ff17a92918" class="sites-navigation-link">Gesture Recognizer Tests</a>
+</div></li>
+</ul>
+</li>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/aura/graphics-architecture" jotid="wuid:gx:b4f3bfb1a107d3e" class="sites-navigation-link">Graphics Architecture</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/aura/layout-managers" jotid="wuid:gx:a6eae3e120985c4" class="sites-navigation-link">Layout Managers</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/aura/multi-desktop" jotid="wuid:gx:49c7f8dd20bccb21" class="sites-navigation-link">Multi-desktop</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/aura/system-tray" jotid="wuid:gx:c3c34bfdb14fa2a" class="sites-navigation-link">System Tray</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/aura/views" jotid="wuid:gx:78d02b5997bf4b9a" class="sites-navigation-link">Views</a>
+</div></li>
+</ul>
+</li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/aura-desktop-window-manager" jotid="wuid:gx:1aee653319308343" class="sites-navigation-link topLevel">Aura (obsolete)</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/auto-throttled-screen-capture-and-mirroring" jotid="wuid:gx:3b72b0e24f40ae5" class="sites-navigation-link topLevel">Auto-Throttled Screen Capture and Mirroring</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/automaticspellingcorrection" jotid="wuid:gx:66001ea7d4d8e4b0" class="sites-navigation-link topLevel">Automatic Spelling Correction</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/blink-coordinate-spaces" jotid="wuid:gx:598dd43ea5f9df5f" class="sites-navigation-link topLevel">Blink Coordinate Spaces</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/blink-scrollbarthemes" jotid="wuid:gx:ffce1fbdb3e878e" class="sites-navigation-link topLevel">Blink ScrollbarThemes</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/blocking-cross-site-documents" jotid="wuid:gx:150faa31ccfa5d57" class="sites-navigation-link topLevel">Blocking Cross-Site Documents for Site Isolation</a>
+</div></li>
+<li class="topLevel parent" wuid="gx:3195034b4417ef63"><div dir="ltr" style="padding-left: 0px;"><div class="expander"></div><a href="https://www.chromium.org/developers/design-documents/bluetooth-design-docs" jotid="wuid:gx:3195034b4417ef63" class="sites-navigation-link topLevel">Bluetooth Design Docs</a>
+</div><ul>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/bluetooth-design-docs/web-bluetooth-through-bluetooth-android-class-diagram" jotid="wuid:gx:27e813efe200ce23" class="sites-navigation-link">Web Bluetooth through Bluetooth Android class diagram</a>
+</div></li>
+</ul>
+</li>
+<li class="topLevel parent" wuid="gx:2b5d3cd05f42535a"><div dir="ltr" style="padding-left: 0px;"><div class="expander"></div><a href="https://www.chromium.org/developers/design-documents/browser-components" jotid="wuid:gx:2b5d3cd05f42535a" class="sites-navigation-link topLevel">Browser Components Design Document</a>
+</div><ul>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/browser-components/cookbook" jotid="wuid:gx:fbd16f59ab792ff" class="sites-navigation-link">Browser Components / Layered Components Cookbook</a>
+</div></li>
+</ul>
+</li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/browser-window" jotid="wuid:gx:2c34b24004f3179a" class="sites-navigation-link topLevel">Browser Window</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/64-bit-support" jotid="wuid:gx:4424c9175aae2798" class="sites-navigation-link topLevel">Building 64-bit Chromium</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/chaps-technical-design" jotid="wuid:gx:16ca14c9f9661aa8" class="sites-navigation-link topLevel">Chaps Technical Design</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/prerender" jotid="wuid:gx:4c2cb85281131af3" class="sites-navigation-link topLevel">Chrome Prerendering</a>
+</div></li>
+<li class="topLevel parent" wuid="gx:7d433f4203bd79ff"><div dir="ltr" style="padding-left: 0px;"><div class="expander"></div><a href="https://www.chromium.org/developers/design-documents/chromium-graphics" jotid="wuid:gx:7d433f4203bd79ff" class="sites-navigation-link topLevel">Chromium Graphics // Chrome GPU</a>
+</div><ul>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/chromium-graphics/debugging-with-nsight" jotid="wuid:gx:12615ed502b197fb" class="sites-navigation-link">Debugging with Nsight</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/chromium-graphics/mac-impl-events" jotid="wuid:gx:1b36ace94e0b5370" class="sites-navigation-link">Handling Mac Overscroll On the Compositor Thread</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/chromium-graphics/how-to-get-gpu-rasterization" jotid="wuid:gx:34f83653a80ea249" class="sites-navigation-link">How to get GPU Rasterization</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/chromium-graphics/mac-delegated-rendering" jotid="wuid:gx:65f1241232fd4585" class="sites-navigation-link">Mac Browser Compositor aka Mac Ubercompositor aka Mac Delegated Rendering</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/chromium-graphics/surfaces" jotid="wuid:gx:4d6fd3c0d1e339ea" class="sites-navigation-link">Surfaces</a>
+</div></li>
+</ul>
+</li>
+<li class="topLevel parent" wuid="gx:56712251b8e653bb"><div dir="ltr" style="padding-left: 0px;"><div class="expander"></div><a href="https://www.chromium.org/developers/design-documents/input-dev" jotid="wuid:gx:56712251b8e653bb" class="sites-navigation-link topLevel">Chromium Input Team</a>
+</div><ul>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/input-dev/input-objectives" jotid="wuid:gx:68f1782f7ffadb29" class="sites-navigation-link">Input Objectives</a>
+</div></li>
+</ul>
+</li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/google-cloud-print-proxy-design" jotid="wuid:gx:4328188b56ac52be" class="sites-navigation-link topLevel">Chromium Print Proxy</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/compositor-hit-testing" jotid="wuid:gx:7ec93a375912e516" class="sites-navigation-link topLevel">Compositor (Touch) Hit Testing</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/compositor-thread-architecture" jotid="wuid:gx:65fd6fc609cc147" class="sites-navigation-link topLevel">Compositor Thread Architecture</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/confirm-to-quit-experiment" jotid="wuid:gx:512546a53832f986" class="sites-navigation-link topLevel">Confirm to Quit Experiment</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/constrained-popup-windows" jotid="wuid:gx:722a8d8fb0ee6a30" class="sites-navigation-link topLevel">Constrained Popup Windows</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/conventions-and-patterns-for-multi-platform-development" jotid="wuid:gx:73c897186c3cde93" class="sites-navigation-link topLevel">Conventions and patterns for multi-platform development</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/cookie-split-loading" jotid="wuid:gx:34ea39b823e8c281" class="sites-navigation-link topLevel">cookie-split-loading</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/cookies-and-prerender" jotid="wuid:gx:732b8b2afc024942" class="sites-navigation-link topLevel">Cookies and Prerender</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/crypto" jotid="wuid:gx:799ec9016e389284" class="sites-navigation-link topLevel">Crypto</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/dependency-management" jotid="wuid:gx:4ef2ae6c37788696" class="sites-navigation-link topLevel">Dependency Management</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/about-conflicts" jotid="wuid:gx:52bc3753bd116c11" class="sites-navigation-link topLevel">Design document for about:conflicts</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/cookie-prompt-replacement" jotid="wuid:gx:7229f6169eb8b5a3" class="sites-navigation-link topLevel">Design document: Cookie prompt replacement</a>
+</div></li>
+<li class="topLevel parent" wuid="gx:47851d69b198e6ba"><div dir="ltr" style="padding-left: 0px;"><div class="expander"></div><a href="https://www.chromium.org/developers/design-documents/desktop-notifications" jotid="wuid:gx:47851d69b198e6ba" class="sites-navigation-link topLevel">Desktop Notifications</a>
+</div><ul>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/desktop-notifications/api-specification" jotid="wuid:gx:3c0bc5e5a29c3f9e" class="sites-navigation-link">API Specification</a>
+</div></li>
+</ul>
+</li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/directwrite-font-cache" jotid="wuid:gx:4af1eef1fa413788" class="sites-navigation-link topLevel">DirectWrite Font Cache</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/dns-prefetching" jotid="wuid:gx:1743e04e8d27cc59" class="sites-navigation-link topLevel">DNS Prefetching</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/downloadmanagersequences" jotid="wuid:gx:6eb40c05b0bf656b" class="sites-navigation-link topLevel">Download Manager Sequences</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/embedding-flash-fullscreen-in-the-browser-window" jotid="wuid:gx:38435ec0c02c43d1" class="sites-navigation-link topLevel">Embedding Flash Fullscreen in the Browser Window</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/encrypted-partition-recovery" jotid="wuid:gx:7b6f06c01d41cc2" class="sites-navigation-link topLevel">Encrypted Partition Recovery</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/experiments" jotid="wuid:gx:2c9318f2229b34de" class="sites-navigation-link topLevel">Experiments</a>
+</div></li>
+<li class="topLevel parent" wuid="gx:5478c18b5ae041d"><div dir="ltr" style="padding-left: 0px;"><div class="expander"></div><a href="https://www.chromium.org/developers/design-documents/extensions" jotid="wuid:gx:5478c18b5ae041d" class="sites-navigation-link topLevel">Extensions</a>
+</div><ul>
+<li class="parent" wuid="gx:139f62f8afff8e0c"><div dir="ltr" style="padding-left: 19px;"><div class="expander"></div><a href="https://www.chromium.org/developers/design-documents/extensions/how-the-extension-system-works" jotid="wuid:gx:139f62f8afff8e0c" class="sites-navigation-link">How the Extension System Works</a>
+</div><ul>
+<li class=""><div dir="ltr" style="padding-left: 57px;"><a href="https://www.chromium.org/developers/design-documents/extensions/how-the-extension-system-works/accessibility" jotid="wuid:gx:bdc9a77bfea13c9" class="sites-navigation-link">Accessibility</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 57px;"><a href="https://www.chromium.org/developers/design-documents/extensions/how-the-extension-system-works/api-pattern-design-doc" jotid="wuid:gx:715a16cf5ea14b3f" class="sites-navigation-link">APIs as stateless service calls</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 57px;"><a href="https://www.chromium.org/developers/design-documents/extensions/how-the-extension-system-works/chrome-benchmarking-extension" jotid="wuid:gx:66b8102234d5d082" class="sites-navigation-link">Benchmarking Extension</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 57px;"><a href="https://www.chromium.org/developers/design-documents/extensions/how-the-extension-system-works/default-apps" jotid="wuid:gx:2b7672aa9042e9d2" class="sites-navigation-link">Default Apps</a>
+</div></li>
+<li class="parent" wuid="gx:2fca922a23f7a788"><div dir="ltr" style="padding-left: 38px;"><div class="expander"></div><a href="https://www.chromium.org/developers/design-documents/extensions/how-the-extension-system-works/docs" jotid="wuid:gx:2fca922a23f7a788" class="sites-navigation-link">Extension Documentation System</a>
+</div><ul>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/how-the-extension-system-works/docs/how-docs-are-served" jotid="wuid:gx:19840a4c246be6b4" class="sites-navigation-link">How Extension Docs Are Served</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/how-the-extension-system-works/docs/how-to-update-the-release-notes" jotid="wuid:gx:86cea4cfdb33251" class="sites-navigation-link">Updating the Release Notes</a>
+</div></li>
+</ul>
+</li>
+<li class=""><div dir="ltr" style="padding-left: 57px;"><a href="https://www.chromium.org/developers/design-documents/extensions/how-the-extension-system-works/extension-manifesto" jotid="wuid:gx:7ca5be93a7d52ee5" class="sites-navigation-link">Extensions Manifesto</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 57px;"><a href="https://www.chromium.org/developers/design-documents/extensions/how-the-extension-system-works/i18n" jotid="wuid:gx:559d7696f2d438f" class="sites-navigation-link">i18n for extensions</a>
+</div></li>
+</ul>
+</li>
+<li class="parent" wuid="gx:c8a6fae4917d808"><div dir="ltr" style="padding-left: 19px;"><div class="expander"></div><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes" jotid="wuid:gx:c8a6fae4917d808" class="sites-navigation-link">Proposed &amp; Proposing New Changes</a>
+</div><ul>
+<li class="parent" wuid="gx:4a1283b73b239cf"><div dir="ltr" style="padding-left: 38px;"><div class="expander"></div><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development" jotid="wuid:gx:4a1283b73b239cf" class="sites-navigation-link">API Proposals (New APIs Start Here)</a>
+</div><ul>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/instructions-for-api-shepherds" jotid="wuid:gx:66743e61dd510b6" class="sites-navigation-link">[Deprecated] Instructions for API launch engineers</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/auto-install-of-android-companion-extensions" jotid="wuid:gx:2f88886363833401" class="sites-navigation-link">Auto-install of android companion extensions</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/bluetooth-extension-api" jotid="wuid:gx:4efb2633ff3f1768" class="sites-navigation-link">Bluetooth Extension API</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/browser-keys" jotid="wuid:gx:747f8e63ee8fe087" class="sites-navigation-link">BrowserKeys API Proposal</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/clear" jotid="wuid:gx:2e4b1779dd0d6224" class="sites-navigation-link">Clear Browsing Data API</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/context-menu-api" jotid="wuid:gx:148ac2791af64bf6" class="sites-navigation-link">Context Menu API Proposal</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/proposal-chrome-extensions-cookies-api" jotid="wuid:gx:392461a6b65e8293" class="sites-navigation-link">Cookies API</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/desktop-notification-api" jotid="wuid:gx:2bbcdee1b17db9e0" class="sites-navigation-link">Desktop Notification API</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/downloads-api" jotid="wuid:gx:57af7497f0fed540" class="sites-navigation-link">Downloads API</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/executecontentscript-proposal" jotid="wuid:gx:2aa51a3fc3673a6d" class="sites-navigation-link">executeScript() and executeCSS()</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/font-settings" jotid="wuid:gx:6dedf58c9603d880" class="sites-navigation-link">Font Settings</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/get-extension-views-by-type-proposal" jotid="wuid:gx:6720343413c52b36" class="sites-navigation-link">Get Views by Type</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/gleam-api" jotid="wuid:gx:2e42f6199fb6b3e8" class="sites-navigation-link">Gleam API</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/history-api" jotid="wuid:gx:7da9cc3b57103b08" class="sites-navigation-link">History API</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/i18n-api" jotid="wuid:gx:30878ca99b3d9b80" class="sites-navigation-link">i18n-api</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/input-method-editor" jotid="wuid:gx:bcc0af15d1e35bb" class="sites-navigation-link">Input Method Editor</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/language-detection" jotid="wuid:gx:54af00cf897f51a6" class="sites-navigation-link">Language Detection for chunks of text</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/managed-storage-api" jotid="wuid:gx:7258ae2aecc9d960" class="sites-navigation-link">Managed Storage API</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/media-gallery" jotid="wuid:gx:73a37bd17420aadf" class="sites-navigation-link">MediaGallery</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/notifications-of-web-request-and-navigation" jotid="wuid:gx:7067af2d0ecf09a8" class="sites-navigation-link">Notifications of Web Request and Navigation</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/offscreen-tabs" jotid="wuid:gx:fb71e0eb52f2f2e" class="sites-navigation-link">Offscreen Tabs (experimental)</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/omnibox-api" jotid="wuid:gx:37c041dda05f082f" class="sites-navigation-link">Omnibox API</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/panels" jotid="wuid:gx:553422883d9d9116" class="sites-navigation-link">Panels</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/power-management-api" jotid="wuid:gx:b160cc3890a29bb" class="sites-navigation-link">Power Management API</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/preference-api" jotid="wuid:gx:11c953fd1eb036fa" class="sites-navigation-link">Preferences API</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/privacy" jotid="wuid:gx:2b674979e987cfc5" class="sites-navigation-link">Privacy-relevant Preferences API</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/processes-api" jotid="wuid:gx:748fcc29e55b380e" class="sites-navigation-link">Process Model API</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/profile-extension-api" jotid="wuid:gx:4e68c77798815ce2" class="sites-navigation-link">Profile Extension API</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/push-messaging" jotid="wuid:gx:55faf2e465703d84" class="sites-navigation-link">Push Messaging</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/rlz-api" jotid="wuid:gx:86fbb3ea16755ba" class="sites-navigation-link">RLZ Chrome API Proposal</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/settings" jotid="wuid:gx:455d19b6b257f4cc" class="sites-navigation-link">Settings API</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/settings_pages" jotid="wuid:gx:7cbf240c7e28f19b" class="sites-navigation-link">Settings pages</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/system-indicator-api" jotid="wuid:gx:12c03eceb070d7c2" class="sites-navigation-link">System Indicator API</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/systeminfo" jotid="wuid:gx:321318612e556c8d" class="sites-navigation-link">SystemInfo Extension API</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/text-translate-api" jotid="wuid:gx:b36c5d1cd2369f1" class="sites-navigation-link">Text Translate API</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/usb-api" jotid="wuid:gx:695fef0d8592009b" class="sites-navigation-link">USB API</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/webnavigation-v2" jotid="wuid:gx:285620f655fe233" class="sites-navigation-link">webNavigation v2</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/webrtc-tab-content-capture" jotid="wuid:gx:73876c33a311eaf8" class="sites-navigation-link">WebRTC Tab Content Capture</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apis-under-development/window-management" jotid="wuid:gx:753eab14fefa5e32" class="sites-navigation-link">Window Management</a>
+</div></li>
+</ul>
+</li>
+<li class=""><div dir="ltr" style="padding-left: 57px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/apiwishlist" jotid="wuid:gx:2a892cf156c9295d" class="sites-navigation-link">API Wish List</a>
+</div></li>
+<li class="parent" wuid="gx:5056fb6bc970613"><div dir="ltr" style="padding-left: 38px;"><div class="expander"></div><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/extension-system-changes" jotid="wuid:gx:5056fb6bc970613" class="sites-navigation-link">Extension System</a>
+</div><ul>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/extension-system-changes/breaking-changes" jotid="wuid:gx:701eef6ec8be7cae" class="sites-navigation-link">Breaking Changes</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/extension-system-changes/install-dialog-2" jotid="wuid:gx:4a368837c687871f" class="sites-navigation-link">Install Dialog v2</a>
+</div></li>
+</ul>
+</li>
+<li class=""><div dir="ltr" style="padding-left: 57px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/creating-new-apis" jotid="wuid:gx:37bc1e8422b52710" class="sites-navigation-link">Implementing a new extension API</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 57px;"><a href="https://www.chromium.org/developers/design-documents/extensions/proposed-changes/spellcheck-api" jotid="wuid:gx:44aaed6da470d5b7" class="sites-navigation-link">Spellcheck API</a>
+</div></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/image-filters" jotid="wuid:gx:3aaf0a0770f9e1c2" class="sites-navigation-link topLevel">Filter Effects</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/find-bar" jotid="wuid:gx:6b62600745773e9b" class="sites-navigation-link topLevel">Find Bar</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/first-run-customizations" jotid="wuid:gx:7d45d6fa8b4dcfee" class="sites-navigation-link topLevel">First Run Customizations</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/focus-and-activation-in-views-and-aura" jotid="wuid:gx:660948f0979aadad" class="sites-navigation-link topLevel">Focus and Activation in Views and Aura</a>
+</div></li>
+<li class="topLevel parent" wuid="gx:4fdd313b420a3a8c"><div dir="ltr" style="padding-left: 0px;"><div class="expander"></div><a href="https://www.chromium.org/developers/design-documents/form-autofill" jotid="wuid:gx:4fdd313b420a3a8c" class="sites-navigation-link topLevel">Form Autofill</a>
+</div><ul>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/form-autofill/internationalization-of-autofill" jotid="wuid:gx:105a5c229f188a3" class="sites-navigation-link">Internationalization of Autofill</a>
+</div></li>
+</ul>
+</li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/fullscreen-mac" jotid="wuid:gx:255376c9c15bd04d" class="sites-navigation-link topLevel">fullscreen-mac</a>
+</div></li>
+<li class="topLevel parent" wuid="gx:7926d610d97fe3de"><div dir="ltr" style="padding-left: 0px;"><div class="expander"></div><a href="https://www.chromium.org/developers/design-documents/gpu-accelerated-compositing-in-chrome" jotid="wuid:gx:7926d610d97fe3de" class="sites-navigation-link topLevel">GPU Accelerated Compositing in Chrome</a>
+</div><ul>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/gpu-accelerated-compositing-in-chrome/gpu-architecture-roadmap" jotid="wuid:gx:48df0ad3034590dc" class="sites-navigation-link">GPU Architecture Roadmap</a>
+</div></li>
+</ul>
+</li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/gpu-command-buffer" jotid="wuid:gx:67be4f6199cbd3ff" class="sites-navigation-link topLevel">GPU Command Buffer</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/gpu-memory-buffer" jotid="wuid:gx:4c083a11841856d1" class="sites-navigation-link topLevel">GPU Memory Buffer</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/graphics-and-skia" jotid="wuid:gx:79705006427fc2c0" class="sites-navigation-link topLevel">Graphics and Skia</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/greasemonkey" jotid="wuid:gx:ed4586fbc87d08f" class="sites-navigation-link topLevel">greasemonkey</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/high-dpi-resources" jotid="wuid:gx:22e593ae37c42ceb" class="sites-navigation-link topLevel">High DPI Resources</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/displaying-a-web-page-in-chrome" jotid="wuid:gx:7ccbb2dbcb426124" class="sites-navigation-link topLevel">How Chromium Displays Web Pages</a>
+</div></li>
+<li class="topLevel parent" wuid="gx:690eac1b421dc752"><div dir="ltr" style="padding-left: 0px;"><div class="expander"></div><a href="https://www.chromium.org/developers/design-documents/http-authentication" jotid="wuid:gx:690eac1b421dc752" class="sites-navigation-link topLevel">HTTP authentication</a>
+</div><ul>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/http-authentication/writing-a-spnego-authenticator-for-chrome-on-android" jotid="wuid:gx:4123d8639c441f50" class="sites-navigation-link">Writing a SPNEGO Authenticator for Chrome on Android</a>
+</div></li>
+</ul>
+</li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/idealized-mediastream-design" jotid="wuid:gx:3c630d9b4c3641de" class="sites-navigation-link topLevel">Idealized MediaStream Design</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/idl-build" jotid="wuid:gx:7223da10ffb42d6d" class="sites-navigation-link topLevel">IDL build</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/idl-compiler" jotid="wuid:gx:1bbd82db1b3e5ca8" class="sites-navigation-link topLevel">IDL compiler</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/idn-in-google-chrome" jotid="wuid:gx:15d23b51daaba742" class="sites-navigation-link topLevel">IDN in Google Chrome</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/immersive-fullscreen" jotid="wuid:gx:25da6b216488359c" class="sites-navigation-link topLevel">Immersive fullscreen</a>
+</div></li>
+<li class="topLevel parent" wuid="gx:505a4f1472e0d091"><div dir="ltr" style="padding-left: 0px;"><div class="expander"></div><a href="https://www.chromium.org/developers/design-documents/indexeddb" jotid="wuid:gx:505a4f1472e0d091" class="sites-navigation-link topLevel">IndexedDB Design Doc</a>
+</div><ul>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/indexeddb/indexeddbbackup" jotid="wuid:gx:6f60f8b4fe3d36c4" class="sites-navigation-link">IndexedDBBackup</a>
+</div></li>
+</ul>
+</li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/info-bars" jotid="wuid:gx:52f8ee15b6016917" class="sites-navigation-link topLevel">Info Bars</a>
+</div></li>
+<li class="topLevel parent" wuid="gx:3b049885935fce52"><div dir="ltr" style="padding-left: 0px;"><div class="expander"></div><a href="https://www.chromium.org/developers/design-documents/instant" jotid="wuid:gx:3b049885935fce52" class="sites-navigation-link topLevel">Instant</a>
+</div><ul>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/instant/instant-support" jotid="wuid:gx:7f0c316c87cd1c21" class="sites-navigation-link">Instant Support</a>
+</div></li>
+</ul>
+</li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/inter-process-communication" jotid="wuid:gx:661c43f3b2d5b790" class="sites-navigation-link topLevel">Inter-process Communication (IPC)</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/iosurface-meeting-notes" jotid="wuid:gx:4ee1f6009a2df32a" class="sites-navigation-link topLevel">iosurface-meeting-notes</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/isolated-sites" jotid="wuid:gx:707aea224998a677" class="sites-navigation-link topLevel">Isolated Sites</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/java-resources-on-android" jotid="wuid:gx:50a2e3cf43c2e591" class="sites-navigation-link topLevel">Java Resources on Android</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/android-jni" jotid="wuid:gx:280a2b96ad154e5c" class="sites-navigation-link topLevel">JNI on Chromium for Android</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/layered-components-design" jotid="wuid:gx:33a886204d1130aa" class="sites-navigation-link topLevel">Layered Components: Design</a>
+</div></li>
+<li class="topLevel parent" wuid="gx:3c136a8b7817aed0"><div dir="ltr" style="padding-left: 0px;"><div class="expander"></div><a href="https://www.chromium.org/developers/design-documents/layered-components-technical-approach" jotid="wuid:gx:3c136a8b7817aed0" class="sites-navigation-link topLevel">Layered Components: Technical Approach</a>
+</div><ul>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/layered-components-technical-approach/making-autofill-into-a-layered-component" jotid="wuid:gx:3c63c4c1bcbbe0b8" class="sites-navigation-link">Making Autofill Into a Layered Component</a>
+</div></li>
+</ul>
+</li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/linuxresourcesandlocalizedstrings" jotid="wuid:gx:76ceb56fc65c6548" class="sites-navigation-link topLevel">LinuxResourcesAndLocalizedStrings</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/appmode-mac" jotid="wuid:gx:1508d028dafb6297" class="sites-navigation-link topLevel">Mac App Mode (draft)</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/mac-plugins" jotid="wuid:gx:3bac3187205509b7" class="sites-navigation-link topLevel">Mac Plugins</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/mac-occlusion" jotid="wuid:gx:5a66743eca2712e5" class="sites-navigation-link topLevel">Mac Window Occlusion API Use</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/mac-xib-files" jotid="wuid:gx:362bb5a31bea4408" class="sites-navigation-link topLevel">Mac XIB Files</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/os-x-interprocess-communication" jotid="wuid:gx:55b745536ae28e75" class="sites-navigation-link topLevel">Mach based OS X Interprocess Communication (Obsolete)</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/making-chrome-independent-of-extensions" jotid="wuid:gx:720050540cc28abf" class="sites-navigation-link topLevel">Making Chrome Independent of Extensions</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/media-router" jotid="wuid:gx:683a38dc78d01c12" class="sites-navigation-link topLevel">Media Router &amp; Web Presentation API</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/command-dispatch-mac" jotid="wuid:gx:316747a0d79f7408" class="sites-navigation-link topLevel">Menus, Hotkeys, &amp; Command Dispatch (Mac)</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/mojo" jotid="wuid:gx:6122876d6d9885d7" class="sites-navigation-link topLevel">Mojo</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/mouse-lock" jotid="wuid:gx:2b7be66ee7487464" class="sites-navigation-link topLevel">Mouse Lock (Pointer Lock)</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/multi-column-layout" jotid="wuid:gx:35cf6df8b1c772ef" class="sites-navigation-link topLevel">Multi-column layout</a>
+</div></li>
+<li class="topLevel parent" wuid="gx:11c5400803498145"><div dir="ltr" style="padding-left: 0px;"><div class="expander"></div><a href="https://www.chromium.org/developers/design-documents/multi-process-architecture" jotid="wuid:gx:11c5400803498145" class="sites-navigation-link topLevel">Multi-process Architecture</a>
+</div><ul>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/multi-process-architecture/how-to-add-new-features" jotid="wuid:gx:1f5bdf2e117292c4" class="sites-navigation-link">How to Add New Features (without bloating RenderView/RenderViewHost/WebContents)</a>
+</div></li>
+</ul>
+</li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/multi-process-resource-loading" jotid="wuid:gx:153c8a6d25f48442" class="sites-navigation-link topLevel">Multi-process Resource Loading</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/impl-side-painting" jotid="wuid:gx:603039fce843dcd" class="sites-navigation-link topLevel">Multithreaded Rasterization</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/native-controls" jotid="wuid:gx:4cab5fad5858327c" class="sites-navigation-link topLevel">Native Controls</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/network-settings" jotid="wuid:gx:4f30185e00ad0160" class="sites-navigation-link topLevel">Network Settings</a>
+</div></li>
+<li class="topLevel parent" wuid="gx:1e5bf38b977efb4d"><div dir="ltr" style="padding-left: 0px;"><div class="expander"></div><a href="https://www.chromium.org/developers/design-documents/network-stack" jotid="wuid:gx:1e5bf38b977efb4d" class="sites-navigation-link topLevel">Network Stack</a>
+</div><ul>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/network-stack/socks-proxy" jotid="wuid:gx:58d89306e4409cc3" class="sites-navigation-link">Configuring a SOCKS proxy server in Chrome</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/network-stack/cookiemonster" jotid="wuid:gx:5689c02f78f4f875" class="sites-navigation-link">CookieMonster</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/network-stack/debugging-net-proxy" jotid="wuid:gx:1f876a35359e8fda" class="sites-navigation-link">Debugging problems with the network proxy</a>
+</div></li>
+<li class="parent" wuid="gx:2d28c4236c1be185"><div dir="ltr" style="padding-left: 19px;"><div class="expander"></div><a href="https://www.chromium.org/developers/design-documents/network-stack/disk-cache" jotid="wuid:gx:2d28c4236c1be185" class="sites-navigation-link">Disk Cache</a>
+</div><ul>
+<li class=""><div dir="ltr" style="padding-left: 57px;"><a href="https://www.chromium.org/developers/design-documents/network-stack/disk-cache/disk-cache-v3" jotid="wuid:gx:2862e01a116b7da5" class="sites-navigation-link">Disk Cache 3.0</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 57px;"><a href="https://www.chromium.org/developers/design-documents/network-stack/disk-cache/disk-cache-benchmarking" jotid="wuid:gx:482f973a1d80d284" class="sites-navigation-link">Disk Cache Benchmarking &amp; Performance Tracking</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 57px;"><a href="https://www.chromium.org/developers/design-documents/network-stack/disk-cache/very-simple-backend" jotid="wuid:gx:451d0538eb5f3dca" class="sites-navigation-link">Very Simple Backend</a>
+</div></li>
+</ul>
+</li>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/network-stack/http-authentication-throttling" jotid="wuid:gx:10cdfaa5e82c41f1" class="sites-navigation-link">HTTP Authentication Throttling</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/network-stack/http-cache" jotid="wuid:gx:310d27aea0f43f84" class="sites-navigation-link">HTTP Cache</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/network-stack/http-pipelining" jotid="wuid:gx:7959dbda382b1dce" class="sites-navigation-link">HTTP Pipelining</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/network-stack/netlog" jotid="wuid:gx:167a0e69e435a742" class="sites-navigation-link">NetLog: Chrome’s network logging system</a>
+</div></li>
+<li class="parent" wuid="gx:47025acda76baa95"><div dir="ltr" style="padding-left: 19px;"><div class="expander"></div><a href="https://www.chromium.org/developers/design-documents/network-stack/network-bug-triage" jotid="wuid:gx:47025acda76baa95" class="sites-navigation-link">Network bug triage</a>
+</div><ul>
+<li class="parent" wuid="gx:4a3d839b4282b5ff"><div dir="ltr" style="padding-left: 38px;"><div class="expander"></div><a href="https://www.chromium.org/developers/design-documents/network-stack/network-bug-triage/downloads-bug-triage" jotid="wuid:gx:4a3d839b4282b5ff" class="sites-navigation-link">Triaging Downloads Bugs</a>
+</div><ul>
+<li class=""><div dir="ltr" style="padding-left: 76px;"><a href="https://www.chromium.org/developers/design-documents/network-stack/network-bug-triage/downloads-bug-triage/salient-bug-list" jotid="wuid:gx:60292c6c7894d20a" class="sites-navigation-link">Salient Bug List</a>
+</div></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/network-stack/network-stack-objectives" jotid="wuid:gx:7cd56eeb155cf5ae" class="sites-navigation-link">Network Stack Objectives</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/network-stack/network-stack-use-in-chromium" jotid="wuid:gx:7c8f327e19ed4d3" class="sites-navigation-link">Network Stack Use in Chromium</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/network-stack/preconnect" jotid="wuid:gx:30556653e4742bcb" class="sites-navigation-link">Preconnect</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/network-stack/proxy-settings-fallback" jotid="wuid:gx:59a150aa667180f4" class="sites-navigation-link">Proxy settings and fallback</a>
+</div></li>
+</ul>
+</li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/omnibox-ime-coordination" jotid="wuid:gx:6508a8eaf889b4" class="sites-navigation-link topLevel">Omnibox/IME Coordination</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/os-x-password-manager-keychain-integration" jotid="wuid:gx:74390b0c8f8e64c1" class="sites-navigation-link topLevel">OS X Password Manager/Keychain Integration</a>
+</div></li>
+<li class="topLevel parent" wuid="gx:2595d8142f0e6966"><div dir="ltr" style="padding-left: 0px;"><div class="expander"></div><a href="https://www.chromium.org/developers/design-documents/oop-iframes" jotid="wuid:gx:2595d8142f0e6966" class="sites-navigation-link topLevel">Out-of-Process iframes (OOPIFs)</a>
+</div><ul>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/oop-iframes/framehandle" jotid="wuid:gx:3f4f0045d34a7d6e" class="sites-navigation-link">FrameHandle</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/oop-iframes/oop-iframes-rendering" jotid="wuid:gx:de0ea326b8525e6" class="sites-navigation-link">Rendering and compositing out of process iframes</a>
+</div></li>
+</ul>
+</li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/ozone" jotid="wuid:gx:6f1c4184d220f532" class="sites-navigation-link topLevel">Ozone Overview</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/form-styles-that-chromium-understands" jotid="wuid:gx:689ec224e6d47e9a" class="sites-navigation-link topLevel">Password Form Styles that Chromium Understands</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/password-generation" jotid="wuid:gx:5845606524d85b37" class="sites-navigation-link topLevel">Password Generation</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/pepper-plugin-implementation" jotid="wuid:gx:2a54787d9c549e49" class="sites-navigation-link topLevel">Pepper plugin implementation</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/per-page-suborigins" jotid="wuid:gx:559e530a85550369" class="sites-navigation-link topLevel">Per-page Suborigins</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/plugin-architecture" jotid="wuid:gx:564be06a827f945" class="sites-navigation-link topLevel">Plugin Architecture</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/preferences" jotid="wuid:gx:79c5b9f9801484e6" class="sites-navigation-link topLevel">Preferences</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/print-preview" jotid="wuid:gx:7fcd27d249a34749" class="sites-navigation-link topLevel">Print Preview</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/printing" jotid="wuid:gx:6d423810aa689684" class="sites-navigation-link topLevel">Printing</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/process-models" jotid="wuid:gx:6221cea000d5baaf" class="sites-navigation-link topLevel">Process Models</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/profile-architecture" jotid="wuid:gx:43c74c8b4d63ede1" class="sites-navigation-link topLevel">Profile Architecture</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/profile-chooser-menu" jotid="wuid:gx:40078bac9b157f0b" class="sites-navigation-link topLevel">Profile Chooser Menu</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/rappor" jotid="wuid:gx:3bb701505dbc9e" class="sites-navigation-link topLevel">Rappor (Randomized Aggregatable Privacy Preserving Ordinal Responses)</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/views-rect-based-targeting" jotid="wuid:gx:41ea97368d9a032a" class="sites-navigation-link topLevel">Rect-based event targeting in views</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/rendering-architecture-diagrams" jotid="wuid:gx:15d165ae82891dc1" class="sites-navigation-link topLevel">Rendering Architecture Diagrams</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/rendering-benchmarks" jotid="wuid:gx:346781dc63976f9" class="sites-navigation-link topLevel">Rendering Benchmarks (aka Smoothness benchmarks)</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/rendertext" jotid="wuid:gx:7207d733116a70d" class="sites-navigation-link topLevel">RenderText and Chrome UI text drawing</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/safebrowsing" jotid="wuid:gx:6a2d42737d9476e4" class="sites-navigation-link topLevel">Safe Browsing</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/safesearch" jotid="wuid:gx:18f6fe8b95934e75" class="sites-navigation-link topLevel">SafeSearch</a>
+</div></li>
+<li class="topLevel parent" wuid="gx:776815d7e1b2893e"><div dir="ltr" style="padding-left: 0px;"><div class="expander"></div><a href="https://www.chromium.org/developers/design-documents/sandbox" jotid="wuid:gx:776815d7e1b2893e" class="sites-navigation-link topLevel">Sandbox</a>
+</div><ul>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/sandbox/osx-sandboxing-design" jotid="wuid:gx:2bb2e44d078894c0" class="sites-navigation-link">OSX Sandboxing Design</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/sandbox/Sandbox-FAQ" jotid="wuid:gx:12e37a1299d23d5c" class="sites-navigation-link">Sandbox FAQ</a>
+</div></li>
+</ul>
+</li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/sane-time" jotid="wuid:gx:4d9ebfb44b68f5b5" class="sites-navigation-link topLevel">Sane time</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/secure-web-proxy" jotid="wuid:gx:70a026a06aa03f75" class="sites-navigation-link topLevel">Secure Web Proxy</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/service-processes" jotid="wuid:gx:75e7c211f93d270b" class="sites-navigation-link topLevel">Service Processes</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/site-isolation" jotid="wuid:gx:3a0046f200c39b7c" class="sites-navigation-link topLevel">Site Isolation</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/software-updates-courgette" jotid="wuid:gx:67b13aab7d4744d6" class="sites-navigation-link topLevel">Software Updates: Courgette</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/startup" jotid="wuid:gx:30b28ac3e9286fcc" class="sites-navigation-link topLevel">Startup</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/structure-of-layered-components-within-the-chromium-codebase" jotid="wuid:gx:4d25e29da0aba59c" class="sites-navigation-link topLevel">Structure of Layered Components Within the Chromium Codebase</a>
+</div></li>
+<li class="topLevel parent" wuid="gx:6594e62131fa2821"><div dir="ltr" style="padding-left: 0px;"><div class="expander"></div><a href="https://www.chromium.org/developers/design-documents/sync" jotid="wuid:gx:6594e62131fa2821" class="sites-navigation-link topLevel">Sync</a>
+</div><ul>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/sync/embassy" jotid="wuid:gx:1a8b67ad48076b82" class="sites-navigation-link">embassy</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/sync/sync-data-best-practices" jotid="wuid:gx:790612adddceb173" class="sites-navigation-link">Sync Data Best Practices</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/sync/syncable-service-api" jotid="wuid:gx:751d1081e998173f" class="sites-navigation-link">Syncable Service API</a>
+</div></li>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/sync/unified-sync-and-storage-overview" jotid="wuid:gx:39e1ad2700948b7c" class="sites-navigation-link">Unified Sync And Storage Overview</a>
+</div></li>
+</ul>
+</li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/system-dictionary-pop-up-architecture" jotid="wuid:gx:7bab0ba75275a26d" class="sites-navigation-link topLevel">System Dictionary Pop-Up Architecture</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/tab-strip-mac" jotid="wuid:gx:3f1513507e55fb49" class="sites-navigation-link topLevel">Tab Strip Design (Mac)</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/tabtastic-2-requirements" jotid="wuid:gx:111436df33d44810" class="sites-navigation-link topLevel">Tabtastic 2 Requirements</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/layout-tests-results-dashboard" jotid="wuid:gx:5556bb8cee9c07b7" class="sites-navigation-link topLevel">Tests Results Dashboard</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/themes" jotid="wuid:gx:474cbf3cb41c2632" class="sites-navigation-link topLevel">Themes</a>
+</div></li>
+<li class="topLevel parent" wuid="gx:79c97c9775a1d3e6"><div dir="ltr" style="padding-left: 0px;"><div class="expander"></div><a href="https://www.chromium.org/developers/design-documents/threading" jotid="wuid:gx:79c97c9775a1d3e6" class="sites-navigation-link topLevel">Threading</a>
+</div><ul>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/threading/suble-threading-bugs-and-patterns-to-avoid-them" jotid="wuid:gx:866b4baec801740" class="sites-navigation-link">Subtle Threading Bugs and Patterns to avoid them</a>
+</div></li>
+</ul>
+</li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/time-safety-and-readability" jotid="wuid:gx:77b0b1e41e639e5f" class="sites-navigation-link topLevel">Time Safety and Code Readability</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/time-sources" jotid="wuid:gx:420826aad760bb82" class="sites-navigation-link topLevel">Time Sources</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/tpm-usage" jotid="wuid:gx:6e54d01f91878a39" class="sites-navigation-link topLevel">TPM Usage</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/translate" jotid="wuid:gx:5c62c84d5afb001" class="sites-navigation-link topLevel">Translate</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/ui-development-practices" jotid="wuid:gx:db5f8035dd9e7fd" class="sites-navigation-link topLevel">UI Development Practices</a>
+</div></li>
+<li class="topLevel parent" wuid="gx:6a25a2a364eb9304"><div dir="ltr" style="padding-left: 0px;"><div class="expander"></div><a href="https://www.chromium.org/developers/design-documents/ui-localization" jotid="wuid:gx:6a25a2a364eb9304" class="sites-navigation-link topLevel">UI Localization (aka Translations)</a>
+</div><ul>
+<li class=""><div dir="ltr" style="padding-left: 38px;"><a href="https://www.chromium.org/developers/design-documents/ui-localization/mac-notes" jotid="wuid:gx:31eab843676abc7f" class="sites-navigation-link">Mac Notes</a>
+</div></li>
+</ul>
+</li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/ui-mirroring-infrastructure" jotid="wuid:gx:42c7bcdf7635ae1" class="sites-navigation-link topLevel">UI Mirroring Infrastructure</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/user-scripts" jotid="wuid:gx:17af7d8610c9f8ec" class="sites-navigation-link topLevel">User Scripts</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/video" jotid="wuid:gx:38cb9e4bae7cd898" class="sites-navigation-link topLevel">Video</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/video-capture" jotid="wuid:gx:4c07eab09d300c9b" class="sites-navigation-link topLevel">Video Capture</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/video-playback-and-compositor" jotid="wuid:gx:47570545b3a42add" class="sites-navigation-link topLevel">Video Playback and Compositor</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/chromeviews" jotid="wuid:gx:4676303572062a08" class="sites-navigation-link topLevel">views</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/views-windowing" jotid="wuid:gx:37ed63aa3e2169af" class="sites-navigation-link topLevel">views Windowing</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/web-midi" jotid="wuid:gx:6a2b9262e37557d0" class="sites-navigation-link topLevel">Web MIDI</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/webnavigation-api-internals" jotid="wuid:gx:449b927f23d3f365" class="sites-navigation-link topLevel">WebNavigation API internals</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/widget-refactor" jotid="wuid:gx:618801770fded5a8" class="sites-navigation-link topLevel">Widget Refactor</a>
+</div></li>
+<li class="topLevel"><div dir="ltr" style="padding-left: 19px;"><a href="https://www.chromium.org/developers/design-documents/wrench-menu-mac" jotid="wuid:gx:59b971fa70ffa0e6" class="sites-navigation-link topLevel">Wrench Menu (Mac)</a>
+</div></li>
+</ul>
+</div>
+</div>
+</div><br></div></div></td></tr></tbody></table>
+</div> 
+</div> 
+<div id="sites-canvas-bottom-panel">
+<div id="sites-attachments-container">
+</div>
+</div>
+</div> 
+</td> 
+</tr>
+</tbody></table> 
+</div> 
+</div> 
+<div id="sites-chrome-footer-wrapper">
+<div id="sites-chrome-footer-wrapper-inside">
+<div id="sites-chrome-footer">
+</div>
+</div>
+</div>
+</div> 
+</div> 
+<div id="sites-chrome-adminfooter-container">
+<div xmlns="http://www.w3.org/1999/xhtml" class="sites-adminfooter" role="navigation"><p><a class="sites-system-link" href="https://www.google.com/a/UniversalLogin?service=jotspot&continue=https://sites.google.com/a/chromium.org/dev/developers/design-documents">登录</a><span aria-hidden="true">|</span><a class="sites-system-link" href="https://www.chromium.org/system/app/pages/recentChanges">最近的网站活动</a><span aria-hidden="true">|</span><a class="sites-system-link" href="https://www.chromium.org/system/app/pages/reportAbuse" target="_blank">举报滥用行为</a><span aria-hidden="true">|</span><a class="sites-system-link" href="javascript:;" onclick="window.open(webspace.printUrl)">打印页面</a><span aria-hidden="true">|</span><span class="sites-system-link">由</span> <b class="powered-by"><a href="http://sites.google.com/">Google 协作平台强力驱动</a></b></p></div>
+</div>
+</div> 
+</div> 
+<div id="sites-chrome-onebar-footer">
+</div>
+<script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript">
+    window.jstiming.load.tick('sjl');
+  </script>
+<script xmlns="http://www.w3.org/1999/xhtml" src="./Design Documents - The Chromium Projects_files/jot_min_view__zh_cn.js"></script>
+<script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript">
+    window.jstiming.load.tick('jl');
+  </script>
+<script xmlns="http://www.w3.org/1999/xhtml">
+      
+          sites.core.Analytics.createTracker();
+          sites.core.Analytics.trackPageview();
+        
+    </script>
+<script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript">
+                    sites.Searchbox.initialize(
+                        'sites-searchbox-search-button',
+                        {"object":[]}['object'],
+                        'search-site',
+                        {"label":"\u914d\u7f6e\u641c\u7d22\u9009\u9879...","url":"/system/app/pages/admin/settings"});
+                  </script>
+<script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript">
+      gsites.HoverPopupMenu.createSiteDropdownMenus('sites-header-nav-dropdown', false);
+    </script>
+<script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" defer="true">
+            JOT_setupNav("7648876402527094", "Navigation", false);
+            JOT_addListener('titleChange', 'JOT_NAVIGATION_titleChange', 'COMP_7648876402527094');
+          </script>
+<script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" defer="true">
+            JOT_setupNav("14720868319272995", "Quick links", false);
+            JOT_addListener('titleChange', 'JOT_NAVIGATION_titleChange', 'COMP_14720868319272995');
+          </script>
+<script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" defer="true">
+            JOT_setupNav("19690813310444355", "Other sites", false);
+            JOT_addListener('titleChange', 'JOT_NAVIGATION_titleChange', 'COMP_19690813310444355');
+          </script>
+<script xmlns="http://www.w3.org/1999/xhtml">
+                    window.onload = function() {
+                      if (false) {
+                        JOT_setMobilePreview();
+                      }
+                      var loadTimer = window.jstiming.load;
+                      loadTimer.tick("ol");
+                      loadTimer["name"] = "load," + webspace.page.type + ",user_page";
+                      window.jstiming.report(loadTimer, {}, 'https://gg.google.com/csi');
+                    }
+                  </script>
+<script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript">
+        JOT_insertAnalyticsCode(false,
+            false);
+      </script>
+<script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript">
+    var maestroRunner = new gsites.pages.view.SitesMaestroRunner(
+        webspace, "zh_CN");
+    maestroRunner.initListeners();
+    maestroRunner.installEditRender();
+  </script>
+<script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript" defer="true">
+  //<![CDATA[
+    // Decorate any fastUI buttons on the page with a class of 'goog-button'.
+    if (webspace.user.hasWriteAccess) {
+      JOT_decorateButtons();
+    }
+
+    // Fires delayed events.
+    (function() {
+      JOT_fullyLoaded = true;
+      var delayedEvents = JOT_delayedEvents;
+      for (var x = 0; x < delayedEvents.length; x++) {
+        var event = delayedEvents[x];
+        JOT_postEvent(event.eventName, event.eventSrc, event.payload);
+      }
+      JOT_delayedEvents = null;
+      JOT_postEvent('pageLoaded');
+    })();
+  //]]>
+</script>
+<script xmlns="http://www.w3.org/1999/xhtml" type="text/javascript">
+    JOT_postEvent('decorateGvizCharts');
+  </script>
+<script type="text/javascript">
+          JOT_setupPostRenderingManager();
+        </script>
+<script type="text/javascript">
+          JOT_postEvent('renderPlus', null, 'sites-chrome-main');
+        </script>
+<div id="server-timer-div" style="display:none"> </div>
+<script type="text/javascript">
+          window.jstiming.load.tick('render');
+          JOT_postEvent('usercontentrendered', this);
+        </script>
+
+
+</body><div></div><div></div></html>
