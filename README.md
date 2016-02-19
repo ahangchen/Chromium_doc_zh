@@ -17,7 +17,7 @@ https://www.chromium.org/developers/design-documents
 
 ##See Also: Design docs in source code
 
-- https://chromium.googlesource.com/chromium/src/+/master/docs/
+    https://chromium.googlesource.com/chromium/src/+/master/docs/
 
 ##General Architecture
 
