@@ -2,130 +2,130 @@
 
 - Start Here: Background Reading
 
- - Multi-process Architecture
+  - Multi-process Architecture
 
- - How Chromium Displays Web Pages
+  - How Chromium Displays Web Pages
 
 - Design docs in source code
 
 - General Architecture
 
- - Conventions and patterns for multi-platform development
+  - Conventions and patterns for multi-platform development
 
- - Extension Security Architecture
+  - Extension Security Architecture
 
- - HW Video Acceleration in Chrom{e,ium}{,OS}
+  - HW Video Acceleration in Chrom{e,ium}{,OS}
 
- - Inter-process Communication
+  - Inter-process Communication
 
- - Multi-process Resource Loading
+  - Multi-process Resource Loading
 
- - Plugin Architecture
+  - Plugin Architecture
 
- - Process Models
+  - Process Models
 
- - Profile Architecture
+  - Profile Architecture
 
- - SafeBrowsing
+  - SafeBrowsing
 
- - Sandbox
+  - Sandbox
 
- - Security Architecture
+  - Security Architecture
 
- - Startup
+  - Startup
 
- - Threading
+  - Threading
 
- - JavaScript engine
+  - JavaScript engine
 
 
 - UI Framework
 
- - UI Development Practices
+  - UI Development Practices
 
- - Views framework
+  - Views framework
 
- - views Windowing system
+  - views Windowing system
 
- - Aura
+  - Aura
 
- - NativeControls
+  - NativeControls
 
 - Graphics
 
- - Overview
+  - Overview
 
- - GPU Accelerated Compositing in Chrome
+  - GPU Accelerated Compositing in Chrome
 
- - GPU Feature Status Dashboard
+  - GPU Feature Status Dashboard
 
- - Rendering Architecture Diagrams
+  - Rendering Architecture Diagrams
 
- - Graphics and Skia
+  - Graphics and Skia
 
- - RenderText and Chrome UI text drawing
+  - RenderText and Chrome UI text drawing
 
- - GPU Command Buffer
+  - GPU Command Buffer
 
- - GPU Program Caching
+  - GPU Program Caching
 
- - Compositing in Blink/WebCore
+  - Compositing in Blink/WebCore
 
- - Compositor Thread Architecture
+  - Compositor Thread Architecture
 
- - Rendering Benchmarks
+  - Rendering Benchmarks
 
- - Impl-side Painting
+  - Impl-side Painting
 
- - Video Playback and Compositor
+  - Video Playback and Compositor
 
- - ANGLE architecture presentation
+  - ANGLE architecture presentation
 
 
 
 - Network stack
 
- - Overview
+  - Overview
 
- - Network Stack Objectives
+  - Network Stack Objectives
 
- - Crypto
+  - Crypto
 
- - Disk Cache
+  - Disk Cache
 
- - HTTP Cache
+  - HTTP Cache
 
- - Out of Process Proxy Resolving Draft [unimplemented]
+  - Out of Process Proxy Resolving Draft [unimplemented]
 
- - Proxy Settings and Fallback
+  - Proxy Settings and Fallback
 
- - Debugging network proxy problems
+  - Debugging network proxy problems
 
- - HTTP Authentication
+  - HTTP Authentication
 
- - View network internals tool
+  - View network internals tool
 
- - Make the web faster with SPDY pages
+  - Make the web faster with SPDY pages
 
- -  the web even faster with QUIC pages
+  -  the web even faster with QUIC pages
 
- - Cookie storage and retrieval
+  - Cookie storage and retrieval
 
 - Security
 
- - Security Overview
+  - Security Overview
 
- - Protecting Cached User Data
+  - Protecting Cached User Data
 
- - System Hardening
+  - System Hardening
 
- - Chaps Technical Design
+  - Chaps Technical Design
 
- - TPM Usage
+  - TPM Usage
 
- - Per-page Suborigins
+  - Per-page Suborigins
 
- - Encrypted Partition Recovery
+  - Encrypted Partition Recovery
 
 - Input
 
@@ -134,205 +134,205 @@
 
 - Rendering
 
- - Multi-column layout
+  - Multi-column layout
 
- - Style Invalidation in Blink
+  - Style Invalidation in Blink
 
- - Blink Coordinate Spaces
+  - Blink Coordinate Spaces
 
 - Building
 
- - IDL build
+  - IDL build
 
- - IDL compiler
+  - IDL compiler
 
- - GYP, the build script generation tool.
+  - GYP, the build script generation tool.
 
 
 - Testing
 
- - Layout test results dashboard
+  - Layout test results dashboard
 
- - Generic theme for Test Shell
+  - Generic theme for Test Shell
 
- - Moving LayoutTests fully upstream
+  - Moving LayoutTests fully upstream
 
 - Feature-Specific
 
- - about:conflicts
+  - about:conflicts
 
- - Accessibility
- - Auto-Throttled Screen Capture and Mirroring
+  - Accessibility
+  - Auto-Throttled Screen Capture and Mirroring
 
- - Browser Window
+  - Browser Window
 
- - Chromium Print Proxy
+  - Chromium Print Proxy
 
- - Constrained Popup Windows
+  - Constrained Popup Windows
 
- - Desktop Notifications
+  - Desktop Notifications
 
- - DirectWrite Font Cache for Chrome on Windows
+  - DirectWrite Font Cache for Chrome on Windows
 
- - DNS Prefetching
+  - DNS Prefetching
 
- - Embedding Flash Fullscreen in the Browser Window
+  - Embedding Flash Fullscreen in the Browser Window
 
- - Extensions: Design documents and proposed APIs. 
+  - Extensions: Design documents and proposed APIs. 
 
- - Find Bar
+  - Find Bar
 
- - Form Autofill
+  - Form Autofill
 
- - Geolocation
+  - Geolocation
 
- - IDN in Google Chrome
+  - IDN in Google Chrome
 
- - IndexedDB (early draft)
+  - IndexedDB (early draft)
 
- - Info Bars
+  - Info Bars
 
- - Installer
+  - Installer
 
- - Instant
+  - Instant
 
- - Isolated Sites
+  - Isolated Sites
 
- - Linux Resources and Localized Strings
+  - Linux Resources and Localized Strings
 
- - Media Router & Web Presentation API
+  - Media Router & Web Presentation API
 
- - Memory Usage Backgrounder
+  - Memory Usage Backgrounder
 
- - Mouse Lock
+  - Mouse Lock
 
- - Omnibox Autocomplete
+  - Omnibox Autocomplete
 
-   - HistoryQuickProvider
+    - HistoryQuickProvider
 
- - Omnibox/IME Coordination
+  - Omnibox/IME Coordination
 
- - Ozone Porting Abstraction
+  - Ozone Porting Abstraction
 
- - Password Generation
+  - Password Generation
 
- - Pepper plugin implementation
+  - Pepper plugin implementation
 
- - Plugin Power Saver
+  - Plugin Power Saver
 
- - Preferences
+  - Preferences
 
- - Prerender
+  - Prerender
 
- - Print Preview
+  - Print Preview
 
- - Printing
+  - Printing
 
- - Rect-based event targeting in views
+  - Rect-based event targeting in views
 
- - Replace the modal cookie prompt
+  - Replace the modal cookie prompt
 
- - SafeSearch
+  - SafeSearch
 
- - Sane Time
+  - Sane Time
 
- - Secure Web Proxy
+  - Secure Web Proxy
 
- - Service Processes
+  - Service Processes
 
- - Site Isolation
+  - Site Isolation
 
- - Software Updates: Courgette
+  - Software Updates: Courgette
 
- - Sync
+  - Sync
 
- - Tab Helpers
+  - Tab Helpers
 
- - Tab to search
+  - Tab to search
 
- - Tabtastic2 Requirements
+  - Tabtastic2 Requirements
 
- - Temporary downloads
+  - Temporary downloads
 
- - Time Sources
+  - Time Sources
 
- - TimeTicks
+  - TimeTicks
  
- - UI Mirroring Infrastructure
+  - UI Mirroring Infrastructure
 
- - UI Localization
- - User scripts
+  - UI Localization
+  - User scripts
 
- - Video
+  - Video
 
- - WebSocket
+  - WebSocket
 
- - Web MIDI
+  - Web MIDI
 
- - WebNavigation API internals
+  - WebNavigation API internals
 
 
 - OS-Specific
 
- - Android
+  - Android
  
-   - Java Resources on Android
+    - Java Resources on Android
 
-   - JNI Bindings
+    - JNI Bindings
 
-   - WebView code organization
+    - WebView code organization
 
- - Chrome OS
+  - Chrome OS
 
-   - Chrome OS design documents section.
+    - Chrome OS design documents section.
 
- - Mac OS X
+  - Mac OS X
 
-   - AppleScript Support
+    - AppleScript Support
 
-   - BrowserWindowController Object Ownership
+    - BrowserWindowController Object Ownership
 
-   - Confirm to Quit
+    - Confirm to Quit
 
-   - Mac App Mode (Draft)
+    - Mac App Mode (Draft)
 
-   - Mac Fullscreen Mode (Draft)
+    - Mac Fullscreen Mode (Draft)
 
-   - Mac NPAPI Plugin Hosting
+    - Mac NPAPI Plugin Hosting
 
-   - Mac specific notes on UI Localization
+    - Mac specific notes on UI Localization
 
-   - Menus, Hotkeys, & Command Dispatch
+    - Menus, Hotkeys, & Command Dispatch
 
-   - Notes from meeting on IOSurface usage and semantics
+    - Notes from meeting on IOSurface usage and semantics
 
-   - OS X Interprocess Communication (Obsolete)
+    - OS X Interprocess Communication (Obsolete)
 
-   - Password Manager/Keychain Integration
+    - Password Manager/Keychain Integration
 
-   - Sandboxing Design
+    - Sandboxing Design
 
-   - Tab Strip Design (Includes tab layout and tab dragging)
+    - Tab Strip Design (Includes tab layout and tab dragging)
 
-   - Wrench Menu Buttons
+    - Wrench Menu Buttons
 
 
 
 - Other
 
- - 64-bit Support
+  - 64-bit Support
 
- - Browser Components / Layered Components
+  - Browser Components / Layered Components
 
- -  Closure Compiling Chrome Code
+  -  Closure Compiling Chrome Code
 
- - content module / content API
+  - content module / content API
 
- - Design docs that still need to be written (wiki)
+  - Design docs that still need to be written (wiki)
 
- - In progress refactoring of key browser-process architecture for porting
+  - In progress refactoring of key browser-process architecture for porting
 
- - Network Experiments
+  - Network Experiments
 
- - Transitioning InlineBoxes from floats to LayoutUnits
+  - Transitioning InlineBoxes from floats to LayoutUnits
 
