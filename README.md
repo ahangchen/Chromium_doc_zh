@@ -5,36 +5,37 @@ https://www.chromium.org/developers/design-documents
 
 翻译之加强对android webview理解
 
-#Design Documents
+#设计文档
 
-- [Start Here: Background Reading](Start_Here_Background_Reading/README.md): Describes the high-level architecture of Chromium 
-  - [Multi-process Architecture](Start_Here_Background_Reading/Multi-process_Architecture.md)
+- [Start Here: 背景阅读](Start_Here_Background_Reading/README.md): 描述Chromium的宏观架构
+  - [多线程架构](Start_Here_Background_Reading/Multi-process_Architecture.md)
   
-  **Note**: Most of the rest of the design documents assume familiarity with the concepts explained in this document.
+    **Note**: 设计文档的大部分剩余部分都认为你对上面这个文档里的内容非常熟悉。
 
-  - [How Chromium Displays Web Pages](Start_Here_Background_Reading/How_Chromium_Displays_Web_Pages.md): Bottom-to-top overview of how WebKit is embedded in Chromium
+  - [Chromium如何展示web界面](Start_Here_Background_Reading/How_Chromium_Displays_Web_Pages.md): 自底向上概述WebKit是如何嵌入到Chromium中的
   
-##See Also: Design docs in source code
+##See Also: 源代码中的设计文档
 
     https://chromium.googlesource.com/chromium/src/+/master/docs/
 
-##General Architecture
+##整体架构
 
-- [General Architecture](General_Architecture/README.md)
-  - [Conventions and patterns for multi-platform development](General_Architecture/Conventions_and_patterns_for_multi-platform_development.md)
-  - [Extension Security Architecture](General_Architecture/Extension_Security_Architecture.md): How the extension system helps reduce the severity of extension vulnerabilities
-  - [HW Video Acceleration in Chrom{e,ium}{,OS}](General_Architecture/HW_Video_Acceleration_in_Chrom{eium}{OS}.md)
-  - [Inter-process Communication](General_Architecture/Inter-process_Communication.md): How the browser, renderer, and plugin processes communicate
-  - [Multi-process Resource Loading](General_Architecture/Multi-process_Resource_Loading.md): How pages and images are loaded from the network into the renderer
-  - [Plugin Architecture](General_Architecture/Plugin_Architecture.md)
-  - [Process Models](General_Architecture/Process_Models.md): Our strategies for creating new renderer processes
-  - [Profile Architecture](General_Architecture/Profile_Architecture.md)
-  - [SafeBrowsing](General_Architecture/SafeBrowsing.md)
-  - [Sandbox](General_Architecture/Sandbox.md)
-  - [Security Architecture](General_Architecture/Security_Architecture.md): How Chromium's sandboxed rendering engine helps protect against malware
-  - [Startup](General_Architecture/Startup.md)
-  - [Threading](General_Architecture/Threading.md): How to use threads in Chromium
- Also see the documentation for [V8](http://code.google.com/apis/v8/), which is the JavaScript engine used within Chromium.
+- [整体架构](General_Architecture/README.md)
+  - [跨平台开发的约定与模式](General_Architecture/Conventions_and_patterns_for_multi-platform_development.md)
+  - [扩展安全架构](General_Architecture/Extension_Security_Architecture.md): 扩展系统是如何降低扩展脆弱性的严重程度的
+  - [硬件视频加速](General_Architecture/HW_Video_Acceleration_in_Chrom{eium}{OS}.md)
+  - [跨进程通信](General_Architecture/Inter-process_Communication.md): 浏览进程，绘制器，插件进程是如何交流的
+  - [多进程资源加载](General_Architecture/Multi-process_Resource_Loading.md): 页面和图像是如何从网络加载到绘制器中的
+  - [插件架构](General_Architecture/Plugin_Architecture.md)
+  - [进程模型](General_Architecture/Process_Models.md): Our 创建新绘制进程的策略
+  - [Profile架构](General_Architecture/Profile_Architecture.md)
+  - [安全浏览](General_Architecture/SafeBrowsing.md)
+  - [沙箱](General_Architecture/Sandbox.md)
+  - [安全架构](General_Architecture/Security_Architecture.md): Chromium沙箱绘制引擎是如何保护免受恶意软件侵害的
+  - [启动](General_Architecture/Startup.md)
+  - [线程](General_Architecture/Threading.md): 在chromium中如何使用线程
+  
+ 也可以看看 [V8](http://code.google.com/apis/v8/)的文档, 这是Chromium使用的Javascript引擎
 - [UI Framework](UI_Framework/README.md)
   - [UI Development Practices](UI_Framework/UI_Development_Practices.md): Best practices for UI development inside and outside of Chrome's content areas.
   - [Views framework](UI_Framework/Views_framework.md): Our UI layout layer used on Windows/Chrome OS.
