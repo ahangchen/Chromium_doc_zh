@@ -18,9 +18,9 @@ https://www.chromium.org/developers/design-documents
 
     https://chromium.googlesource.com/chromium/src/+/master/docs/
 
-##整体架构
 
-- [整体架构](General_Architecture/README.md)
+
+- ###[整体架构](General_Architecture/README.md)
   - [跨平台开发的约定与模式](General_Architecture/Conventions_and_patterns_for_multi-platform_development.md)
   - [扩展安全架构](General_Architecture/Extension_Security_Architecture.md): 扩展系统是如何降低扩展脆弱性的严重程度的
   - [硬件视频加速](General_Architecture/HW_Video_Acceleration_in_Chrom{eium}{OS}.md)
@@ -36,16 +36,17 @@ https://www.chromium.org/developers/design-documents
   - [线程](General_Architecture/Threading.md): 在chromium中如何使用线程
   
  也可以看看 [V8](http://code.google.com/apis/v8/)的文档, 这是Chromium使用的Javascript引擎
-- [UI Framework](UI_Framework/README.md)
-  - [UI Development Practices](UI_Framework/UI_Development_Practices.md): Best practices for UI development inside and outside of Chrome's content areas.
-  - [Views framework](UI_Framework/Views_framework.md): Our UI layout layer used on Windows/Chrome OS.
-  - [views Windowing system](UI_Framework/views_Windowing_system.md): How to build dialog boxes and other windowed UI using views.
-  - [Aura](UI_Framework/Aura.md): Chrome's next generation hardware accelerated UI framework, and the new ChromeOS window manager built using it.
-  - [NativeControls](UI_Framework/NativeControls.md): using platform-native widgets in views.
-  - Focus and Activation with Views and Aura.
-- [Graphics](Graphics/README.md)
-  - [Overview](Graphics/Overview.md)
-  - [GPU Accelerated Compositing in Chrome](Graphics/GPU_Accelerated_Compositing_in_Chrome.md)
+
+- ###[UI Framework](UI_Framework/README.md)
+  - [UI开发实践](UI_Framework/UI_Development_Practices.md): 在Chrome的content区域内外开发的最佳实践
+  - [Views framework](UI_Framework/Views_framework.md): Windows和Chrome OS上使用的UI layout 层级
+  - [views Windowing系统](UI_Framework/views_Windowing_system.md): 如何用view构建对话框盒子和其他windowUI
+  - [Aura](UI_Framework/Aura.md): Chrome下一代硬件加速UI框架，新的ChromeOS 系统由它构建而成
+  - [Native控制](UI_Framework/NativeControls.md): 在view中使用平台原生widget
+  - 用View和Aura实现聚焦与激活
+- ###[Graphics](Graphics/README.md)
+  - [概述](Graphics/Overview.md)
+  - [Chrome中使用的GPU加速](Graphics/GPU_Accelerated_Compositing_in_Chrome.md)
   - [GPU Feature Status Dashboard](Graphics/GPU_Feature_Status_Dashboard.md)
   - [Rendering Architecture Diagrams](Graphics/Rendering_Architecture_Diagrams.md)
   - [Graphics and Skia](Graphics/Graphics_and_Skia.md)
