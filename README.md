@@ -47,7 +47,7 @@ https://www.chromium.org/developers/design-documents
 - ###[Graphics](Graphics/README.md)
   - [概述](Graphics/Overview.md)
   - [Chrome中使用的GPU加速](Graphics/GPU_Accelerated_Compositing_in_Chrome.md)
-  - [GPU Feature Status Dashboard](Graphics/GPU_Feature_Status_Dashboard.md)
+  - [GPU特性状态](Graphics/GPU_Feature_Status_Dashboard.md)
   - [Rendering Architecture Diagrams](Graphics/Rendering_Architecture_Diagrams.md)
   - [Graphics and Skia](Graphics/Graphics_and_Skia.md)
   - [RenderText and Chrome UI text drawing](Graphics/RenderText_and_Chrome_UI_text_drawing.md)
