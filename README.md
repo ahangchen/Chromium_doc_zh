@@ -54,7 +54,7 @@ https://www.chromium.org/developers/design-documents
   - [GPU命令缓冲区](Graphics/GPU_Command_Buffer.md)
   - [GPU程序缓冲区](Graphics/GPU_Program_Caching.md)
   - [Blink/WebCore中的组合](Graphics/Compositing_in_Blink_WebCore.md)
-  - [Compositor Thread Architecture](Graphics/Compositor_Thread_Architecture.md)
+  - [排版线程](Graphics/Compositor_Thread_Architecture.md)
   - [Rendering Benchmarks](Graphics/Rendering_Benchmarks.md)
   - [Impl-side Painting](Graphics/Impl-side_Painting.md)
   - [Video Playback and Compositor](Graphics/Video_Playback_and_Compositor.md)
