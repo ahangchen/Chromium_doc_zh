@@ -96,8 +96,8 @@ https://www.chromium.org/developers/design-documents
   - [Test shell中的真实主题](Testing/Generic_theme_for_Test_Shell.md)
   - [完全回退移除layout测试](Testing/Moving_LayoutTests_fully_upstream.md)
 - [特性相关](Feature-Specific/README.md)
-  - [about:conflicts](Feature-Specific/aboutconflicts.md)
-  - [Accessibility](Feature-Specific/Accessibility.md): An outline of current (and coming) accessibility support.
+  - [关于冲突](Feature-Specific/aboutconflicts.md)
+  - [可用性](Feature-Specific/Accessibility.md): 当前（以及将来）可用性支持的轮廓。
   - [Auto-Throttled Screen Capture and Mirroring](Feature-Specific/Auto-Throttled_Screen_Capture_and_Mirroring.md)
   - [Browser Window](Feature-Specific/Browser_Window.md)
   - [Chromium Print Proxy](Feature-Specific/Chromium_Print_Proxy.md): Enables a cloud print service for legacy printers and future cloud-aware printers.
