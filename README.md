@@ -98,53 +98,53 @@ https://www.chromium.org/developers/design-documents
 - [特性相关](Feature-Specific/README.md)
   - [关于冲突](Feature-Specific/aboutconflicts.md)
   - [可用性](Feature-Specific/Accessibility.md): 当前（以及将来）可用性支持的轮廓。
-  - [Auto-Throttled Screen Capture and Mirroring](Feature-Specific/Auto-Throttled_Screen_Capture_and_Mirroring.md)
-  - [Browser Window](Feature-Specific/Browser_Window.md)
-  - [Chromium Print Proxy](Feature-Specific/Chromium_Print_Proxy.md): Enables a cloud print service for legacy printers and future cloud-aware printers.
-  - [Constrained Popup Windows](Feature-Specific/Constrained_Popup_Windows.md)
-  - [Desktop Notifications](Feature-Specific/Desktop_Notifications.md)
-  - [DirectWrite Font Cache for Chrome on Windows](Feature-Specific/DirectWrite_Font_Cache_for_Chrome_on_Windows.md)
-  - [DNS Prefetching](Feature-Specific/DNS_Prefetching.md): Reducing perceived latency by resolving domain names before a user tries to follow a link
-  - [Embedding Flash Fullscreen in the Browser Window](Feature-Specific/Embedding_Flash_Fullscreen_in_the_Browser_Window.md)
-  - [Extensions: Design documents and proposed APIs. ](Feature-Specific/Extensions_Design_documents_and_proposed_APIs..md): Design documents and proposed APIs.
-  - [Find Bar](Feature-Specific/Find_Bar.md)
-  - [Form Autofill](Feature-Specific/Form_Autofill.md): A feature to automatically fill out an html form with appropriate data.
-  - [Geolocation](Feature-Specific/Geolocation.md): Adding support for [W3C Geolocation API](http://www.w3.org/TR/geolocation-API/) using native WebKit bindings.
+  - [自适应屏幕截图与镜像](Feature-Specific/Auto-Throttled_Screen_Capture_and_Mirroring.md)
+  - [浏览器window](Feature-Specific/Browser_Window.md)
+  - [Chromium打印代理](Feature-Specific/Chromium_Print_Proxy.md): 为保留打印机与未来的云服务打印机使能云打印服务
+  - [强制弹出窗口](Feature-Specific/Constrained_Popup_Windows.md)
+  - [桌面通知](Feature-Specific/Desktop_Notifications.md)
+  - [Chrome on Windows的直写式Cache](Feature-Specific/DirectWrite_Font_Cache_for_Chrome_on_Windows.md)
+  - [DNS预拉取](Feature-Specific/DNS_Prefetching.md): 通过在用户打开链接前,预先解析域名,来减少延迟
+  - [在浏览器窗口中,嵌入式Flash的全屏](Feature-Specific/Embedding_Flash_Fullscreen_in_the_Browser_Window.md)
+  - [拓展: 设计文档与推荐的api ](Feature-Specific/Extensions_Design_documents_and_proposed_APIs..md): Design documents and proposed APIs.
+  - [查找栏](Feature-Specific/Find_Bar.md)
+  - [表单自动填充](Feature-Specific/Form_Autofill.md): A feature to automatically fill out an html form with appropriate data.
+  - [地理信息](Feature-Specific/Geolocation.md): 添加对[W3C Geolocation API](http://www.w3.org/TR/geolocation-API/)的支持,使用native WebKit bindings.
   - [IDN in Google Chrome](Feature-Specific/IDN_in_Google_Chrome.md)
-  - [IndexedDB (early draft)](Feature-Specific/IndexedDB__early_draft_.md)
-  - [Info Bars](Feature-Specific/Info_Bars.md)
-  - [Installer](Feature-Specific/Installer.md): Registry entries and shortcuts
-  - [Instant](Feature-Specific/Instant.md)
-  - [Isolated Sites](Feature-Specific/Isolated_Sites.md)
-  - [Linux Resources and Localized Strings](Feature-Specific/Linux_Resources_and_Localized_Strings.md): Loading data resources and localized strings on Linux.
-  - [Media Router & Web Presentation API](Feature-Specific/Media_Router_&_Web_Presentation_API.md)
-  - [Memory Usage Backgrounder](Feature-Specific/Memory_Usage_Backgrounder.md): Some information on how we measure memory in Chromium.
-  - [Mouse Lock](Feature-Specific/Mouse_Lock.md)
-  - [Omnibox Autocomplete](Feature-Specific/Omnibox_Autocomplete/README.md): While typing into the omnibox, Chromium searches for and suggests possible completions.
-    - [HistoryQuickProvider](Feature-Specific/Omnibox_Autocomplete/HistoryQuickProvider.md): Suggests completions from the user's historical site visits.
-  - [Omnibox/IME Coordination](Feature-Specific/Omnibox_IME_Coordination.md)
-  - [Ozone Porting Abstraction](Feature-Specific/Ozone_Porting_Abstraction.md)
-  - [Password Generation](Feature-Specific/Password_Generation.md)
-  - [Pepper plugin implementation](Feature-Specific/Pepper_plugin_implementation.md)
-  - [Plugin Power Saver](Feature-Specific/Plugin_Power_Saver.md)
-  - [Preferences](Feature-Specific/Preferences.md)
-  - [Prerender](Feature-Specific/Prerender.md)
-  - [Print Preview](Feature-Specific/Print_Preview.md)
-  - [Printing](Feature-Specific/Printing.md)
-  - [Rect-based event targeting in views](Feature-Specific/Rect-based_event_targeting_in_views.md): Making it easier to target views elements with touch.
-  - [Replace the modal cookie prompt](Feature-Specific/Replace_the_modal_cookie_prompt.md)
-  - [SafeSearch](Feature-Specific/SafeSearch.md)
-  - [Sane Time](Feature-Specific/Sane_Time.md): Determining an accurate time in Chrome
-  - [Secure Web Proxy](Feature-Specific/Secure_Web_Proxy.md)
-  - [Service Processes](Feature-Specific/Service_Processes.md)
-  - [Site Isolation](Feature-Specific/Site_Isolation.md): In-progress effort to improve Chromium's process model for security between web sites.
-  - [Software Updates: Courgette](Feature-Specific/Software_Updates_Courgette.md)
-  - [Sync](Feature-Specific/Sync.md)
-  - [Tab Helpers](Feature-Specific/Tab_Helpers.md)
-  - [Tab to search](Feature-Specific/Tab_to_search.md): How to have the Omnibox automatically provide tab to search for your site.
-  - [Tabtastic2 Requirements](Feature-Specific/Tabtastic2_Requirements.md)
-  - [Temporary downloads](Feature-Specific/Temporary_downloads.md)
-  - [Time Sources](Feature-Specific/Time_Sources.md): Determining the time on a Chrome OS device
+  - [索引式DB(早期草稿)](Feature-Specific/IndexedDB__early_draft_.md)
+  - [信息栏](Feature-Specific/Info_Bars.md)
+  - [安装](Feature-Specific/Installer.md): 注册入口与快捷方式
+  - [即时](Feature-Specific/Instant.md)
+  - [独立网站](Feature-Specific/Isolated_Sites.md)
+  - [Linux资源与本地化字符串](Feature-Specific/Linux_Resources_and_Localized_Strings.md): Linux资源与本地化字符串的加载
+  - [媒体路由 & Web Presentation API](Feature-Specific/Media_Router_&_Web_Presentation_API.md)
+  - [内存使用统计后端](Feature-Specific/Memory_Usage_Backgrounder.md): 我们在Chromium中如何测量内存的一些api
+  - [鼠标锁定](Feature-Specific/Mouse_Lock.md)
+  - [地址栏自动完成](Feature-Specific/Omnibox_Autocomplete/README.md): 在地址栏中打字时,Chromium搜索并建议可能的结果
+    - [快速提供历史](Feature-Specific/Omnibox_Autocomplete/HistoryQuickProvider.md): 由用户历史访问网站提供建议
+  - [搜索栏/IME协作](Feature-Specific/Omnibox_IME_Coordination.md)
+  - [Ozone移植抽象](Feature-Specific/Ozone_Porting_Abstraction.md)
+  - [密码生成](Feature-Specific/Password_Generation.md)
+  - [Pepper插件实现](Feature-Specific/Pepper_plugin_implementation.md)
+  - [插件能力保存](Feature-Specific/Plugin_Power_Saver.md)
+  - [选项](Feature-Specific/Preferences.md)
+  - [预渲染](Feature-Specific/Prerender.md)
+  - [打印预览](Feature-Specific/Print_Preview.md)
+  - [打印](Feature-Specific/Printing.md)
+  - [view中基于矩形的事件目标](Feature-Specific/Rect-based_event_targeting_in_views.md): 使得触摸激发view元素更加容易
+  - [替换语义cookie提示](Feature-Specific/Replace_the_modal_cookie_prompt.md)
+  - [安全搜索](Feature-Specific/SafeSearch.md)
+  - [Sane Time](Feature-Specific/Sane_Time.md): 在Chrome中决定一个精确的时间
+  - [安全web代理](Feature-Specific/Secure_Web_Proxy.md)
+  - [服务进程](Feature-Specific/Service_Processes.md)
+  - [站点隔离](Feature-Specific/Site_Isolation.md): 进程内的一些工作,提高Chromium在网站安全方面的进程模型
+  - [软件更新: Courgette](Feature-Specific/Software_Updates_Courgette.md)
+  - [同步](Feature-Specific/Sync.md)
+  - [Tab助手](Feature-Specific/Tab_Helpers.md)
+  - [Tab搜索](Feature-Specific/Tab_to_search.md): 如果让地址栏自动提供标签来搜索你的网站
+  - [Tabtastic2需求](Feature-Specific/Tabtastic2_Requirements.md)
+  - [临时下载](Feature-Specific/Temporary_downloads.md)
+  - [时间资源](Feature-Specific/Time_Sources.md): 在一个Chrome OS设备上决定时间
   - [TimeTicks](Feature-Specific/TimeTicks.md): How our monotonic timer, TimeTicks, works on different OSes
   - [UI Mirroring Infrastructure](Feature-Specific/UI_Mirroring_Infrastructure.md): Describes the UI framework in ChromeViews that allows mirroring the browser UI in RTL locales such as Hebrew and Arabic.
   - [UI Localization](Feature-Specific/UI_Localization.md): Describes how localized strings get added to Chromium.
