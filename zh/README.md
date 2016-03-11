@@ -5,181 +5,183 @@ https://www.chromium.org/developers/design-documents
 
 翻译之加强对android webview理解
 
-#Design Documents
+#设计文档
 
-- [Start Here: Background Reading](Start_Here_Background_Reading/README.md): Describes the high-level architecture of Chromium 
-  - [Multi-process Architecture](Start_Here_Background_Reading/Multi-process_Architecture.md)
+- [Start Here: 背景阅读](Start_Here_Background_Reading/README.md): 描述Chromium的宏观架构
+  - [多线程架构](Start_Here_Background_Reading/Multi-process_Architecture.md)
   
-  **Note**: Most of the rest of the design documents assume familiarity with the concepts explained in this document.
+    **Note**: 设计文档的大部分剩余部分都认为你对上面这个文档里的内容非常熟悉。
 
-  - [How Chromium Displays Web Pages](Start_Here_Background_Reading/How_Chromium_Displays_Web_Pages.md): Bottom-to-top overview of how WebKit is embedded in Chromium
+  - [Chromium如何展示web界面](Start_Here_Background_Reading/How_Chromium_Displays_Web_Pages.md): 自底向上概述WebKit是如何嵌入到Chromium中的
   
-##See Also: Design docs in source code
+##See Also: 源代码中的设计文档
 
     https://chromium.googlesource.com/chromium/src/+/master/docs/
 
-##General Architecture
 
-- [General Architecture](General_Architecture/README.md)
-  - [Conventions and patterns for multi-platform development](General_Architecture/Conventions_and_patterns_for_multi-platform_development.md)
-  - [Extension Security Architecture](General_Architecture/Extension_Security_Architecture.md): How the extension system helps reduce the severity of extension vulnerabilities
-  - [HW Video Acceleration in Chrom{e,ium}{,OS}](General_Architecture/HW_Video_Acceleration_in_Chrom{eium}{OS}.md)
-  - [Inter-process Communication](General_Architecture/Inter-process_Communication.md): How the browser, renderer, and plugin processes communicate
-  - [Multi-process Resource Loading](General_Architecture/Multi-process_Resource_Loading.md): How pages and images are loaded from the network into the renderer
-  - [Plugin Architecture](General_Architecture/Plugin_Architecture.md)
-  - [Process Models](General_Architecture/Process_Models.md): Our strategies for creating new renderer processes
-  - [Profile Architecture](General_Architecture/Profile_Architecture.md)
-  - [SafeBrowsing](General_Architecture/SafeBrowsing.md)
-  - [Sandbox](General_Architecture/Sandbox.md)
-  - [Security Architecture](General_Architecture/Security_Architecture.md): How Chromium's sandboxed rendering engine helps protect against malware
-  - [Startup](General_Architecture/Startup.md)
-  - [Threading](General_Architecture/Threading.md): How to use threads in Chromium
- Also see the documentation for [V8](http://code.google.com/apis/v8/), which is the JavaScript engine used within Chromium.
-- [UI Framework](UI_Framework/README.md)
-  - [UI Development Practices](UI_Framework/UI_Development_Practices.md): Best practices for UI development inside and outside of Chrome's content areas.
-  - [Views framework](UI_Framework/Views_framework.md): Our UI layout layer used on Windows/Chrome OS.
-  - [views Windowing system](UI_Framework/views_Windowing_system.md): How to build dialog boxes and other windowed UI using views.
-  - [Aura](UI_Framework/Aura.md): Chrome's next generation hardware accelerated UI framework, and the new ChromeOS window manager built using it.
-  - [NativeControls](UI_Framework/NativeControls.md): using platform-native widgets in views.
-  - Focus and Activation with Views and Aura.
-- [Graphics](Graphics/README.md)
-  - [Overview](Graphics/Overview.md)
-  - [GPU Accelerated Compositing in Chrome](Graphics/GPU_Accelerated_Compositing_in_Chrome.md)
-  - [GPU Feature Status Dashboard](Graphics/GPU_Feature_Status_Dashboard.md)
-  - [Rendering Architecture Diagrams](Graphics/Rendering_Architecture_Diagrams.md)
-  - [Graphics and Skia](Graphics/Graphics_and_Skia.md)
-  - [RenderText and Chrome UI text drawing](Graphics/RenderText_and_Chrome_UI_text_drawing.md)
-  - [GPU Command Buffer](Graphics/GPU_Command_Buffer.md)
-  - [GPU Program Caching](Graphics/GPU_Program_Caching.md)
-  - [Compositing in Blink/WebCore](Graphics/Compositing_in_Blink_WebCore.md)
-  - [Compositor Thread Architecture](Graphics/Compositor_Thread_Architecture.md)
-  - [Rendering Benchmarks](Graphics/Rendering_Benchmarks.md)
-  - [Impl-side Painting](Graphics/Impl-side_Painting.md)
-  - [Video Playback and Compositor](Graphics/Video_Playback_and_Compositor.md)
-  - [ANGLE architecture presentation](Graphics/ANGLE_architecture_presentation.md)
-- [Network stack](Network_stack/README.md)
-  - [Overview](Network_stack/Overview.md)
-  - [Network Stack Objectives](Network_stack/Network_Stack_Objectives.md)
+
+- ###[整体架构](General_Architecture/README.md)
+  - [跨平台开发的约定与模式](General_Architecture/Conventions_and_patterns_for_multi-platform_development.md)
+  - [扩展安全架构](General_Architecture/Extension_Security_Architecture.md): 扩展系统是如何降低扩展脆弱性的严重程度的
+  - [硬件视频加速](General_Architecture/HW_Video_Acceleration_in_Chrom{eium}{OS}.md)
+  - [跨进程通信](General_Architecture/Inter-process_Communication.md): 浏览进程，绘制器，插件进程是如何交流的
+  - [多进程资源加载](General_Architecture/Multi-process_Resource_Loading.md): 页面和图像是如何从网络加载到绘制器中的
+  - [插件架构](General_Architecture/Plugin_Architecture.md)
+  - [进程模型](General_Architecture/Process_Models.md): Our 创建新绘制进程的策略
+  - [Profile架构](General_Architecture/Profile_Architecture.md)
+  - [安全浏览](General_Architecture/SafeBrowsing.md)
+  - [沙箱](General_Architecture/Sandbox.md)
+  - [安全架构](General_Architecture/Security_Architecture.md): Chromium沙箱绘制引擎是如何保护免受恶意软件侵害的
+  - [启动](General_Architecture/Startup.md)
+  - [线程](General_Architecture/Threading.md): 在chromium中如何使用线程
+  
+ 也可以看看 [V8](http://code.google.com/apis/v8/)的文档, 这是Chromium使用的Javascript引擎
+
+- ###[UI Framework](UI_Framework/README.md)
+  - [UI开发实践](UI_Framework/UI_Development_Practices.md): 在Chrome的content区域内外开发的最佳实践
+  - [Views framework](UI_Framework/Views_framework.md): Windows和Chrome OS上使用的UI layout 层级
+  - [views Windowing系统](UI_Framework/views_Windowing_system.md): 如何用view构建对话框盒子和其他windowUI
+  - [Aura](UI_Framework/Aura.md): Chrome下一代硬件加速UI框架，新的ChromeOS 系统由它构建而成
+  - [Native控制](UI_Framework/NativeControls.md): 在view中使用平台原生widget
+  - 用View和Aura实现聚焦与激活
+- ###[Graphics](Graphics/README.md)
+  - [概述](Graphics/Overview.md)
+  - [Chrome中使用的GPU加速](Graphics/GPU_Accelerated_Compositing_in_Chrome.md)
+  - [GPU特性状态仪表盘](Graphics/GPU_Feature_Status_Dashboard.md)
+  - [绘制架构图](Graphics/Rendering_Architecture_Diagrams.md)
+  - [Graphics和Skia](Graphics/Graphics_and_Skia.md)
+  - [绘制文本以及Chrome UI 文本绘制](Graphics/RenderText_and_Chrome_UI_text_drawing.md)
+  - [GPU命令缓冲区](Graphics/GPU_Command_Buffer.md)
+  - [GPU程序缓冲区](Graphics/GPU_Program_Caching.md)
+  - [Blink/WebCore中的组合](Graphics/Compositing_in_Blink_WebCore.md)
+  - [排版线程架构](Graphics/Compositor_Thread_Architecture.md)
+  - [绘制标准](Graphics/Rendering_Benchmarks.md)
+  - [实现层绘制](Graphics/Impl-side_Painting.md)
+  - [视频回放与排版](Graphics/Video_Playback_and_Compositor.md)
+  - [ANGLE架构表示](Graphics/ANGLE_architecture_presentation.md)
+- [网络栈](Network_stack/README.md)
+  - [概述](Network_stack/Overview.md)
+  - [网络栈的目标](Network_stack/Network_Stack_Objectives.md)
   - [Crypto](Network_stack/Crypto.md)
-  - [Disk Cache](Network_stack/Disk_Cache.md)
-  - [HTTP Cache](Network_stack/HTTP_Cache.md)
-  - [Out of Process Proxy Resolving Draft [unimplemented]](Network_stack/Out_of_Process_Proxy_Resolving_Draft_[unimplemented].md)
-  - [Proxy Settings and Fallback](Network_stack/Proxy_Settings_and_Fallback.md)
-  - [Debugging network proxy problems](Network_stack/Debugging_network_proxy_problems.md)
-  - [HTTP Authentication](Network_stack/HTTP_Authentication.md)
-  - [View network internals tool](Network_stack/View_network_internals_tool.md)
-  - [Make the web faster with SPDY pages](Network_stack/Make_the_web_faster_with_SPDY_pages.md)
-  - [ the web even faster with QUIC pages](Network_stack/_the_web_even_faster_with_QUIC_pages.md)
-  - [Cookie storage and retrieval](Network_stack/Cookie_storage_and_retrieval.md)
-- [Security](Security/README.md)
-  - [Security Overview](Security/Security_Overview.md)
-  - [Protecting Cached User Data](Security/Protecting_Cached_User_Data.md)
-  - [System Hardening](Security/System_Hardening.md)
-  - [Chaps Technical Design](Security/Chaps_Technical_Design.md)
-  - [TPM Usage](Security/TPM_Usage.md)
-  - [Per-page Suborigins](Security/Per-page_Suborigins.md)
-  - [Encrypted Partition Recovery](Security/Encrypted_Partition_Recovery.md)
+  - [磁盘缓存](Network_stack/Disk_Cache.md)
+  - [HTTP缓存](Network_stack/HTTP_Cache.md)
+  - [进程外代理解决草案[unimplemented]](Network_stack/Out_of_Process_Proxy_Resolving_Draft_[unimplemented].md)
+  - [代理设置与回退](Network_stack/Proxy_Settings_and_Fallback.md)
+  - [调试网络代理问题](Network_stack/Debugging_network_proxy_problems.md)
+  - [HTTP授权](Network_stack/HTTP_Authentication.md)
+  - [查看网络内部情况的工具](Network_stack/View_network_internals_tool.md)
+  - [用SPDY页面使得网络更快](Network_stack/Make_the_web_faster_with_SPDY_pages.md)
+  - [用OUIC页面使得网络更快](Network_stack/_the_web_even_faster_with_QUIC_pages.md)
+  - [Cookie存储与获取](Network_stack/Cookie_storage_and_retrieval.md)
+- [安全](Security/README.md)
+  - [概述](Security/Security_Overview.md)
+  - [保护缓存用户数据](Security/Protecting_Cached_User_Data.md)
+  - [系统强化](Security/System_Hardening.md)
+  - [Chaps技术设计](Security/Chaps_Technical_Design.md)
+  - [TPM使用](Security/TPM_Usage.md)
+  - [每个页面的子源](Security/Per-page_Suborigins.md)
+  - [加密分割恢复](Security/Encrypted_Partition_Recovery.md)
 - [Input](Input/README.md)
-  - See[chromium input](Input/chromium_input.md)for design docs and other resources.
-- [Rendering](Rendering/README.md)
-  - [Multi-column layout](Rendering/Multi-column_layout.md)
-  - [Style Invalidation in Blink](Rendering/Style_Invalidation_in_Blink.md)
-  - [Blink Coordinate Spaces](Rendering/Blink_Coordinate_Spaces.md)
-- [Building](Building/README.md)
-  - [IDL build](Building/IDL_build.md)
-  - [IDL compiler](Building/IDL_compiler.md)
-  - See also the documentation for [GYP, the build script generation tool.](Building/GYP_the_build_script_generation_tool..md)
-- [Testing](Testing/README.md)
-  - [Layout test results dashboard](Testing/Layout_test_results_dashboard.md)
-  - [Generic theme for Test Shell](Testing/Generic_theme_for_Test_Shell.md)
-  - [Moving LayoutTests fully upstream](Testing/Moving_LayoutTests_fully_upstream.md)
-- [Feature-Specific](Feature-Specific/README.md)
-  - [about:conflicts](Feature-Specific/aboutconflicts.md)
-  - [Accessibility](Feature-Specific/Accessibility.md): An outline of current (and coming) accessibility support.
-  - [Auto-Throttled Screen Capture and Mirroring](Feature-Specific/Auto-Throttled_Screen_Capture_and_Mirroring.md)
-  - [Browser Window](Feature-Specific/Browser_Window.md)
-  - [Chromium Print Proxy](Feature-Specific/Chromium_Print_Proxy.md): Enables a cloud print service for legacy printers and future cloud-aware printers.
-  - [Constrained Popup Windows](Feature-Specific/Constrained_Popup_Windows.md)
-  - [Desktop Notifications](Feature-Specific/Desktop_Notifications.md)
-  - [DirectWrite Font Cache for Chrome on Windows](Feature-Specific/DirectWrite_Font_Cache_for_Chrome_on_Windows.md)
-  - [DNS Prefetching](Feature-Specific/DNS_Prefetching.md): Reducing perceived latency by resolving domain names before a user tries to follow a link
-  - [Embedding Flash Fullscreen in the Browser Window](Feature-Specific/Embedding_Flash_Fullscreen_in_the_Browser_Window.md)
-  - [Extensions: Design documents and proposed APIs. ](Feature-Specific/Extensions_Design_documents_and_proposed_APIs..md): Design documents and proposed APIs.
-  - [Find Bar](Feature-Specific/Find_Bar.md)
-  - [Form Autofill](Feature-Specific/Form_Autofill.md): A feature to automatically fill out an html form with appropriate data.
-  - [Geolocation](Feature-Specific/Geolocation.md): Adding support for [W3C Geolocation API](http://www.w3.org/TR/geolocation-API/) using native WebKit bindings.
+  - 看这个文档[chromium input](Input/chromium_input.md)（关于设计文档以及一些其他资源）
+- [绘制](Rendering/README.md)
+  - [多列布局](Rendering/Multi-column_layout.md)
+  - [刷新时重置Style](Rendering/Style_Invalidation_in_Blink.md)
+  - [刷新与空间的协调](Rendering/Blink_Coordinate_Spaces.md)
+- [构建](Building/README.md)
+  - [IDL构建](Building/IDL_build.md)
+  - [IDL编译器](Building/IDL_compiler.md)
+  - 也可以看这个文档，[GYP, the build script generation tool.](Building/GYP_the_build_script_generation_tool..md)
+- [测试](Testing/README.md)
+  - [Layout测试结果面板](Testing/Layout_test_results_dashboard.md)
+  - [Test shell中的真实主题](Testing/Generic_theme_for_Test_Shell.md)
+  - [完全回退移除layout测试](Testing/Moving_LayoutTests_fully_upstream.md)
+- [特性相关](Feature-Specific/README.md)
+  - [关于冲突](Feature-Specific/aboutconflicts.md)
+  - [可用性](Feature-Specific/Accessibility.md): 当前（以及将来）可用性支持的轮廓。
+  - [自适应屏幕截图与镜像](Feature-Specific/Auto-Throttled_Screen_Capture_and_Mirroring.md)
+  - [浏览器window](Feature-Specific/Browser_Window.md)
+  - [Chromium打印代理](Feature-Specific/Chromium_Print_Proxy.md): 为保留打印机与未来的云服务打印机使能云打印服务
+  - [强制弹出窗口](Feature-Specific/Constrained_Popup_Windows.md)
+  - [桌面通知](Feature-Specific/Desktop_Notifications.md)
+  - [Chrome on Windows的直写式Cache](Feature-Specific/DirectWrite_Font_Cache_for_Chrome_on_Windows.md)
+  - [DNS预拉取](Feature-Specific/DNS_Prefetching.md): 通过在用户打开链接前,预先解析域名,来减少延迟
+  - [在浏览器窗口中,嵌入式Flash的全屏](Feature-Specific/Embedding_Flash_Fullscreen_in_the_Browser_Window.md)
+  - [拓展: 设计文档与推荐的api ](Feature-Specific/Extensions_Design_documents_and_proposed_APIs..md): Design documents and proposed APIs.
+  - [查找栏](Feature-Specific/Find_Bar.md)
+  - [表单自动填充](Feature-Specific/Form_Autofill.md): A feature to automatically fill out an html form with appropriate data.
+  - [地理信息](Feature-Specific/Geolocation.md): 添加对[W3C Geolocation API](http://www.w3.org/TR/geolocation-API/)的支持,使用native WebKit bindings.
   - [IDN in Google Chrome](Feature-Specific/IDN_in_Google_Chrome.md)
-  - [IndexedDB (early draft)](Feature-Specific/IndexedDB__early_draft_.md)
-  - [Info Bars](Feature-Specific/Info_Bars.md)
-  - [Installer](Feature-Specific/Installer.md): Registry entries and shortcuts
-  - [Instant](Feature-Specific/Instant.md)
-  - [Isolated Sites](Feature-Specific/Isolated_Sites.md)
-  - [Linux Resources and Localized Strings](Feature-Specific/Linux_Resources_and_Localized_Strings.md): Loading data resources and localized strings on Linux.
-  - [Media Router & Web Presentation API](Feature-Specific/Media_Router_&_Web_Presentation_API.md)
-  - [Memory Usage Backgrounder](Feature-Specific/Memory_Usage_Backgrounder.md): Some information on how we measure memory in Chromium.
-  - [Mouse Lock](Feature-Specific/Mouse_Lock.md)
-  - [Omnibox Autocomplete](Feature-Specific/Omnibox_Autocomplete/README.md): While typing into the omnibox, Chromium searches for and suggests possible completions.
-    - [HistoryQuickProvider](Feature-Specific/Omnibox_Autocomplete/HistoryQuickProvider.md): Suggests completions from the user's historical site visits.
-  - [Omnibox/IME Coordination](Feature-Specific/Omnibox_IME_Coordination.md)
-  - [Ozone Porting Abstraction](Feature-Specific/Ozone_Porting_Abstraction.md)
-  - [Password Generation](Feature-Specific/Password_Generation.md)
-  - [Pepper plugin implementation](Feature-Specific/Pepper_plugin_implementation.md)
-  - [Plugin Power Saver](Feature-Specific/Plugin_Power_Saver.md)
-  - [Preferences](Feature-Specific/Preferences.md)
-  - [Prerender](Feature-Specific/Prerender.md)
-  - [Print Preview](Feature-Specific/Print_Preview.md)
-  - [Printing](Feature-Specific/Printing.md)
-  - [Rect-based event targeting in views](Feature-Specific/Rect-based_event_targeting_in_views.md): Making it easier to target views elements with touch.
-  - [Replace the modal cookie prompt](Feature-Specific/Replace_the_modal_cookie_prompt.md)
-  - [SafeSearch](Feature-Specific/SafeSearch.md)
-  - [Sane Time](Feature-Specific/Sane_Time.md): Determining an accurate time in Chrome
-  - [Secure Web Proxy](Feature-Specific/Secure_Web_Proxy.md)
-  - [Service Processes](Feature-Specific/Service_Processes.md)
-  - [Site Isolation](Feature-Specific/Site_Isolation.md): In-progress effort to improve Chromium's process model for security between web sites.
-  - [Software Updates: Courgette](Feature-Specific/Software_Updates_Courgette.md)
-  - [Sync](Feature-Specific/Sync.md)
-  - [Tab Helpers](Feature-Specific/Tab_Helpers.md)
-  - [Tab to search](Feature-Specific/Tab_to_search.md): How to have the Omnibox automatically provide tab to search for your site.
-  - [Tabtastic2 Requirements](Feature-Specific/Tabtastic2_Requirements.md)
-  - [Temporary downloads](Feature-Specific/Temporary_downloads.md)
-  - [Time Sources](Feature-Specific/Time_Sources.md): Determining the time on a Chrome OS device
-  - [TimeTicks](Feature-Specific/TimeTicks.md): How our monotonic timer, TimeTicks, works on different OSes
-  - [UI Mirroring Infrastructure](Feature-Specific/UI_Mirroring_Infrastructure.md): Describes the UI framework in ChromeViews that allows mirroring the browser UI in RTL locales such as Hebrew and Arabic.
-  - [UI Localization](Feature-Specific/UI_Localization.md): Describes how localized strings get added to Chromium.
-  - [User scripts](Feature-Specific/User_scripts.md): Information on Chromium's support for user scripts.
-  - [Video](Feature-Specific/Video.md)
-  - [WebSocket](Feature-Specific/WebSocket.md): Enables Web applications to maintain bidirectional communications with server-side processes.
+  - [索引式DB(早期草稿)](Feature-Specific/IndexedDB__early_draft_.md)
+  - [信息栏](Feature-Specific/Info_Bars.md)
+  - [安装](Feature-Specific/Installer.md): 注册入口与快捷方式
+  - [即时](Feature-Specific/Instant.md)
+  - [独立网站](Feature-Specific/Isolated_Sites.md)
+  - [Linux资源与本地化字符串](Feature-Specific/Linux_Resources_and_Localized_Strings.md): Linux资源与本地化字符串的加载
+  - [媒体路由 & Web Presentation API](Feature-Specific/Media_Router_&_Web_Presentation_API.md)
+  - [内存使用统计后端](Feature-Specific/Memory_Usage_Backgrounder.md): 我们在Chromium中如何测量内存的一些api
+  - [鼠标锁定](Feature-Specific/Mouse_Lock.md)
+  - [地址栏自动完成](Feature-Specific/Omnibox_Autocomplete/README.md): 在地址栏中打字时,Chromium搜索并建议可能的结果
+    - [快速提供历史](Feature-Specific/Omnibox_Autocomplete/HistoryQuickProvider.md): 由用户历史访问网站提供建议
+  - [搜索栏/IME协作](Feature-Specific/Omnibox_IME_Coordination.md)
+  - [Ozone移植抽象](Feature-Specific/Ozone_Porting_Abstraction.md)
+  - [密码生成](Feature-Specific/Password_Generation.md)
+  - [Pepper插件实现](Feature-Specific/Pepper_plugin_implementation.md)
+  - [插件能力保存](Feature-Specific/Plugin_Power_Saver.md)
+  - [选项](Feature-Specific/Preferences.md)
+  - [预渲染](Feature-Specific/Prerender.md)
+  - [打印预览](Feature-Specific/Print_Preview.md)
+  - [打印](Feature-Specific/Printing.md)
+  - [view中基于矩形的事件目标](Feature-Specific/Rect-based_event_targeting_in_views.md): 使得触摸激发view元素更加容易
+  - [替换语义cookie提示](Feature-Specific/Replace_the_modal_cookie_prompt.md)
+  - [安全搜索](Feature-Specific/SafeSearch.md)
+  - [Sane Time](Feature-Specific/Sane_Time.md): 在Chrome中决定一个精确的时间
+  - [安全web代理](Feature-Specific/Secure_Web_Proxy.md)
+  - [服务进程](Feature-Specific/Service_Processes.md)
+  - [站点隔离](Feature-Specific/Site_Isolation.md): 进程内的一些工作,提高Chromium在网站安全方面的进程模型
+  - [软件更新: Courgette](Feature-Specific/Software_Updates_Courgette.md)
+  - [同步](Feature-Specific/Sync.md)
+  - [Tab助手](Feature-Specific/Tab_Helpers.md)
+  - [Tab搜索](Feature-Specific/Tab_to_search.md): 如果让地址栏自动提供标签来搜索你的网站
+  - [Tabtastic2需求](Feature-Specific/Tabtastic2_Requirements.md)
+  - [临时下载](Feature-Specific/Temporary_downloads.md)
+  - [时间资源](Feature-Specific/Time_Sources.md): 在一个Chrome OS设备上决定时间
+  - [时钟](Feature-Specific/TimeTicks.md): 我们单一的时钟是如何在不同系统上工作的
+  - [UI镜像基础设施](Feature-Specific/UI_Mirroring_Infrastructure.md): 描述ChromeViews中的UI框架,允许在希伯来与或阿拉伯语这样的RTL语言环境中镜像浏览器UI
+  - [UI定位](Feature-Specific/UI_Localization.md): 描述如何定位要加入chromium的字符串
+  - [用户脚本](Feature-Specific/User_scripts.md): Chrome对于用户脚本的一些支持信息
+  - [视频](Feature-Specific/Video.md)
+  - [WebSocket](Feature-Specific/WebSocket.md): 允许web应用程序与服务端进程维护一个双向的交流
   - [Web MIDI](Feature-Specific/Web_MIDI.md)
-  - [WebNavigation API internals](Feature-Specific/WebNavigation_API_internals.md)
-- [OS-Specific](OS-Specific/README.md)
+  - [Web导航 API内部实现](Feature-Specific/WebNavigation_API_internals.md)
+- [OS-相关](OS-Specific/README.md)
   - [Android](OS-Specific/Android/README.md)
-    - [Java Resources on Android](OS-Specific/Android/Java_Resources_on_Android.md)
-    - [JNI Bindings](OS-Specific/Android/JNI_Bindings.md)
-    - [WebView code organization](OS-Specific/Android/WebView_code_organization.md)
+    - [Android上的Java资源](OS-Specific/Android/Java_Resources_on_Android.md)
+    - [JNI绑定](OS-Specific/Android/JNI_Bindings.md)
+    - [WebView代码组织](OS-Specific/Android/WebView_code_organization.md)
   - [Chrome OS](OS-Specific/Chrome_OS/README.md)
-    - See the [Chrome OS design documents section.](OS-Specific/Chrome_OS/Chrome_OS_design_documents_section..md)section.
+    - 查看[Chrome OS设计文档相关章节](OS-Specific/Chrome_OS/Chrome_OS_design_documents_section..md)
   - [Mac OS X](OS-Specific/Mac_OS_X/README.md)
-    - [AppleScript Support](OS-Specific/Mac_OS_X/AppleScript_Support.md)
-    - [BrowserWindowController Object Ownership](OS-Specific/Mac_OS_X/BrowserWindowController_Object_Ownership.md)
-    - [Confirm to Quit](OS-Specific/Mac_OS_X/Confirm_to_Quit.md)
-    - [Mac App Mode (Draft)](OS-Specific/Mac_OS_X/Mac_App_Mode__Draft_.md)
-    - [Mac Fullscreen Mode (Draft)](OS-Specific/Mac_OS_X/Mac_Fullscreen_Mode__Draft_.md)
-    - [Mac NPAPI Plugin Hosting](OS-Specific/Mac_OS_X/Mac_NPAPI_Plugin_Hosting.md)
-    - [Mac specific notes on UI Localization](OS-Specific/Mac_OS_X/Mac_specific_notes_on_UI_Localization.md)
-    - [Menus, Hotkeys, & Command Dispatch](OS-Specific/Mac_OS_X/Menus_Hotkeys_&_Command_Dispatch.md)
-    - [Notes from meeting on IOSurface usage and semantics](OS-Specific/Mac_OS_X/Notes_from_meeting_on_IOSurface_usage_and_semantics.md)
-    - [OS X Interprocess Communication (Obsolete)](OS-Specific/Mac_OS_X/OS_X_Interprocess_Communication__Obsolete_.md)
-    - [Password Manager/Keychain Integration](OS-Specific/Mac_OS_X/Password_Manager_Keychain_Integration.md)
-    - [Sandboxing Design](OS-Specific/Mac_OS_X/Sandboxing_Design.md)
-    - [Tab Strip Design (Includes tab layout and tab dragging)](OS-Specific/Mac_OS_X/Tab_Strip_Design__Includes_tab_layout_and_tab_dragging_.md)
-    - [Wrench Menu Buttons](OS-Specific/Mac_OS_X/Wrench_Menu_Buttons.md)
+    - [Apple脚本Support](OS-Specific/Mac_OS_X/AppleScript_Support.md)
+    - [BrowserWindowController对象所有权](OS-Specific/Mac_OS_X/BrowserWindowController_Object_Ownership.md)
+    - [确认退出](OS-Specific/Mac_OS_X/Confirm_to_Quit.md)
+    - [Mac App模式(草案)](OS-Specific/Mac_OS_X/Mac_App_Mode__Draft_.md)
+    - [Mac全屏模式(草案)](OS-Specific/Mac_OS_X/Mac_Fullscreen_Mode__Draft_.md)
+    - [Mac NPAPI插件托管](OS-Specific/Mac_OS_X/Mac_NPAPI_Plugin_Hosting.md)
+    - [Mac上UI定位的相关记录](OS-Specific/Mac_OS_X/Mac_specific_notes_on_UI_Localization.md)
+    - [菜单,快捷键和命令调度](OS-Specific/Mac_OS_X/Menus_Hotkeys_&_Command_Dispatch.md)
+    - [IOSurface使用与语义相关会议的一些记录](OS-Specific/Mac_OS_X/Notes_from_meeting_on_IOSurface_usage_and_semantics.md)
+    - [OS X跨进程通信(已过时)](OS-Specific/Mac_OS_X/OS_X_Interprocess_Communication__Obsolete_.md)
+    - [密码管理/密码链集成](OS-Specific/Mac_OS_X/Password_Manager_Keychain_Integration.md)
+    - [沙箱设计](OS-Specific/Mac_OS_X/Sandboxing_Design.md)
+    - [Tab切换设计(包括标签布局与标签拖动)](OS-Specific/Mac_OS_X/Tab_Strip_Design__Includes_tab_layout_and_tab_dragging_.md)
+    - [扳手状菜单按钮](OS-Specific/Mac_OS_X/Wrench_Menu_Buttons.md)
 - [Other](Other/README.md)
-  - [64-bit Support](Other/64-bit_Support.md)
-  - [Browser Components / Layered Components](Other/Browser_Components___Layered_Components.md)
-  - [Closure Compiling Chrome Code](Other/Closure_Compiling_Chrome_Code.md)
-  - [content module / content API](Other/content_module___content_API.md)
-  - [Design docs that still need to be written (wiki)](Other/Design_docs_that_still_need_to_be_written__wiki_.md)
-  - [In progress refactoring of key browser-process architecture for porting](Other/In_progress_refactoring_of_key_browser-process_architecture_for_porting.md)
-  - [Network Experiments](Other/Network_Experiments.md)
-  - [Transitioning InlineBoxes from floats to LayoutUnits](Other/Transitioning_InlineBoxes_from_floats_to_LayoutUnits.md)
+  - [64位支持](Other/64-bit_Support.md)
+  - [浏览器组件/层级组件](Other/Browser_Components___Layered_Components.md)
+  - [闭合编译Chrome代码](Other/Closure_Compiling_Chrome_Code.md)
+  - [内容模块/内容API](Other/content_module___content_API.md)
+  - [正在编写的设计文档(wiki)](Other/Design_docs_that_still_need_to_be_written__wiki_.md)
+  - [可移植性:进程内重构关键浏览器进程架构](Other/In_progress_refactoring_of_key_browser-process_architecture_for_porting.md)
+  - [网络实验](Other/Network_Experiments.md)
+  - [将float的inlinebox转为layout单元](Other/Transitioning_InlineBoxes_from_floats_to_LayoutUnits.md)
 
