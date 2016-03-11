@@ -145,30 +145,30 @@ https://www.chromium.org/developers/design-documents
   - [Tabtastic2需求](Feature-Specific/Tabtastic2_Requirements.md)
   - [临时下载](Feature-Specific/Temporary_downloads.md)
   - [时间资源](Feature-Specific/Time_Sources.md): 在一个Chrome OS设备上决定时间
-  - [TimeTicks](Feature-Specific/TimeTicks.md): How our monotonic timer, TimeTicks, works on different OSes
-  - [UI Mirroring Infrastructure](Feature-Specific/UI_Mirroring_Infrastructure.md): Describes the UI framework in ChromeViews that allows mirroring the browser UI in RTL locales such as Hebrew and Arabic.
-  - [UI Localization](Feature-Specific/UI_Localization.md): Describes how localized strings get added to Chromium.
-  - [User scripts](Feature-Specific/User_scripts.md): Information on Chromium's support for user scripts.
-  - [Video](Feature-Specific/Video.md)
-  - [WebSocket](Feature-Specific/WebSocket.md): Enables Web applications to maintain bidirectional communications with server-side processes.
+  - [时钟](Feature-Specific/TimeTicks.md): 我们单一的时钟是如何在不同系统上工作的
+  - [UI镜像基础设施](Feature-Specific/UI_Mirroring_Infrastructure.md): 描述ChromeViews中的UI框架,允许在希伯来与或阿拉伯语这样的RTL语言环境中镜像浏览器UI
+  - [UI定位](Feature-Specific/UI_Localization.md): 描述如何定位要加入chromium的字符串
+  - [用户脚本](Feature-Specific/User_scripts.md): Chrome对于用户脚本的一些支持信息
+  - [视频](Feature-Specific/Video.md)
+  - [WebSocket](Feature-Specific/WebSocket.md): 允许web应用程序与服务端进程维护一个双向的交流
   - [Web MIDI](Feature-Specific/Web_MIDI.md)
-  - [WebNavigation API internals](Feature-Specific/WebNavigation_API_internals.md)
-- [OS-Specific](OS-Specific/README.md)
+  - [Web导航 API内部实现](Feature-Specific/WebNavigation_API_internals.md)
+- [OS-相关](OS-Specific/README.md)
   - [Android](OS-Specific/Android/README.md)
-    - [Java Resources on Android](OS-Specific/Android/Java_Resources_on_Android.md)
-    - [JNI Bindings](OS-Specific/Android/JNI_Bindings.md)
-    - [WebView code organization](OS-Specific/Android/WebView_code_organization.md)
+    - [Android上的Java资源](OS-Specific/Android/Java_Resources_on_Android.md)
+    - [JNI绑定](OS-Specific/Android/JNI_Bindings.md)
+    - [WebView代码组织](OS-Specific/Android/WebView_code_organization.md)
   - [Chrome OS](OS-Specific/Chrome_OS/README.md)
-    - See the [Chrome OS design documents section.](OS-Specific/Chrome_OS/Chrome_OS_design_documents_section..md)section.
+    - 查看[Chrome OS设计文档相关章节](OS-Specific/Chrome_OS/Chrome_OS_design_documents_section..md)
   - [Mac OS X](OS-Specific/Mac_OS_X/README.md)
-    - [AppleScript Support](OS-Specific/Mac_OS_X/AppleScript_Support.md)
-    - [BrowserWindowController Object Ownership](OS-Specific/Mac_OS_X/BrowserWindowController_Object_Ownership.md)
-    - [Confirm to Quit](OS-Specific/Mac_OS_X/Confirm_to_Quit.md)
-    - [Mac App Mode (Draft)](OS-Specific/Mac_OS_X/Mac_App_Mode__Draft_.md)
-    - [Mac Fullscreen Mode (Draft)](OS-Specific/Mac_OS_X/Mac_Fullscreen_Mode__Draft_.md)
-    - [Mac NPAPI Plugin Hosting](OS-Specific/Mac_OS_X/Mac_NPAPI_Plugin_Hosting.md)
-    - [Mac specific notes on UI Localization](OS-Specific/Mac_OS_X/Mac_specific_notes_on_UI_Localization.md)
-    - [Menus, Hotkeys, & Command Dispatch](OS-Specific/Mac_OS_X/Menus_Hotkeys_&_Command_Dispatch.md)
+    - [Apple脚本Support](OS-Specific/Mac_OS_X/AppleScript_Support.md)
+    - [BrowserWindowController对象所有权](OS-Specific/Mac_OS_X/BrowserWindowController_Object_Ownership.md)
+    - [确认退出](OS-Specific/Mac_OS_X/Confirm_to_Quit.md)
+    - [Mac App模式(草案)](OS-Specific/Mac_OS_X/Mac_App_Mode__Draft_.md)
+    - [Mac全屏模式(草案)](OS-Specific/Mac_OS_X/Mac_Fullscreen_Mode__Draft_.md)
+    - [Mac NPAPI插件托管](OS-Specific/Mac_OS_X/Mac_NPAPI_Plugin_Hosting.md)
+    - [Mac上UI定位的相关记录](OS-Specific/Mac_OS_X/Mac_specific_notes_on_UI_Localization.md)
+    - [菜单,快捷键和命令调度](OS-Specific/Mac_OS_X/Menus_Hotkeys_&_Command_Dispatch.md)
     - [Notes from meeting on IOSurface usage and semantics](OS-Specific/Mac_OS_X/Notes_from_meeting_on_IOSurface_usage_and_semantics.md)
     - [OS X Interprocess Communication (Obsolete)](OS-Specific/Mac_OS_X/OS_X_Interprocess_Communication__Obsolete_.md)
     - [Password Manager/Keychain Integration](OS-Specific/Mac_OS_X/Password_Manager_Keychain_Integration.md)
