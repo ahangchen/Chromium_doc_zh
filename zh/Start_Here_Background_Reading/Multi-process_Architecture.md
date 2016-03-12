@@ -1,19 +1,19 @@
-#Multi-process Architecture
-This document describes Chromium's high-level architecture.
+#多进程架构
+这个文档描述了Chromium的高层架构
 
-##Problem
+##问题
 
-It's nearly impossible to build a rendering engine that never crashes or hangs. It's also nearly impossible to build a rendering engine that is perfectly secure.
+构建一个从不会挂起或崩溃的渲染引擎几乎是不可能的。构建一个完全安全的渲染引擎也是几乎不可能的。
 
-In some ways, the current state of web browsers is like that of the single-user, co-operatively multi-tasked operating systems of the past. As a misbehaving application in such an operating system could take down the entire system, so can a misbehaving web page in a modern web browser. All it takes is one browser or plug-in bug to bring down the entire browser and all of the currently running tabs.
+在某种程度上，web浏览器当前状态就像一个与过去的多任务操作系统合作的单独的用户。正如在一个这样的操作系统中的错误程序会让整个系统挂掉，所以一个错误的web页面也可以让一个现代浏览器挂掉。仅仅需要一个浏览器或插件的bug，就饿能让整个浏览器和所有正在运行的标签页停止运行。
 
-Modern operating systems are more robust because they put applications into separate processes that are walled off from one another. A crash in one application generally does not impair other applications or the integrity of the operating system, and each user's access to other users' data is restricted.
+现代操作系统更加鲁棒，因为他们把应用程序分成了彼此隔离的独立线程。一个程序中的crash通常不会影响其他程序或整个操作系统，每个用户对用户数据的访问也是有限制的。
 
-##Architectural overview
+##架构概览
 
-We use separate processes for browser tabs to protect the overall application from bugs and glitches in the rendering engine. We also restrict access from each rendering engine process to others and to the rest of the system. In some ways, this brings to web browsing the benefits that memory protection and access control brought to operating systems.
+我们为浏览器的标签页使用独立的进程，以此保护整个应用程序免受渲染引擎中的bug和故障的伤害。我们也会限制每个渲染引擎进程的相互访问，以及他们与系统其他部分的访问。某些程度上，这为web浏览提供了内存保护，为操作系统提供了访问控制。
 
-We refer to the main process that runs the UI and manages tab and plugin processes as the "browser process" or "browser." Likewise, the tab-specific processes are called "render processes" or "renderers." The renderers use the [WebKit](http://webkit.org/) open-source layout engine for interpreting and laying out HTML.
+我们把运行UI的进程叫做主进程（main），把插件进程称为“浏览器进程”或“浏览器（Browser）”。相似的，标签页相关的进程被称作“渲染线程”或“渲染器（renderer）”。渲染器使用[WebKit](http://webkit.org/)开源引擎来实现中断与html的布局。
 
 ![img](../../arch.png)
 
