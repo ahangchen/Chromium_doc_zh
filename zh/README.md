@@ -108,7 +108,7 @@ https://www.chromium.org/developers/design-documents
   - [在浏览器窗口中,嵌入式Flash的全屏](Feature-Specific/Embedding_Flash_Fullscreen_in_the_Browser_Window.md)
   - [拓展: 设计文档与推荐的api ](Feature-Specific/Extensions_Design_documents_and_proposed_APIs..md): Design documents and proposed APIs.
   - [查找栏](Feature-Specific/Find_Bar.md)
-  - [表单自动填充](Feature-Specific/Form_Autofill.md): A feature to automatically fill out an html form with appropriate data.
+  - [表单自动填充](Feature-Specific/Form_Autofill.md): 用合适的数据自动填充一个html表单的特性
   - [地理信息](Feature-Specific/Geolocation.md): 添加对[W3C Geolocation API](http://www.w3.org/TR/geolocation-API/)的支持,使用native WebKit bindings.
   - [IDN in Google Chrome](Feature-Specific/IDN_in_Google_Chrome.md)
   - [索引式DB(早期草稿)](Feature-Specific/IndexedDB__early_draft_.md)
