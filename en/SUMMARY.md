@@ -1,5 +1,5 @@
-- [Start Here: Background Reading](Start_Here_Background_Reading/README.md)
-  - [Multi-process Architecture](Start_Here_Background_Reading/Multi-process_Architecture.md)
+- [Start Here: 背景阅读](Start_Here_Background_Reading/README.md)
+  - [多进程架构](Start_Here_Background_Reading/Multi-process_Architecture.md)
   - [How Chromium Displays Web Pages](Start_Here_Background_Reading/How_Chromium_Displays_Web_Pages.md)
 - [Design docs in source code](Design_docs_in_source_code.md)
 - [General Architecture](General_Architecture/README.md)
