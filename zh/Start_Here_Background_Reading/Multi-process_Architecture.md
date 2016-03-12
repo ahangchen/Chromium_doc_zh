@@ -17,13 +17,15 @@
 
 ![img](../../arch.png)
 
-###Managing render processes
+###管理渲染进程
 
-Each render process has a global RenderProcess object that manages communication with the parent browser process and maintains global state. The browser maintains a corresponding RenderProcessHost for each render process, which manages browser state and communication for the renderer. The browser and the renderers communicate using [Chromium's IPC system](../General_Architecture/Inter-process_Communication.md).
+每个渲染进程有一个全局的RenderProcess对象，管理它与父浏览器进程之间的通信，维护全局的状态。浏览器为每个渲染进程维护一个对应的RenderViewHost，用来管理浏览器状态，并与渲染器交流。浏览器与渲染器使用[Chromium's IPC system](../General_Architecture/Inter-process_Communication.md)进行交流。
 
-###Managing views
+###管理view
 
-Each render process has one or more RenderView objects, managed by the RenderProcess, which correspond to tabs of content. The corresponding RenderProcessHost maintains a RenderViewHost corresponding to each view in the renderer. Each view is given a view ID that is used to differentiate multiple views in the same renderer. These IDs are unique inside one renderer but not within the browser, so identifying a view requires a RenderProcessHost and a view ID. Communication from the browser to a specific tab of content is done through these RenderViewHost objects, which know how to send messages through their RenderProcessHost to the RenderProcess and on to the RenderView.
+每个渲染进程有一个以上的RenderView对象，由RenderProcess管理（它与标签页的内容相关）。对应的RenderProcessHost维护一个与渲染器中每个view相关的RenderViewHost。每个view被赋予一个view ID,以区分同一个渲染器中的不同view。这些ID在每个渲染器内是唯一的，但在浏览器中不是，所以区分一个view需要一个RenderProcessHost和一个view ID。
+
+浏览器与一个包含内容的特定标签也之间的交流是通过这些RenderViewHost对象来完成的，它们知道如何通过他们的RenderProcessHost向RenderProcess和RenderView送消息。
 
 ##Components and interfaces
 
