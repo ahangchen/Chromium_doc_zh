@@ -38,17 +38,19 @@
 
 Chromium应用程序使用不同的类型，编码风格，以及代码布局和第三方的WebKit代码。WebKit胶水使用Google编码传统与类型为WebKit提供了一个更加方便的嵌入式API（例如，我们使用std::string而非WebCore::String，使用GURL而非KURL）。胶水代码位于/webkit/glue。glue对象通常有与WebKit对象相似的命名，但在开头有Web前缀。例如， WebCore::Frame变成了WebFrame。
 
-WebKit胶水层将Chromium代码的其他部分与WebCore数据类型隔离开，以帮助减少WebCore的改变对Chromium代码基础的影响。因此，WebCore数据类型从不直接被Chromium使用。为了Chromium的便利，需要碰一些WebCore对象时，API会加入WebKit的胶水层。
+WebKit胶水层将Chromium代码的其他部分与WebCore数据类型隔离开，以帮助减少WebCore的改变对Chromium代码基础的影响。因此，WebCore数据类型从不直接被Chromium使用。为了Chromium的便利，需要碰一些WebCore对象时，会把API加入WebKit的胶水层。
 
-The "test shell" application is a bare-bones web browser for testing our WebKit port and glue code. It uses the same glue interface for communicating with WebKit as Chromium does. It provides a simpler way for developers to test new code without having many complicated browser features, threads, and processes. This application is also used to run the automated WebKit tests. However, the downside of the "test shell" is that it doesn't exercise WebKit as Chromium does, in a multi-process way. The content module is embedded in an application called "content shell" which will soon be running the tests instead.
+test shell应用程序是一个为测试我们的WebKit port和胶水代码的裸web浏览器。它在与WebKit交流时，像Chromium那样使用一样的胶水接口。它为开发者提供了简单的方式去测试新的代码，而不用理会许多复杂的浏览器特性，线程和进程。这个应用程序也被用于运行自动化WebKit测试。然而，test shell的缺点在于，它不像Chromium那样用多进程方式实践WebKit。内容模块嵌入在一个被称为“content shell”的应用程序，它很快就能用于测试工作。
 
-##The render process
+##渲染器进程
 ![img](../Renderingintherenderer-v2.png)
 
-Chromium's render process embeds our WebKit port using the glue interface. It does not contain very much code: its job is primarily to be the renderer side of the [IPC](General_Architecture) channel to the browser..
-The most important class in the renderer is the RenderView, located in /content/renderer/render_view_impl.cc. This object represents a web page. It handles all navigation-related commands to and from the browser process. It derives from RenderWidget which provides painting and input event handling. The RenderView communicates with the browser process via the global (per render process) RenderProcess object.
 
-**FAQ: What's the difference between RenderWidget and RenderView?** RenderWidget maps to one WebCore::Widget object by implementing the abstract interface in the glue layer called WebWidgetDelegate.. This is basically a Window on the screen that receives input events and that we paint into. A RenderView inherits from RenderWidget and is the contents of a tab or popup Window. It handles navigational commands in addition to the painting and input events of the widget. There is only one case where a RenderWidget exists without a RenderView, and that's for select boxes on the web page. These are the boxes with the down arrows that pop up a list of options. The select boxes must be rendered using a native window so that they can appear above everything else, and pop out of the frame if necessary. These windows need to paint and receive input, but there isn't a separate "web page" (RenderView) for them.
+Chromium的浏览器进程使用胶水接口嵌入在我们的WebKit port中，它不包含很多代码：它的工作主要是作为渲染器端到浏览器的[IPC](General_Architecture)通道。渲染器中最重要的类是RenderView，位于/content/renderer/render_view_impl.cc。这个对象代表一个web页面。它处理与浏览器之间所有导航相关的命令。它驱动RenderWidget提供绘图和输入事件处理。
+
+RenderView与浏览器进程通过全局（每个渲染器进程）RenderProcess对象与浏览器进程交流。
+
+**FAQ:RenderWidget和RenderViewHost之间的区别在哪里？**RenderWidget通过在胶水层实现抽象接口（称为WebWidgetDelegate）映射到一个WebCore::Widget对象。基本一个屏幕上的window接收输入事件和我们画进去的东西。一个RenderView继承自RenderWidget，并且是一个标签页或一个填出窗口的内容。除了绘制与组件输入事件外，它还处理导航指令。只有一种情况下，RenderWidget可以在没有RenderView时存在，就是网页中的下拉选择框（select box）。下拉选择框必须用native window来渲染，这样他们可以在任何其他空间上方出现，并在必要时弹出。这些window需要绘制和接受输入，但他们没有独立的web页面（RenderView）。
 
 ###Threads in the renderer
 
