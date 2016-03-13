@@ -91,11 +91,11 @@ Firefox风格的NPAPI插件运行在他们自己的进程里，与渲染器隔�
 
 WebContentsObserver (content/public/browser/web_contents_observer.h)接口允许UI线程的对象过滤IPC信息，以及给出关于页面导航的通知。作为一个例子：查看TabHelper (chrome/browser/extensions/tab_helper.h)。
 
-###Browser other threads:
+###浏览器其他线程
 
-To filter and send IPC messages on other browser threads, such as IO/FILE/WEBKIT etc, implement BrowserMessageFilter interface (content/browser/browser_message_filter.h). The BrowserRenderProcessHost object creates and adds the filters in its CreateMessageFilters function.
+为了过滤和发送IPC信息给其他的浏览器线程，比如IO/FILE/WEBKIT等等，实现BrowserMessageFilter接口(content/browser/browser_message_filter.h)。BrowserRenderProcessHost对象在它的CreateMessageFilters函数里创造和增加过滤器。
 
-In general, if a feature has more than a few IPC messages, they should be moved into a separate file (i.e. not be added to render_messages_internal.h). This also helps with filtering messages on a thread other than the IO thread. As an example, see content/common/pepper_file_messages.h. This allows their filter, PepperFileMessageFilter, to easily send the messages to the file thread without having to specify their IDs in multiple places.
+通常，如果一个特性有许多IPC消息，这些消息应该移动到一个独立的文件（例如，不要加到render_messages_internal.h里）。这对过滤线程（除了IO线程）也有帮助。作为一个例子，查看content/common/pepper_file_messages.h。这允许他们的过滤器PepperFileMessageFilter方便的发送文件到file线程，而不用在很多位置指定它们的ID。
 ```c
 void PepperFileMessageFilter::OverrideThreadForMessage(
     const IPC::Message& message,
