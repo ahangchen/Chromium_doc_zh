@@ -36,8 +36,9 @@
 
 ###The WebKit glue（胶水）
 
-The Chromium application uses different types, coding styles, and code layout than the third-party WebKit code. The WebKit "glue" provides a more convenient embedding API for WebKit using Google coding conventions and types (for example, we use std::string instead of WebCore::String and GURL instead of KURL). The glue code is located in /webkit/glue. The glue objects are typically named similar to the WebKit objects, but with "Web" at the beginning. For example, WebCore::Frame becomes WebFrame.
-The WebKit "glue" layer insulates the rest of the Chromium code base from WebCore data types to help minimize the impact of WebCore changes on the Chromium code base. As such, WebCore data types are never used directly by Chromium. APIs are added to the WebKit "glue" for the benefit of Chromium when it needs to poke at some WebCore object.
+Chromium应用程序使用不同的类型，编码风格，以及代码布局和第三方的WebKit代码。WebKit胶水使用Google编码传统与类型为WebKit提供了一个更加方便的嵌入式API（例如，我们使用std::string而非WebCore::String，使用GURL而非KURL）。胶水代码位于/webkit/glue。glue对象通常有与WebKit对象相似的命名，但在开头有Web前缀。例如， WebCore::Frame变成了WebFrame。
+
+WebKit胶水层将Chromium代码的其他部分与WebCore数据类型隔离开，以帮助减少WebCore的改变对Chromium代码基础的影响。因此，WebCore数据类型从不直接被Chromium使用。为了Chromium的便利，需要碰一些WebCore对象时，API会加入WebKit的胶水层。
 
 The "test shell" application is a bare-bones web browser for testing our WebKit port and glue code. It uses the same glue interface for communicating with WebKit as Chromium does. It provides a simpler way for developers to test new code without having many complicated browser features, threads, and processes. This application is also used to run the automated WebKit tests. However, the downside of the "test shell" is that it doesn't exercise WebKit as Chromium does, in a multi-process way. The content module is embedded in an application called "content shell" which will soon be running the tests instead.
 
