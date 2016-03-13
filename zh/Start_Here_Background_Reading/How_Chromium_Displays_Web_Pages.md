@@ -25,11 +25,11 @@
 
 ##WebKit
 
-We use the WebKit open-source project to lay out web pages. This code is pulled from Apple and stored in the /third_party/WebKit directory. WebKit consists primarily of "WebCore" which represents the core layout functionality, and "JavaScriptCore" which runs JavaScript. We only run JavaScriptCore for testing purposes, normally we replace it with our high performance V8 JavaScript engine. We do not actually use the layer that Apple calls "WebKit," which is the embedding API between WebCore and OS X applications such as Safari. We normally refer to the code from Apple generically as "WebKit" for convenience.
+我们使用WebKit开源工程来布局web页面。这部分代码是从Apple中pull过来的，存储在/third_party/WebKit目录。WebKit主要由“WebCore”组成，这代表了核心的布局功能，还有“JavaScriptCore”，这被用来运行JavaScript。我们只在测试时运行JavaScriptCore，通常情况下，我们用我们自己高性能的V8 Javascript引擎来代替它。事实上，我们不完全是使用Apple称之为“WebKit”的那一层，这是WebCore和OS X应用程序（比如Safari）之间的嵌入API。为了方便，我们通常把从Apple学到的代码称为“WebKit”。
 
 ###The WebKit port
 
-At the lowest level we have our WebKit "port." This is our implementation of required platform-specific functionality that interfaces with the platform-independent WebCore code. These files are located in the WebKit tree, typically in chromium directories or as Chromium-suffixed files. Much of our port is not actually OS-specific: you could think of it as the "Chromium port" of WebCore. Some parts, like font rendering, must be handled differently for each platform.
+在最低层，我们有我们的WebKit “port”。这是我们对于需要的平台相关功能的实现，它们与平台无关的WebCore代码交互。这些文件在WebKit树上，通常在chromium目录，或以Chromium为后缀的文件中。我们的port中的大部分其实是与操作系统无关的：你可以把它认为WebCore的“Chromium port”。但某些方面，比如字体渲染，必须在不同平台上做不同的处理。
 
 - Network traffic is handled by our [multi-process resource loading](General_Architecture/Multi-process_Resource_Loading.md) system rather than being handed off to the OS directly from the render process.
 - Graphics uses the Skia graphics library developed for Android. This is a cross-platform graphics library and handles all images and graphics primitives except for text. Skia is located in /third_party/skia. The main entrypoint for graphics operations is /webkit/port/platform/graphics/GraphicsContextSkia.cpp. It uses many other files in the same directory as well as from /base/gfx.
