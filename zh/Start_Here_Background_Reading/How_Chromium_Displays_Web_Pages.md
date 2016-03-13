@@ -1,13 +1,15 @@
-#How Chromium Displays Web Pages
-This document describes how web pages are displayed in Chromium from the bottom up. Be sure you have read the [multi-process architecture](Multi-process_Architecture.md) design document. You will especially want to understand the block diagram of major components. You may also be interested in [multi-process resource loading](General_Architecture/Multi-process_Resource_Loading.md) for how pages are fetched from the network.
+#Chromium如何展示网页
 
-##Conceptual application layers
+这个文档从底层描述了Chromium是如何展示网页的。请确认你已经读过[多进程架构](Multi-process_Architecture.md)这篇文章。你会特别想要了解主要组件的框架。你也可能对[多进程资源加载](General_Architecture/Multi-process_Resource_Loading.md)感兴趣，以了解网页是如何从网络中获取到的。
+
+##应用概念层
 
 ![img](../layer.png)
-(The original Google Doc for this illustration is http://goo.gl/MsEJX which is open for editing by any @chromium.org)
 
+(关于这个阐述的原始Google文档是http://goo.gl/MsEJX，开放给所有@chromium.org的人编辑)
 
-Each box represents a conceptual application layer. No layer should have knowledge of or dependencies on any higher-level layers.
+每个矩形代表了一个应用概念层，每一层都不了解上一层，也对上一层没有依赖。
+
 - WebKit: Rendering engine shared between Safari, Chromium, and all other WebKit-based browsers. The Port is a part of WebKit that integrates with platform dependent system services such as resource loading and graphics.
 
 - Glue: Converts WebKit types to Chromium types. This is our "WebKit embedding layer." It is the basis of two browsers, Chromium, and test_shell (which allows us to test WebKit).
