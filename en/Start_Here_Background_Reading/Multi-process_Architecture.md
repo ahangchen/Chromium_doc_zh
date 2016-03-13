@@ -15,7 +15,7 @@ We use separate processes for browser tabs to protect the overall application fr
 
 We refer to the main process that runs the UI and manages tab and plugin processes as the "browser process" or "browser." Likewise, the tab-specific processes are called "render processes" or "renderers." The renderers use the [WebKit](http://webkit.org/) open-source layout engine for interpreting and laying out HTML.
 
-![img](../../arch.png)
+![img](../../../arch.png)
 
 ###Managing render processes
 
