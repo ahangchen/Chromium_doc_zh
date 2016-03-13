@@ -65,16 +65,17 @@
 
 让渲染器运行在独立的进程中，赋予隐藏的标签页更低的优先级会更加直接。通常，Windows平台上的最小化的进程会把它们的内存自动房东一个“可用内存”池里。在低内存的情况下，Windows会在交换这部分内存到更高优先级内存前，把它们交换到磁盘，以保证用户可见的程序更易响应。我们可以对隐藏的标签页使用相同的策略。当渲染器进程没有顶层标签页时，我们可以释放进程的“工作集”空间，作为一个给系统的信号，让它如果必要的话，优先把这些内存交换到磁盘。因为我们发现，当用户在两个标签页间切换时，减少工作集大小也会减少标签页切换性能，所以我们是逐渐释放这部分内存的。这意味着如果用户切换回最近使用的标签页，这个标签页的内存比最近较少访问的标签页更可能被换入。有着足够内存的用户运行他们所有的程序时根本不会注意到这个进程：事实上Windows只会在需要的时候重新声明这块数据，所以在有充分内存时，不会有性能瓶颈。
 
-This helps us get a more optimal memory footprint in low-memory situations. The memory associated with seldom-used background tabs can get entirely swapped out while foreground tabs' data can be entirely loaded into memory. In contrast, a single-process browser will have all tabs' data randomly distributed in its memory, and it is impossible to separate the used and unused data so cleanly, wasting both memory and performance.
+这能帮助我们在低内存的情况下得到最佳的内存轨迹。几乎不被使用的后台标签页相关的内存可以被完全交换掉，前台标签页的数据可以被完全加载进内存。相反的，一个单进程浏览器会在它的内存里随机分配所有标签页的数据，并且不可能如此清晰地隔离已使用的和未使用的数据，导致了内存和性能上的浪费。
 
-##Plug-ins
+##插件
 
-Firefox-style NPAPI plug-ins run in their own process, separate from renderers. This is described in detail in [Plugin Architecture](../General_Architecture/Plugin_Architecture.md).
+Firefox风格的NPAPI插件运行在他们自己的进程里，与渲染器隔离。这会在[Plugin Architecture](../General_Architecture/Plugin_Architecture.md)中描述。
 
-##How to Add New Features (without bloating RenderView/RenderViewHost/WebContents)
-###Problem
+##如何添加新特性(不用扩充RenderView/RenderViewHost/WebContents)
+###问题
 
-Historically, new features (i.e. autofill to pick an example) have been added by bolting on their code to RenderView in the renderer process, and RenderViewHost in the browser process. If a feature was handled on the IO thread in the browser process, then its IPC messages were dispatched in BrowserMessageFilter. RenderViewHost would often dispatch the IPC message only to call WebContents (through the RenderViewHostDelegate interface), which would then call to another piece of code. All the IPC messages between the browser and renderer were declared in a massive render_messages_internal.h.  Touching each of these files for every feature meant that the classes became bloated.
+过去，新的特性（比如，自动填充选取样例）可以通过把新特性的代码导入到RenderView类（在渲染器进程里）和RenderViewHost类（在浏览器进程里）。如果一个新的特性是在浏览器进程的IO线程里处理的，那么它的IPC信息由BrowserMessageFilter调度。RenderViewHost会只为了调用WebContent对象进程调用IPC信息，这会调用另一块代码。所有的浏览器与渲染器之间的IPC信息会被声明在一个巨大的render_messages_internal.h里，为每个新特性修改所有的这些文件意味着这些类会变得臃肿。
+
 
 ###Solution
 
