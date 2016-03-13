@@ -52,8 +52,9 @@ RenderView与浏览器进程通过全局（每个渲染器进程）RenderProcess
 
 **FAQ:RenderWidget和RenderViewHost之间的区别在哪里？**RenderWidget通过在胶水层实现抽象接口（称为WebWidgetDelegate）映射到一个WebCore::Widget对象。基本一个屏幕上的window接收输入事件和我们画进去的东西。一个RenderView继承自RenderWidget，并且是一个标签页或一个填出窗口的内容。除了绘制与组件输入事件外，它还处理导航指令。只有一种情况下，RenderWidget可以在没有RenderView时存在，就是网页中的下拉选择框（select box）。下拉选择框必须用native window来渲染，这样他们可以在任何其他空间上方出现，并在必要时弹出。这些window需要绘制和接受输入，但他们没有独立的web页面（RenderView）。
 
-###Threads in the renderer
+###渲染器中的线程
 
+每个渲染器有两个线程（查看[多进程架构](Multi-process_Architecture.md)页面来查看图表，或者[threading in Chromium](General_Architecture/Threading.md)）
 Each renderer has two threads (see the [multi-process architecture](Multi-process_Architecture.md) page for a diagram, or threading in Chromium for how to program with them). The render thread is where the main objects such as the RenderView and all WebKit code run. When it communicates to the browser, messages are first sent to the main thread, which in turn dispatches the message to the browser process. Among other things, this allows us to send messages synchronously from the renderer to the browser. This happens for a small set of operations where a result from the browser is required to continue. An example is getting the cookies for a page when requested by JavaScript. The renderer thread will block, and the main thread will queue all messages that are received until the correct response is found. Any messages received in the meantime are subsequently posted to the renderer thread for normal processing.
 ##The browser process
 
