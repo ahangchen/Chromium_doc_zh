@@ -1,5 +1,5 @@
 #How Chromium Displays Web Pages
-This document describes how web pages are displayed in Chromium from the bottom up. Be sure you have read the multi-process architecture design document. You will especially want to understand the block diagram of major components. You may also be interested in multi-process resource loading for how pages are fetched from the network.
+This document describes how web pages are displayed in Chromium from the bottom up. Be sure you have read the [multi-process architecture](Multi-process_Architecture.md) design document. You will especially want to understand the block diagram of major components. You may also be interested in [multi-process resource loading](General_Architecture/Multi-process_Resource_Loading.md) for how pages are fetched from the network.
 
 ##Conceptual application layers
 
@@ -14,7 +14,7 @@ Each box represents a conceptual application layer. No layer should have knowled
 
 - Renderer / Render host: This is Chromium's "multi-process embedding layer." It proxies notifications and commands across the process boundary.
 
-- WebContents: A reusable component that is the main class of the Content module. It's easily embeddable to allow multiprocess rendering of HTML into a view. See the content module pages for more information.
+- WebContents: A reusable component that is the main class of the Content module. It's easily embeddable to allow multiprocess rendering of HTML into a view. See the [content module pages](Other/content_module___content_API.md) for more information.
 
 - Browser: Represents the browser window, it contains multiple WebContentses.
 
@@ -28,8 +28,8 @@ We use the WebKit open-source project to lay out web pages. This code is pulled 
 
 At the lowest level we have our WebKit "port." This is our implementation of required platform-specific functionality that interfaces with the platform-independent WebCore code. These files are located in the WebKit tree, typically in chromium directories or as Chromium-suffixed files. Much of our port is not actually OS-specific: you could think of it as the "Chromium port" of WebCore. Some parts, like font rendering, must be handled differently for each platform.
 
-Network traffic is handled by our multi-process resource loading system rather than being handed off to the OS directly from the render process.
-Graphics uses the Skia graphics library developed for Android. This is a cross-platform graphics library and handles all images and graphics primitives except for text. Skia is located in /third_party/skia. The main entrypoint for graphics operations is /webkit/port/platform/graphics/GraphicsContextSkia.cpp. It uses many other files in the same directory as well as from /base/gfx.
+- Network traffic is handled by our [multi-process resource loading](General_Architecture/Multi-process_Resource_Loading.md) system rather than being handed off to the OS directly from the render process.
+- Graphics uses the Skia graphics library developed for Android. This is a cross-platform graphics library and handles all images and graphics primitives except for text. Skia is located in /third_party/skia. The main entrypoint for graphics operations is /webkit/port/platform/graphics/GraphicsContextSkia.cpp. It uses many other files in the same directory as well as from /base/gfx.
 
 ###The WebKit glue
 
@@ -41,23 +41,23 @@ The "test shell" application is a bare-bones web browser for testing our WebKit 
 ##The render process
 ![img](../Renderingintherenderer-v2.png)
 
-Chromium's render process embeds our WebKit port using the glue interface. It does not contain very much code: its job is primarily to be the renderer side of the IPC channel to the browser..
+Chromium's render process embeds our WebKit port using the glue interface. It does not contain very much code: its job is primarily to be the renderer side of the [IPC](General_Architecture) channel to the browser..
 The most important class in the renderer is the RenderView, located in /content/renderer/render_view_impl.cc. This object represents a web page. It handles all navigation-related commands to and from the browser process. It derives from RenderWidget which provides painting and input event handling. The RenderView communicates with the browser process via the global (per render process) RenderProcess object.
 
 **FAQ: What's the difference between RenderWidget and RenderView?** RenderWidget maps to one WebCore::Widget object by implementing the abstract interface in the glue layer called WebWidgetDelegate.. This is basically a Window on the screen that receives input events and that we paint into. A RenderView inherits from RenderWidget and is the contents of a tab or popup Window. It handles navigational commands in addition to the painting and input events of the widget. There is only one case where a RenderWidget exists without a RenderView, and that's for select boxes on the web page. These are the boxes with the down arrows that pop up a list of options. The select boxes must be rendered using a native window so that they can appear above everything else, and pop out of the frame if necessary. These windows need to paint and receive input, but there isn't a separate "web page" (RenderView) for them.
 
 ###Threads in the renderer
 
-Each renderer has two threads (see the multi-process architecture page for a diagram, or threading in Chromium for how to program with them). The render thread is where the main objects such as the RenderView and all WebKit code run. When it communicates to the browser, messages are first sent to the main thread, which in turn dispatches the message to the browser process. Among other things, this allows us to send messages synchronously from the renderer to the browser. This happens for a small set of operations where a result from the browser is required to continue. An example is getting the cookies for a page when requested by JavaScript. The renderer thread will block, and the main thread will queue all messages that are received until the correct response is found. Any messages received in the meantime are subsequently posted to the renderer thread for normal processing.
+Each renderer has two threads (see the [multi-process architecture](Multi-process_Architecture.md) page for a diagram, or threading in Chromium for how to program with them). The render thread is where the main objects such as the RenderView and all WebKit code run. When it communicates to the browser, messages are first sent to the main thread, which in turn dispatches the message to the browser process. Among other things, this allows us to send messages synchronously from the renderer to the browser. This happens for a small set of operations where a result from the browser is required to continue. An example is getting the cookies for a page when requested by JavaScript. The renderer thread will block, and the main thread will queue all messages that are received until the correct response is found. Any messages received in the meantime are subsequently posted to the renderer thread for normal processing.
 ##The browser process
 
 ![img](../rendering_browser.png)
 
 ###Low-level browser process objects
 
-All IPC communication with the render processes is done on the I/O thread of the browser. This thread also handles all network communication which keeps it from interfering with the user interface.
+All [IPC](General_Architecture) communication with the render processes is done on the I/O thread of the browser. This thread also handles all [network communication](Multi-process_Resource_Loading.md) which keeps it from interfering with the user interface.
 
-When a RenderProcessHost is initialized on the main thread (where the user interface runs), it creates the new renderer process and a ChannelProxy IPC object with a named pipe to the renderer. This object runs on the I/O thread of the browser, listening to the named pipe to the renderer, and automatically forwards all messages back to the RenderProcessHost on the UI thread. A ResourceMessageFilter will be installed in this channel which will filter out certain messages that can be handled directly on the I/O thread such as network requests. This filtering happens in ResourceMessageFilter::OnMessageReceived.
+When a RenderProcessHost is initialized on the main thread (where the user interface runs), it creates the new renderer process and a ChannelProxy [IPC](General_Architecture) object with a named pipe to the renderer. This object runs on the I/O thread of the browser, listening to the named pipe to the renderer, and automatically forwards all messages back to the RenderProcessHost on the UI thread. A ResourceMessageFilter will be installed in this channel which will filter out certain messages that can be handled directly on the I/O thread such as network requests. This filtering happens in ResourceMessageFilter::OnMessageReceived.
 
 The RenderProcessHost on the UI thread is responsible for dispatching all view-specific messages to the appropriate RenderViewHost (it handles a limited number of non-view-specific messages itself). This dispatching happens in RenderProcessHost::OnMessageReceived.
 
@@ -65,13 +65,13 @@ The RenderProcessHost on the UI thread is responsible for dispatching all view-s
 
 View-specific messages come into RenderViewHost::OnMessageReceived. Most of the messages are handled here, and the rest get forwarded to the RenderWidgetHost base class. These two objects map to the RenderView and the RenderWidget in the renderer (see "The Render Process" above for what these mean). Each platform has a view class (RenderWidgetHostView[Aura|Gtk|Mac|Win]) to implement integration into the native view system.
 
-Above the RenderView/Widget is the WebContents object, and most of the messages actually end up as function calls on that object. A WebContents represents the contents of a webpage. It is the top-level object in the content module, and has the responsibility of displaying a web page in a rectangular view. See the content module pages for more information.
+Above the RenderView/Widget is the WebContents object, and most of the messages actually end up as function calls on that object. A WebContents represents the contents of a webpage. It is the top-level object in the content module, and has the responsibility of displaying a web page in a rectangular view. See the [content module pages](Other/content_module___content_API.md) for more information.
 
 The WebContents object is contained in a TabContentsWrapper. That is in chrome/ and is responsible for a tab.
 
 ##Illustrative examples
 
-Additional examples covering navigation and startup are in Getting Around the Chromium Source Code.
+Additional examples covering navigation and startup are in [Getting Around the Chromium Source Code](https://www.chromium.org/developers/how-tos/getting-around-the-chrome-source-code).
 ###Life of a "set cursor" message
 
 Setting the cursor is an example of a typical message that is sent from the renderer to the browser. In the renderer, here is what happens.
