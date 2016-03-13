@@ -38,30 +38,32 @@
 在浏览器进程中:
 
 - Browser对象代表了顶级浏览器窗口
-- The RenderProcessHost object represents the browser side of a single browser ↔ renderer IPC connection. There is one RenderProcessHost in the browser process for each render process.
-- The RenderViewHost object encapsulates communication with the remote RenderView, and RenderWidgetHost handles the input and painting for RenderWidget in the browser.
+- RenderProcessHost对象代表了浏览器端浏览器的与渲染器的IPC连接。在浏览器进程里，每个渲染进程有一个RenderProcessHost对象。
+- RenderViewHost对象封装了与远端浏览器的交流，RenderWidgetHost处理输入并在浏览器中为RenderWidget进行绘制。
 
-For more detailed information on how this embedding works, see the [How Chromium displays web pages design document](How_Chromium_displays_web_pages_design_document).
+想要得到更多关于这种嵌入是如何工作的详细信息，可以查看[How Chromium displays web pages design document](How_Chromium_displays_web_pages_design_document)。
 
-##Sharing the render process
 
-In general, each new window or tab opens in a new process. The browser will spawn a new process and instruct it to create a single *RenderView*.
+##共享绘制器进程
 
-Sometimes it is necessary or desirable to share the render process between tabs or windows. A web application opens a new window that it expects to communicate with synchronously, for example, using window.open in JavaScript. In this case, when we create a new window or tab, we need to reuse the process that the window was opened with. We also have strategies to assign new tabs to existing processes if the total number of processes is too large, or if the user already has a process open navigated to that domain. These strategies are described in [Process Models](../General_Architecture/Process_Models.md).
+通常，每个新的window或标签页是在一个新进程里打开的。浏览器会生成一个新的进程，然后指导它去创建一个*RenderView*。
 
-##Detecting crashed or misbehaving renderers
+有时候，有这样一种必要或欲望在标签页或窗口间共享渲染进程。一个web应用程序会在期望同步交流时，打开一个新的窗口，比如，在javascript里使用window.open。这种情况下，当我们创建一个新的window或标签页时，我们需要重用打开这个window的进程。我们也有一些策略来把新的标签页分配的已有的进程（如果总的进程数太大的话，或者如果用户已经为这个域名打开了一个进程）。这些策略在[Process Models](../General_Architecture/Process_Models.md)里也有阐述。
 
-Each IPC connection to a browser process watches the process handles. If these handles are signaled, the render process has crashed and the tabs are notified of the crash. For now, we show a "sad tab" screen that notifies the user that the renderer has crashed. The page can be reloaded by pressing the reload button or by starting a new navigation. When this happens, we notice that there is no process and create a new one.
 
-##Sandboxing the renderer
+##检测crash或者失误的渲染
 
-Given Webkit is running in a separate process, we have the opportunity to restrict its access to system resources. For example, we can ensure that the renderer's only access to the network is via its parent browser process. Likewise, we can restrict its access to the filesystem using the host operating system's built-in permissions.
+每个到浏览器进程的IPC连接会观察进程句柄。如果这些句柄是signaled（有信号的），那么渲染进程已经挂了，标签页会得到一个通知。从这时开始，我们会展示一个“sad tab”画面来通知用户渲染器已经挂掉了。这个页面可以按刷新按钮或者通过打开一个新的导航来重新加载。这时，我们会注意到没有对应的进程，然后创建一个新的。
 
-In addition to restricting the renderer's access to the filesystem and network, we can also place limitations on its access to the user's display and related objects. We run each render process on a separate Windows "Desktop" which is not visible to the user. This prevents a compromised renderer from opening new windows or capturing keystrokes.
+##渲染器中的沙箱
 
-##Giving back memory
+给定的WebKit是运行在独立的进程中的，所以我们有机会限制它对系统资源的访问。例如，我们可以确保渲染器唯一的网络权限是通过它的父浏览器进程实现。相似的，我们可以限制它对文件系统的访问权限来使用host操作系统内置的权限。
 
-Given renderers running in separate processes, it becomes straightforward to treat hidden tabs as lower priority. Normally, minimized processes on Windows have their memory automatically put into a pool of "available memory." In low-memory situations, Windows will swap this memory to disk before it swaps out higher-priority memory, helping to keep the user-visible programs more responsive. We can apply this same principle to hidden tabs. When a render process has no top-level tabs, we can release that process's "working set" size as a hint to the system to swap that memory out to disk first if necessary. Because we found that reducing the working set size also reduces tab switching performance when the user is switching between two tabs, we release this memory gradually. This means that if the user switches back to a recently used tab, that tab's memory is more likely to be paged in than less recently used tabs. Users with enough memory to run all their programs will not notice this process at all: Windows will only actually reclaim such data if it needs it, so there is no performance hit when there is ample memory.
+除了限制渲染器对文件系统和网络的访问权限，我们也可以限制它对用户的显示器以及相关的东西的一些权限。我们在独立的windows桌面（对用户不可见）中运行每个进程。这避免了让渲染器在新的标签页或捕捉按键之间妥协。
+
+##归还内存
+
+让渲染器运行在独立的进程中，赋予隐藏的标签页更低的优先级会更加直接。通常，Windows平台上的最小化的进程会把它们的内存自动房东一个“可用内存”池里。在低内存的情况下，Windows会在交换这部分内存到更高优先级内存前，把它们交换到磁盘，以保证用户可见的程序更易响应。我们可以对隐藏的标签页使用相同的策略。当渲染器进程没有顶层标签页时，我们可以释放进程的“工作集”空间，作为一个给系统的信号，让它如果必要的话，优先把这些内存交换到磁盘。因为我们发现，当用户在两个标签页间切换时，减少工作集大小也会减少标签页切换性能，所以我们是逐渐释放这部分内存的。这意味着如果用户切换回最近使用的标签页，这个标签页的内存比最近较少访问的标签页更可能被换入。有着足够内存的用户运行他们所有的程序时根本不会注意到这个进程：事实上Windows只会在需要的时候重新声明这块数据，所以在有充分内存时，不会有性能瓶颈。
 
 This helps us get a more optimal memory footprint in low-memory situations. The memory associated with seldom-used background tabs can get entirely swapped out while foreground tabs' data can be entirely loaded into memory. In contrast, a single-process browser will have all tabs' data randomly distributed in its memory, and it is impossible to separate the used and unused data so cleanly, wasting both memory and performance.
 
