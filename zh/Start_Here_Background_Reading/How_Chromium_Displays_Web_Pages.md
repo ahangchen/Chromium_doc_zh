@@ -31,10 +31,10 @@
 
 在最低层，我们有我们的WebKit “port”。这是我们对于需要的平台相关功能的实现，它们与平台无关的WebCore代码交互。这些文件在WebKit树上，通常在chromium目录，或以Chromium为后缀的文件中。我们的port中的大部分其实是与操作系统无关的：你可以把它认为WebCore的“Chromium port”。但某些方面，比如字体渲染，必须在不同平台上做不同的处理。
 
-- Network traffic is handled by our [multi-process resource loading](General_Architecture/Multi-process_Resource_Loading.md) system rather than being handed off to the OS directly from the render process.
-- Graphics uses the Skia graphics library developed for Android. This is a cross-platform graphics library and handles all images and graphics primitives except for text. Skia is located in /third_party/skia. The main entrypoint for graphics operations is /webkit/port/platform/graphics/GraphicsContextSkia.cpp. It uses many other files in the same directory as well as from /base/gfx.
+- 网络交流由我们的[多进程资源加载](General_Architecture/Multi-process_Resource_Loading.md)系统处理，而非直接从渲染线程跳到操作系统处理
+- 图像使用了为Android开发的Skia图形库。这是一个跨平台的图形库，处理所有的图形和图像，除了文本。Skia在/third_party/skia里。图形操作的主要入口是/webkit/port/platform/graphics/GraphicsContextSkia.cpp。它在这个目录里，使用了许多其他的文件，还有那些/base/gfx里的文件。
 
-###The WebKit glue
+###The WebKit glue（胶水）
 
 The Chromium application uses different types, coding styles, and code layout than the third-party WebKit code. The WebKit "glue" provides a more convenient embedding API for WebKit using Google coding conventions and types (for example, we use std::string instead of WebCore::String and GURL instead of KURL). The glue code is located in /webkit/glue. The glue objects are typically named similar to the WebKit objects, but with "Web" at the beginning. For example, WebCore::Frame becomes WebFrame.
 The WebKit "glue" layer insulates the rest of the Chromium code base from WebCore data types to help minimize the impact of WebCore changes on the Chromium code base. As such, WebCore data types are never used directly by Chromium. APIs are added to the WebKit "glue" for the benefit of Chromium when it needs to poke at some WebCore object.
