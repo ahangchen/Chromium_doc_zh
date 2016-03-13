@@ -77,19 +77,19 @@ Firefox风格的NPAPI插件运行在他们自己的进程里，与渲染器隔�
 过去，新的特性（比如，自动填充选取样例）可以通过把新特性的代码导入到RenderView类（在渲染器进程里）和RenderViewHost类（在浏览器进程里）。如果一个新的特性是在浏览器进程的IO线程里处理的，那么它的IPC信息由BrowserMessageFilter调度。RenderViewHost会只为了调用WebContent对象进程调用IPC信息，这会调用另一块代码。所有的浏览器与渲染器之间的IPC信息会被声明在一个巨大的render_messages_internal.h里，为每个新特性修改所有的这些文件意味着这些类会变得臃肿。
 
 
-###Solution
+###解决方案
 
-We have added helper classes and mechanisms for filtering IPC messages on each of the above threads. This makes it easier to write self contained features.
+我们增加了helper类和对上面的每个线程IPC信息的过滤的机制。这使得编写自洽的特性更加容易。
 
-####Renderer side:
+####渲染器端
 
-If you want to filter and send IPC messages, implement the RenderViewObserver interface (content/renderer/render_view_observer.h). The RenderViewObserver base class takes a RenderView and manages the object's lifetime so that it's tied to RenderView (this is overridable). The class can then filter and send IPC messages, and additionally gets notification about frame loading and closing, which many features need.  As an example, see ChromeExtensionHelper (chrome/renderer/extensions/chrome_extension_helper.h).
+如果你想要过滤和发送IPC信息，实现RenderViewObserver接口(content/renderer/render_view_observer.h)。RenderViewObserver基类持有一个RenderView类，管理对象的生命周期，使其绑定到RenderView（它是可重写的）。这个类就可以过滤和发送IPC消息，此外还可以获得许多特性需要的关于页面加载与关闭的通知。作为一个例子，可以查看ChromeExtensionHelper (chrome/renderer/extensions/chrome_extension_helper.h)。
 
-If your feature has part of the code in WebKit, avoid having callbacks go through WebViewClient interface so that we don't bloat it. Consider creating a new WebKit interface that the WebKit code calls, and have the renderer side class implement it. As an example, see WebAutoFillClient (WebKit/chromium/public/WebAutoFillClient.h).
+如果你的特性有一部分代码是在WebKit内的，避免通过WebViewClient接口回调，这样我们就不会使得WebViewClient变得庞大。考虑创建新的WebKit接口给WebKit代码调用，让渲染器端的类去实现它。作为一个例子，查看WebAutoFillClient (WebKit/chromium/public/WebAutoFillClient.h).
 
-###Browser UI thread:
+###浏览器UI线程
 
-The WebContentsObserver (content/public/browser/web_contents_observer.h) interface allows objects on the UI thread to filter IPC messages and also gives notifications about frame navigation. As an example, see TabHelper (chrome/browser/extensions/tab_helper.h).
+WebContentsObserver (content/public/browser/web_contents_observer.h)接口允许UI线程的对象过滤IPC信息，以及给出关于页面导航的通知。作为一个例子：查看TabHelper (chrome/browser/extensions/tab_helper.h)。
 
 ###Browser other threads:
 
