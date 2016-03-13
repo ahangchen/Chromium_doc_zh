@@ -54,25 +54,25 @@ RenderView与浏览器进程通过全局（每个渲染器进程）RenderProcess
 
 ###渲染器中的线程
 
-每个渲染器有两个线程（查看[多进程架构](Multi-process_Architecture.md)页面来查看图表，或者[threading in Chromium](General_Architecture/Threading.md)）
-Each renderer has two threads (see the [multi-process architecture](Multi-process_Architecture.md) page for a diagram, or threading in Chromium for how to program with them). The render thread is where the main objects such as the RenderView and all WebKit code run. When it communicates to the browser, messages are first sent to the main thread, which in turn dispatches the message to the browser process. Among other things, this allows us to send messages synchronously from the renderer to the browser. This happens for a small set of operations where a result from the browser is required to continue. An example is getting the cookies for a page when requested by JavaScript. The renderer thread will block, and the main thread will queue all messages that are received until the correct response is found. Any messages received in the meantime are subsequently posted to the renderer thread for normal processing.
-##The browser process
+每个渲染器有两个线程（查看[多进程架构](Multi-process_Architecture.md)页面来查看图表，或者[threading in Chromium](General_Architecture/Threading.md)来理解如何用它们编程）。渲染线程是主要的对象，比如RenderView和所有的WebKit代码运行的地方。当它与浏览器交流时，消息一开始发送到主线程，主线程轮流分发消息给浏览器进程。在其他情况里，这允许我们从渲染器同步发送消息到浏览器。当一个来自浏览器的结果是用于后续操作时，这可以用于小量的操作。一个例子是，JavaScript从网页请求cookie。渲染器线程会阻塞，主线程会让所有的接收到的消息排队，直到得到正确的响应。此时任何接收到的消息会突然发送给渲染器线程以执行普通的处理。
+
+##浏览器进程
 
 ![img](../rendering_browser.png)
 
-###Low-level browser process objects
+###底层浏览器进程对象
 
-All [IPC](General_Architecture) communication with the render processes is done on the I/O thread of the browser. This thread also handles all [network communication](Multi-process_Resource_Loading.md) which keeps it from interfering with the user interface.
+所有的与渲染器进程交流的[IPC](General_Architecture)是在浏览器的I/O线程完成的。这个线程也处理所有的[网络交流](Multi-process_Resource_Loading.md),使得它不受用户界面的干扰。
 
-When a RenderProcessHost is initialized on the main thread (where the user interface runs), it creates the new renderer process and a ChannelProxy [IPC](General_Architecture) object with a named pipe to the renderer. This object runs on the I/O thread of the browser, listening to the named pipe to the renderer, and automatically forwards all messages back to the RenderProcessHost on the UI thread. A ResourceMessageFilter will be installed in this channel which will filter out certain messages that can be handled directly on the I/O thread such as network requests. This filtering happens in ResourceMessageFilter::OnMessageReceived.
+当一个RenderProcessHost对象在主线程完成初始化（当用户界面运行时），它会创造新的渲染器进程和一个通道代理[IPC](General_Architecture)对象（有一个命名了的管道通向渲染器），自动转发所有的消息回给UI线程的RenderProcessHost。一个ResourceMessageFilter会安装在这个通道，它会过滤我们指定的消息，以直接在I/O线程处理（比如网络请求）。这个过滤器发生在ResourceMessageFilter::OnMessageReceived里。
 
-The RenderProcessHost on the UI thread is responsible for dispatching all view-specific messages to the appropriate RenderViewHost (it handles a limited number of non-view-specific messages itself). This dispatching happens in RenderProcessHost::OnMessageReceived.
+UI线程中的RenderProcessHost负责分发所有view相关消息给合适的RenderViewHost（它自己处理有限数量的与View相关的消息）。这种分发发生在RenderProcessHost::OnMessageReceived。
 
-###High-level browser process objects
+###上层浏览器进程对象
 
-View-specific messages come into RenderViewHost::OnMessageReceived. Most of the messages are handled here, and the rest get forwarded to the RenderWidgetHost base class. These two objects map to the RenderView and the RenderWidget in the renderer (see "The Render Process" above for what these mean). Each platform has a view class (RenderWidgetHostView[Aura|Gtk|Mac|Win]) to implement integration into the native view system.
+View相关消息出现在RenderViewHost::OnMessageReceived。这里处理的大部分消息，剩下的部分转发给RenderWidgetHost基类。这两个对象在渲染器里里映射到RenderView和RenderWidget（查看上面的“渲染器进程”来理解它们的含义）。每个平台有一个view类(RenderWidgetHostView[Aura|Gtk|Mac|Win])以集成到native view系统。
 
-Above the RenderView/Widget is the WebContents object, and most of the messages actually end up as function calls on that object. A WebContents represents the contents of a webpage. It is the top-level object in the content module, and has the responsibility of displaying a web page in a rectangular view. See the [content module pages](Other/content_module___content_API.md) for more information.
+在RenderView/Widget上面是WebContents对象，大部分的消息事实上结束于这个对象的函数调用。一个WebContent代表网页的内容。它是内容模块的顶层对象，并且负责在一个矩形的view中展示网页。查看[内容模块页面](Other/content_module___content_API.md)获取更多信息。
 
 The WebContents object is contained in a TabContentsWrapper. That is in chrome/ and is responsible for a tab.
 
