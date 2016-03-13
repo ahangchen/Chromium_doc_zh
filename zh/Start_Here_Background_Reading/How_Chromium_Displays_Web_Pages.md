@@ -10,17 +10,18 @@
 
 每个矩形代表了一个应用概念层，每一层都不了解上一层，也对上一层没有依赖。
 
-- WebKit: Rendering engine shared between Safari, Chromium, and all other WebKit-based browsers. The Port is a part of WebKit that integrates with platform dependent system services such as resource loading and graphics.
 
-- Glue: Converts WebKit types to Chromium types. This is our "WebKit embedding layer." It is the basis of two browsers, Chromium, and test_shell (which allows us to test WebKit).
+- WebKit：Safari，Chromium和其他所有基于WebKit的浏览器共享的渲染引擎。WebKit Port是WebKit的一个部分，用来集成平台独立的系统服务，比如资源加载与图像。
 
-- Renderer / Render host: This is Chromium's "multi-process embedding layer." It proxies notifications and commands across the process boundary.
+- Glue：将WebKit的类型转为Chromium的类型。这就是我们的“WebKit嵌入层”。这是两个browser，Chromium，和test_shell（允许我们测试WebKit）的基础。
 
-- WebContents: A reusable component that is the main class of the Content module. It's easily embeddable to allow multiprocess rendering of HTML into a view. See the [content module pages](Other/content_module___content_API.md) for more information.
+- Renderer / Render host： 这是Chromium的“多进程嵌入层”。它代理通知，并跨过进程边界执行指令。
 
-- Browser: Represents the browser window, it contains multiple WebContentses.
+- WebContents：一个可重用的组件，是内容模块的主类。它易于嵌入，允许多进程将HTML绘制成View。查看[content module pages](Other/content_module___content_API.md)以获得更多信息。
 
-- Tab Helpers: Individual objects that can be attached to a WebContents (via the WebContentsUserData mixin). The Browser attaches an assortment of them to the WebContentses that it holds (one for favicons, one for infobars, etc).
+- Browser: 代表浏览器窗口，包含多个WebContent。
+
+- Tab Helpers：可以被绑定到WebContent的独立对象（通过WebContentsUserData混杂）。浏览器将这些独立对象中的一种绑定到WebContent给它持有，一个给网站图标，一个给信息栏，等等。
 
 ##WebKit
 
