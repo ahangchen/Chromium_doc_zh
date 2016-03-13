@@ -23,7 +23,6 @@
   - [views Windowing系统](UI_Framework/views_Windowing_system.md)
   - [Aura](UI_Framework/Aura.md)
   - [Native控制](UI_Framework/NativeControls.md)
-  - 用View和Aura实现聚焦与激活
 - [Graphics](Graphics/README.md)
   - [概述](Graphics/Overview.md)
   - [Chrome中使用的GPU加速](Graphics/GPU_Accelerated_Compositing_in_Chrome.md)
