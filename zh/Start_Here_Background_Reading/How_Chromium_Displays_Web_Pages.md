@@ -106,23 +106,22 @@ WebContents对象包含在一个TabContentsWrapper中，它位于chrome/。负�
 
 发送一个鼠标点击是一个经典的浏览器到渲染器的例子。
 
-  Windows消息在浏览器的UI线程被RenderWidgetHostViewWin::OnMouseEvent接收，
-- The Windows message is received on the UI thread of the browser by RenderWidgetHostViewWin::OnMouseEvent which then calls ForwardMouseEventToRenderer in the same class.
+- Windows消息在浏览器的UI线程被RenderWidgetHostViewWin::OnMouseEvent接收，然后在同一个类中调用ForwardMouseEventToRenderer。
+  
+- 转发函数打包输入时间为一个跨平台的WebMouseEvent，最后把它发送到它所关联的RenderWidgetHost.
 
-- The forwarder function packages the input event into a cross-platform WebMouseEvent and ends up sending it to the RenderWidgetHost it is associated with.
+- RenderWidgetHost::ForwardInputEvent创建一个IPC消息ViewMsg_HandleInputEvent，将这个WebInputEvent对象序列化进去，然后调用RenderWidgetHost::Send。
 
-- RenderWidgetHost::ForwardInputEvent creates an IPC message ViewMsg_HandleInputEvent, serializes the WebInputEvent to it, and calls RenderWidgetHost::Send.
+- 这只是转发到自己的RenderProcessHost::Send函数，它会轮流将消息发送给IPC::ChannelProxy。
 
-- This just forwards to the owning RenderProcessHost::Send function, which in turn gives the message to the IPC::ChannelProxy.
+- 在内部，IPC::ChannelProxy会将消息代理到浏览器的I/O线程，将它写入渲染器对应的命名管道。
 
-- Internally, the IPC::ChannelProxy will proxy the message to the I/O thread of the browser and write it to the named pipe of the corresponding renderer.
+注意，许多种消息创建于WebContents，特别是导航类的消息。这些消息遵循一个相似的从WebContents到RenderViewHost的路径。
 
-Note that many other types of messages are created in the WebContents, especially navigational ones. These follow a similar path from the WebContents to the RenderViewHost.
+然后渲染器得到了控制权：
 
-Then the renderer takes control:
+- 渲染器主线程的IPC::Channel读取浏览器发送的消息，然后IPC::ChannelProxy将消息代理到渲染线程。
 
-- IPC::Channel on the main thread of the renderer reads the message sent by the browser, and IPC::ChannelProxy proxies to the renderer thread.
+- RenderView::OnMessageReceived拿到这个消息。许多种消息在这里直接处理。由于点击事件不是，它继续往下走（和其他所有没有被处理的消息一起）到RenderWidget::OnMessageReceived，它会轮流把消息转发给RenderWidget::OnHandleInputEvent。
 
-- RenderView::OnMessageReceived gets the message. Many types messages are handled here directly. Since the click message is not, it falls through (with all other unhandled messages) to RenderWidget::OnMessageReceived which in turn forwards it to RenderWidget::OnHandleInputEvent.
-
-- The input event is given to WebWidgetImpl::HandleInputEvent where it is converted to a WebKit PlatformMouseEvent class and given to the WebCore::Widget class inside WebKit.
+- 输入事件被交给WebWidgetImpl::HandleInputEvent，在这里它被转换成一个WebKit PlatformMouseEvent类，然后交给WebKit内的WebCore::Widget类。
