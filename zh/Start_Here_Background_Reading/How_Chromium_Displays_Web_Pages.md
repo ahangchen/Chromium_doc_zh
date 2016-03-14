@@ -88,14 +88,15 @@ WebContents对象包含在一个TabContentsWrapper中，它位于chrome/。负�
 
 - 它会调用RenderWidget::Send来分发消息。这个方法也用于RenderView向browser分发消息。它会调用 RenderThread::Send.
 
-- 这会调用IPC::SyncChannel，在内部代理消息 which will internally proxy the message to the main thread of the renderer and post it to the named pipe for sending to the browser.
+- 这会调用IPC::SyncChannel，它在内部代理消息到渲染器的主线程，并将其发送给命名的管道以发送给浏览器。
 
-Then the browser takes control:
+然后浏览器获得了控制权：
 
-- The IPC::ChannelProxy in the RenderProcessHost receives all message on the I/O thread of the browser. It first sends them through the ResourceMessageFilter that dispatches network requests and related messages directly on the I/O thread. Since our message is not filtered out, it continues on to the UI thread of the browser (the IPC::ChannelProxy does this internally).
-
-- RenderProcessHost::OnMessageReceived in content/browser/renderer_host/render_process_host_impl.cc gets the messages for all views in the corresponding render process. It handles several types of messages directly, and for the rest forwards to the appropriate RenderViewHost corresponding to the source RenderView that sent the message.
-
+- RenderProcessHost中的IPC::ChannelProxy通过浏览器的I/O线程接收所有的消息。它首先把他们通过ResourceMessageFilter（它在I/O线程上直接分发网络请求与相关的消息）发送出去。由于我们的消息没有被过滤掉，它继续发送到浏览器的UI线程（IPC::ChannelProxy在内部完成这个事情）。
+  
+  content/browser/renderer_host/render_process_host_impl.cc中的RenderProcessHost::OnMessageReceived为所有的View在对应的渲染进程获取消息。它直接处理几种消息，并把剩下的部分转发到合适的与发送消息的源RenderView对应的RenderViewHost。
+  
+  
 - The message arrives at RenderViewHost::OnMessageReceived in content/browser/renderer_host/render_view_host_impl.cc. Many messages are handled here, but ours is not because it's a message sent from the RenderWidget and handled by the RenderWidgetHost.
 
 - All unhandled messages in RenderViewHost are automatically forwarded to the RenderWidgetHost, including our set cursor message.
