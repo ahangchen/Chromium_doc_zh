@@ -80,11 +80,11 @@ WebContents对象包含在一个TabContentsWrapper中，它位于chrome/。负�
 
 额外的例子（包含了导航和启动相关代码）在[Getting Around the Chromium Source Code](https://www.chromium.org/developers/how-tos/getting-around-the-chrome-source-code)里。
 
-###“设置游标”消息的生命周期
+###“设置光标”消息的生命周期
 
-设置游标是一个渲染器发往浏览器的典型消息的例子。在渲染器端，以下是发生的事情：
+设置光标是一个渲染器发往浏览器的典型消息的例子。在渲染器端，以下是发生的事情：
 
-- 设置游标消息由WebKit内部生成，通常是作为输入事件的响应。设置游标消息开始于 content/renderer/render_widget.cc中的RenderWidget::SetCursor。
+- 设置光标消息由WebKit内部生成，通常是作为输入事件的响应。设置光标消息开始于 content/renderer/render_widget.cc中的RenderWidget::SetCursor。
 
 - 它会调用RenderWidget::Send来分发消息。这个方法也用于RenderView向browser分发消息。它会调用 RenderThread::Send.
 
@@ -96,12 +96,11 @@ WebContents对象包含在一个TabContentsWrapper中，它位于chrome/。负�
   
   content/browser/renderer_host/render_process_host_impl.cc中的RenderProcessHost::OnMessageReceived为所有的View在对应的渲染进程获取消息。它直接处理几种消息，并把剩下的部分转发到合适的与发送消息的源RenderView对应的RenderViewHost。
   
-  
-- The message arrives at RenderViewHost::OnMessageReceived in content/browser/renderer_host/render_view_host_impl.cc. Many messages are handled here, but ours is not because it's a message sent from the RenderWidget and handled by the RenderWidgetHost.
+  消息到达content/browser/renderer_host/render_view_host_impl.cc中的RenderViewHost::OnMessageReceived。许多消息是在这里处理的，但我们这时的消息不是，因为它是一个从RenderWidget来，由RenderWidgetHost处理的消息。
 
-- All unhandled messages in RenderViewHost are automatically forwarded to the RenderWidgetHost, including our set cursor message.
+  RenderViewHost中所有未处理的消息自动转发给了RenderWidgetHost，包括我们的设置光标消息。
 
-- The message map in content/browser/renderer_host/render_view_host_impl.cc finally receives the message in RenderWidgetHost::OnMsgSetCursor and calls the appropriate UI function to set the mouse cursor.
+  这个映射到content/browser/renderer_host/render_view_host_impl.cc的消息最终在RenderWidgetHost::OnMsgSetCursor接收到消息，并调用合适的UI函数来设置鼠标的光标。
 
 ###Life of a "mouse click" message
 
