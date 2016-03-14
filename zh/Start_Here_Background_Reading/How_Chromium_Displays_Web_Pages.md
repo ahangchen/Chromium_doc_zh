@@ -102,10 +102,11 @@ WebContents对象包含在一个TabContentsWrapper中，它位于chrome/。负�
 
   这个映射到content/browser/renderer_host/render_view_host_impl.cc的消息最终在RenderWidgetHost::OnMsgSetCursor接收到消息，并调用合适的UI函数来设置鼠标的光标。
 
-###Life of a "mouse click" message
+###“鼠标点击”消息的生命周期
 
-Sending a mouse click is a typical example of a message going from the browser to the renderer.
+发送一个鼠标点击是一个经典的浏览器到渲染器的例子。
 
+  Windows消息在浏览器的UI线程被RenderWidgetHostViewWin::OnMouseEvent接收，
 - The Windows message is received on the UI thread of the browser by RenderWidgetHostViewWin::OnMouseEvent which then calls ForwardMouseEventToRenderer in the same class.
 
 - The forwarder function packages the input event into a cross-platform WebMouseEvent and ends up sending it to the RenderWidgetHost it is associated with.
