@@ -85,8 +85,8 @@ class FooDialogView : public views::View {
   ...
 }
 ```
-```c++
 to this:
+```c++
 
 // browser.cc:
 
