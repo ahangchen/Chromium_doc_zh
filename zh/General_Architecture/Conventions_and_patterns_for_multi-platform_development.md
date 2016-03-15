@@ -1,29 +1,30 @@
-#Conventions and patterns for multi-platform development
+#跨平台开发的约定与模式
 
-Chromium is a large and complex cross-platform product. We try to share as much code as possible between platforms, while implementing the UI and OS integration in the most appropriate way for each. While this gives a better user experience, it adds extra complexity to the code. This document describes the recommended practices for keeping such cross-platform code clean.
+Chromium是一个巨大而复杂的跨平台产品。我们试图在不同平台间共享尽可能多的代码，同时为每个平台用最合适的方式实现UI和操作系统集成。这提供了一个更好的用户体验，但它给代码增加了额外的复杂度。这个文档描述了保持这种跨平台代码简洁性的推荐实践。
 
-We use a variety of different file naming suffixes to indicate when a file should be used:
- 
-- Mac files use the _mac suffix for lower-level files and Cocoa (Mac UI) files use the _cocoa suffix.
-- iOS files use the _ios suffix (although iOS also uses some specific _mac files).
-- Linux files use _linux suffix for lower-level files, _gtk for GTK-specific files, and _x for X Windows (with no GTK) specific files.
-- Windows files use the _win suffix.
-- Posix files shared between Mac, iOS, and Linux use the _posix suffix.
-- Files for Chrome's "Views" UI (on Windows and experimental GTK) layout system use the _views suffix.
+我们使用大量不同带后缀的文件来表示一个文件应该被使用的时机：
 
-The separate front-ends of the browser are contained in their own directories:
+- Mac文件中，低层级文件使用_mac后缀，Cocoa（Mac UI）文件使用_cocoa后缀。
+- iOS文件使用_ios后缀（尽快iOS使用一些特定的_mac文件）。
+- Linux文件中，低层级文件使用_linux后缀，GTK相关文件使用_gtk后缀，X Windows（不使用GTK）特定文件使用_x后缀。
+- Windows文件使用_win后缀。
+- Mac，iOS和Linux共享的Posix文件使用_posix后缀。
+- Chrome view UI相关布局系统文件（在Windows和实验室环境GTK上）使用_views后缀。
+
+独立的浏览器后端文件放在他们自己的目录里：
 
 - Mac Cocoa: chrome/browser/ui/cocoa
 - Linux GTK: chrome/browser/ui/gtk
-- Windows Views (and the experimental GTK-views): chrome/browser/ui/views
+- Windows Views (和实验室GTK-views): chrome/browser/ui/views
 
-The [Coding Style](https://www.chromium.org/developers/coding-style) page lists some stylistic rules affecting platform-specific defines.
+[编码风格](https://www.chromium.org/developers/coding-style) 页面列出一些风格上影响平台相关定义的规则。
 
-##How to separate platform-specific code
+##如何隔离平台相关代码
 
-###Small platform differences: #ifdefs
+###小的平台差异： #ifdefs
 
-When you have a class with many shared functions or data members, but a few differences, use #ifdefs around the platform-specific parts. If there are no significant differences, it's easier for everybody to keep everything in one place.
+当你有一个有着许多共享函数或数据成员和些许不同之处的类，在平台相关的部分使用#ifdefs。如果没有显著的差异，这会让每个人将每件事隔离开更加容易。
+
 ###Small platform differences in the header, larger ones in the implementation: split the implementation
 
 There may be cases where there are few header file differences, but significant implementation differences for parts of the implementation. For example, base/waitable_event.h defines a common API with a couple of platform differences.
