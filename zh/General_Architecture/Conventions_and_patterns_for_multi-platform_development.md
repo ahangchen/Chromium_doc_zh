@@ -25,14 +25,15 @@ Chromium是一个巨大而复杂的跨平台产品。我们试图在不同平台
 
 当你有一个有着许多共享函数或数据成员和些许不同之处的类，在平台相关的部分使用#ifdefs。如果没有显著的差异，这会让每个人将每件事隔离开更加容易。
 
-###Small platform differences in the header, larger ones in the implementation: split the implementation
+###小的平台差异在头文件处理，大的差异在实现中处理：片段实现
 
-There may be cases where there are few header file differences, but significant implementation differences for parts of the implementation. For example, base/waitable_event.h defines a common API with a couple of platform differences.
+可能有这样的情况，头文件几乎没有差别，部分实现有巨大的实现差异。例如base/waitable_event.h定义了一个通用的有着大量平台差异的API。
 
-With significant implementation differences, the implementation files can be split. The prevents you from having to do a lot of #ifdefs for the includes necessary for each platform and also makes it easier to follow (three versions each of a set of functions in a file can get confusing). There can be different .cc files for each platform, as in base/waitable_event_posix.cc that implements posix-specific functions. If there were cross-platform functions in this class, they would be put in a file called base/waitable_event.cc.
+有着显著的实现差异，实现文件可以被隔离出来。这可以避免你陷入一个必须在include必要文件中为每个平台写一大堆#ifdef，并且使得追踪源码更容易（三个版本的函数集的代码放在同一个文件里可能令人困惑）。每个平台可以有不同的.cc文件，正如base/waitable_event_posix.cc中实现posix相关函数。如果在这个类里有跨平台的函数，他们应该被丢到一个名为base/waitable_event.cc的函数。
 
-###Complete platform implementations and callers: separate implementations
+###全平台实现和调用器：隔离实现
 
+当抽象层面没有东西实现，就要在每个单独的文件里分别实现类。
 When virtually none of the implementation is shared, implement the class separately for each platform in separate files.
 
 If all implementations are in a cross-platform directory such as base, they should be named with the platform name, such as FooBarWin in base/foo_bar_win.h. This case will generally be rare since files in these cross-platform files are normally designed to be used by cross-platform code, and separate header files makes this impossible. In some places we've defined a commonly named class in different files, so PlatformDevice is defined in skia/ext/platform_device_win.h, skia/ext/platform_device_linux.h, and skia/ext/platform_device_mac.h. This is OK if you really need to refer to this class in cross-platform code. But generally, cases like this will fall into the following rule.
