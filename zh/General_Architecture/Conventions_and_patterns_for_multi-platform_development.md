@@ -34,10 +34,10 @@ Chromium是一个巨大而复杂的跨平台产品。我们试图在不同平台
 ###全平台实现和调用器：隔离实现
 
 当抽象层面没有东西实现，就要在每个单独的文件里分别实现类。
-When virtually none of the implementation is shared, implement the class separately for each platform in separate files.
 
-If all implementations are in a cross-platform directory such as base, they should be named with the platform name, such as FooBarWin in base/foo_bar_win.h. This case will generally be rare since files in these cross-platform files are normally designed to be used by cross-platform code, and separate header files makes this impossible. In some places we've defined a commonly named class in different files, so PlatformDevice is defined in skia/ext/platform_device_win.h, skia/ext/platform_device_linux.h, and skia/ext/platform_device_mac.h. This is OK if you really need to refer to this class in cross-platform code. But generally, cases like this will fall into the following rule.
+如果所有的实现都在跨平台目录中，比如base，他们应该用平台的名字命名，比如base/foo_bar_win.h中的FooBarWin。这种例子通常很少，因为这些跨平台的文件通常设计用于跨平台代码，独立的头文件使得这种例子变得不可能。在一些地方，我们已经在不同的文件里定义了一个普通命名的类，所以PlatformDevice定义在skia/ext/platform_device_win.h, skia/ext/platform_device_linux.h, and skia/ext/platform_device_mac.h。如果你真的需要在跨平台代码里引用这个类，这是OK的。但通常，这种例子会变得遵循下面的这种规则。
 
+如果实现存在于平台相关目录，比如chrome/browser/ui/cocoa或chrome/browser/ui/views，这个类就没有机会用于跨平台代码了。这种情况下，这个类和文件名应该忽略平台的名字，因为它是多余的。所以FooBar是
 If the implementations live in platform-specific directories such as chrome/browser/ui/cocoa or chrome/browser/ui/views, there is no chance that the class will be used by cross-platform code. In this case, the classes and filenames should omit the platform name since it would be redundant. So you would have FooBar implemented in chrome/browser/ui/cocoa/foo_bar.h.
 
 Don't create different classes with different names for each platform and typedef it to a shared name. We used to have this for PlatformCanvas, where it was a typedef of PlatformCanvasMac, PlatformCanvasLinux, or PlatformCanvasWin depending on the platform. This makes it impossible to forward-declare the class, which is an important tool for reducing dependencies.
