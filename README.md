@@ -5,6 +5,13 @@ https://www.chromium.org/developers/design-documents
 
 翻译之加强对android webview理解
 
+不断更新ing，欢迎star
+> gitbook地址：https://ahangchen.gitbooks.io/chromium_doc_zh/content/zh//
+
+> github地址： https://github.com/ahangchen/Chromium_doc_zh 
+
+也欢迎志同道合的朋友一起翻译。
+
 #设计文档
 
 - [Start Here: 背景阅读](Start_Here_Background_Reading/README.md): 描述Chromium的宏观架构
