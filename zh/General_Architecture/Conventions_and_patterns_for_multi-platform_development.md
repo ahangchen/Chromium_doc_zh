@@ -128,7 +128,7 @@ class FooDialogController {
   }
 
   // 为什么要把FooDialog或者甚至FooDialogController放在外面?
-  // 大多数dialogs很少用到
+  // 大多数dialog起始很少被用到
   scoped_ptr<FooDialog> dialog_;
 };
 
