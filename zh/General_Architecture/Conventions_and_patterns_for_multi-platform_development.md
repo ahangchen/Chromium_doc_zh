@@ -44,10 +44,11 @@ Chromium是一个巨大而复杂的跨平台产品。我们试图在不同平台
 ###什么时候使用抽象的接口
 通常，抽象接口与工厂不应该作为隔离平台差异的唯一目的。相反的，它应该用于将接口与优化代码设计的实现隔离开来。这最经常出现在从model中抽离view的实现中，比如TabContentsView或者RenderWidgetHostView。在这些例子里，model不依赖view的实现是有必要的。在许多情况下，多个平台的view只有一个实现，但为将来的开发提供了更干净的隔离与更多的可扩展性。
 
+在有些地方，像TabContentsView，抽象层没有非抽象的、在平台间共享的函数。避免这种写法。如果不同view之间的代码总是一样，它可能首先就不应该在view中。
 
-In some places like TabContentsView, the virtual interface has non-virtual functions that do things shared between platforms. Avoid this. If the code is always the same regardless of the view, it probably shouldn't be in the view in the first place.
-###Implementing platform-specific UI
+###实现平台相关的UI
 
+通常，从已有的平台相关的用户界面元素构建其他平台相关的用户界面元素。例如，view相关的类BrowserView负责构建
 In general, construct platform specific user interface elements from other platform-specific user interface elements. For instance, the views-specific class BrowserView is responsible for constructing many of the browser dialog boxes. The alternative is to wrap the UI element in a platform-independent interface and construct it from a model via a factory. This is significantly less desirable as it confuses ownership: in most cases of construction by factory, the UI element returned ends up being owned by the model that created it. However in many cases the UI element is most easily managed by the UI framework to which it belongs. For example, a views::View is owned by its view hierarchy and is automatically deleted when its containing window is destroyed. If you have a dialog box views::View that implements a platform independent interface that is then owned by another object, the views::View instance now needs to explicitly tell its view hierarchy not to try and manage its lifetime.
 
 e.g. prefer this:
