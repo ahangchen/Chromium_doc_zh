@@ -48,10 +48,9 @@ Chromium是一个巨大而复杂的跨平台产品。我们试图在不同平台
 
 ###实现平台相关的UI
 
-通常，从已有的平台相关的用户界面元素构建其他平台相关的用户界面元素。例如，view相关的类BrowserView负责构建
-In general, construct platform specific user interface elements from other platform-specific user interface elements. For instance, the views-specific class BrowserView is responsible for constructing many of the browser dialog boxes. The alternative is to wrap the UI element in a platform-independent interface and construct it from a model via a factory. This is significantly less desirable as it confuses ownership: in most cases of construction by factory, the UI element returned ends up being owned by the model that created it. However in many cases the UI element is most easily managed by the UI framework to which it belongs. For example, a views::View is owned by its view hierarchy and is automatically deleted when its containing window is destroyed. If you have a dialog box views::View that implements a platform independent interface that is then owned by another object, the views::View instance now needs to explicitly tell its view hierarchy not to try and manage its lifetime.
+通常，从已有的平台相关的用户界面元素构建其他平台相关的用户界面元素。例如，view相关的类BrowserView负责构建许多浏览器对话框盒子。一种方法是，在一个平台无关的接口里包装UI元素，然后通过一个工厂，从一个model构造出它来。这是相当不必要的，因为它让迷乱了归属关系：大多数工厂构造的例子里，UI元素最后归属于创建它的model。然而在许多例子里，UI元素最容易由它所属的UI框架管理。例如，一个views::View归属于它的view层级，并且在包含它的window被销毁时，会自动被销毁。如果有一个对话框 views::View实现了一个平台无关的接口，然后被另一个对象拥有，那么views::View实例现在需要显式地告诉它的view层级不要去干涉它的生命周期。
 
-e.g. prefer this:
+e.g. 推荐这种写法:
 ```c++
 // browser.cc:
 
@@ -79,15 +78,15 @@ BrowserView::ShowFooDialog() {
 
 // foo_dialog_view.cc:
 
-// FooDialogView and FooDialogController are automatically cleaned up when the window is closed.
+// FooDialogView和FooDialogController在window被关闭的时候会被自动清理
 class FooDialogView : public views::View {
   ...
  private:
-  scoped_ptr<FooDialogController> controller_; // Cross-platform state/control logic
+  scoped_ptr<FooDialogController> controller_; // 跨平台状态控制逻辑
   ...
 }
 ```
-to this:
+不推荐这种
 ```c++
 
 // browser.cc:
@@ -128,8 +127,8 @@ class FooDialogController {
     dialog_->Show();
   }
 
-  // Why bother keeping FooDialog or even FooDialogController around?
-  // Most dialogs are very seldom used.
+  // 为什么要把FooDialog或者甚至FooDialogController放在外面?
+  // 大多数dialogs很少用到
   scoped_ptr<FooDialog> dialog_;
 };
 
@@ -149,5 +148,5 @@ FooDialog* FooDialog::CreateFooDialog(FooDialogController* controller) {
   return new FooDialogView(controller);
 }
 ```
+有时候后一种模式是必要的，但这些情况很稀少，并且非常容易被前端的团队所理解。移植的时候，如果UI元素有时候像dialog box一样简单的话，考虑把后一种模式转为前一种。
 
-Sometimes this latter pattern is necessary, but these occasions are rare, and very well understood by the frontend team. When porting, consider converting cases of the latter model to the former model if the UI element is something simple like a dialog box.
