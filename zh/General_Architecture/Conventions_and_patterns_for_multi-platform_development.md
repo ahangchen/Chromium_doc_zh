@@ -37,14 +37,13 @@ Chromium是一个巨大而复杂的跨平台产品。我们试图在不同平台
 
 如果所有的实现都在跨平台目录中，比如base，他们应该用平台的名字命名，比如base/foo_bar_win.h中的FooBarWin。这种例子通常很少，因为这些跨平台的文件通常设计用于跨平台代码，独立的头文件使得这种例子变得不可能。在一些地方，我们已经在不同的文件里定义了一个普通命名的类，所以PlatformDevice定义在skia/ext/platform_device_win.h, skia/ext/platform_device_linux.h, and skia/ext/platform_device_mac.h。如果你真的需要在跨平台代码里引用这个类，这是OK的。但通常，这种例子会变得遵循下面的这种规则。
 
-如果实现存在于平台相关目录，比如chrome/browser/ui/cocoa或chrome/browser/ui/views，这个类就没有机会用于跨平台代码了。这种情况下，这个类和文件名应该忽略平台的名字，因为它是多余的。所以FooBar是
-If the implementations live in platform-specific directories such as chrome/browser/ui/cocoa or chrome/browser/ui/views, there is no chance that the class will be used by cross-platform code. In this case, the classes and filenames should omit the platform name since it would be redundant. So you would have FooBar implemented in chrome/browser/ui/cocoa/foo_bar.h.
+如果实现存在于平台相关目录，比如chrome/browser/ui/cocoa或chrome/browser/ui/views，这个类就没有机会用于跨平台代码了。这种情况下，这个类和文件名应该忽略平台的名字，因为它是多余的。所以FooBar是在chrome/browser/ui/cocoa/foo_bar.h中实现的。
 
-Don't create different classes with different names for each platform and typedef it to a shared name. We used to have this for PlatformCanvas, where it was a typedef of PlatformCanvasMac, PlatformCanvasLinux, or PlatformCanvasWin depending on the platform. This makes it impossible to forward-declare the class, which is an important tool for reducing dependencies.
+不要为每个平台创建不同的类，又把它们用typedef定义为同一个名字。我们曾经在PlatformCanvas上使用这种套路，根据平台，它被typedef为PlatformCanvasMac, PlatformCanvasLinux, 或 PlatformCanvasWin。这样就不可能提前声明这个类，而这是一个减小依赖的重要工具。
 
-###When to use virtual interfaces
+###什么时候使用抽象的接口
+通常，抽象接口与工厂不应该作为隔离平台差异的唯一目的。相反的，它应该用于将接口与优化代码设计的实现隔离开来。这最经常出现在从model中抽离view的实现中，比如TabContentsView或者RenderWidgetHostView。在这些例子里，model不依赖view的实现是有必要的。在许多情况下，多个平台的view只有一个实现，但为将来的开发提供了更干净的隔离与更多的可扩展性。
 
-In general, virtual interfaces and factories should not be used for the sole purpose of separating platform differences. Instead, it should be be used to separate interfaces from implementations to make the code better designed. This comes up mostly when implementing the view as separate from the model, as in TabContentsView or RenderWidgetHostView. In these cases, it's desirable for the model not to depend on implementation details of the view. In many cases, there will only be one implementation of the view for each platform, but gives cleaner separation and more flexibility in the future.
 
 In some places like TabContentsView, the virtual interface has non-virtual functions that do things shared between platforms. Avoid this. If the code is always the same regardless of the view, it probably shouldn't be in the view in the first place.
 ###Implementing platform-specific UI
