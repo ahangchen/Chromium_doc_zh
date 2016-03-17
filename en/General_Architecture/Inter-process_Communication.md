@@ -1,7 +1,7 @@
 #Inter-process Communication (IPC)
 ##Overview
 
-Chromium has a multi-process architecture which means that we have a lot of processes communicating with each other. Our main inter-process communication primitive is the named pipe. On Linux & OS X, we use a socketpair(). A named pipe is allocated for each renderer process for communication with the browser process. The pipes are used in asynchronous mode to ensure that neither end is blocked waiting for the other.
+Chromium has a [multi-process architecture](Start_Here_Background_Reading/Multi-process_Architecture.md) which means that we have a lot of processes communicating with each other. Our main inter-process communication primitive is the named pipe. On Linux & OS X, we use a socketpair(). A named pipe is allocated for each renderer process for communication with the browser process. The pipes are used in asynchronous mode to ensure that neither end is blocked waiting for the other.
 
 For advice on how to write safe IPC endpoints, please see Security Tips for IPC.
 
