@@ -41,7 +41,9 @@ Status as of 2014/06/06: Up-to-date
 
 ##结果
 一般来说，从CPU去掉编解码，转到指定的硬件上，根据平台/工作负载等的不同，可以延长电池10%-25%的寿命。一些数据例子可以在这里看：
+
 公开:  [133827#c27](http://crbug.com/133827#c27), [219957#c16](https://code.google.com/p/chromium/issues/detail?id=219957#c16)
+
 google内部: [summary slide deck](http://docs/presentation/d/1lhWy_gsAhDtnB5l3i2ND2rWhHgmgtV394WoVzlqevAE/edit#slide=id.g1c7d5a5cf_023), [CrOS/ARM-1](https://docs.google.com/a/google.com/spreadsheets/d/1tdAEvCVPKH6280EArYPHaE10HA0iFP0aypJGy4n26LM/edit#gid=0), [CrOS/ARM-2](http://docs/document/d/1fty8UzlwN0SzJlURfNbPysYZ1sj4VFaDpF0MV95HbNE/edit#)
 
 
