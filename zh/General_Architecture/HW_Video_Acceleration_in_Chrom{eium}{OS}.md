@@ -1,6 +1,6 @@
 #Chrom{e,ium}{,OS}中的硬件视频加速
 
-Ami Fischman <fischman@chromium.org>
+Ami Fischman &lt;fischman@chromium.org&gt;
 
 Status as of 2014/06/06: Up-to-date
 
