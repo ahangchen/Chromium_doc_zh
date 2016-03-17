@@ -7,26 +7,27 @@ Chromium有一个[多进程架构](Start_Here_Background_Reading/Multi-process_A
 
 ###浏览器中IPC
 
-在浏览器中，与渲染器的交流是通过一个独立的I/O线程完成的。来自或者去往view的消息需要使用一个ChannelProxy代理到主线程。这种方案的优点是，资源请求（比如网页等），这种最经常且极其关注性能的消息，可以整个的在I/O线程中处理，不会阻塞用户界面。
-Within the browser, communication with the renderers is done in a separate I/O thread. Messages to and from the views then have to be proxied over to the main thread using a ChannelProxy. The advantage of this scheme is that resource requests (for web pages, etc.), which are the most common and performance critical messages, can be handled entirely on the I/O thread and not block the user interface. These are done through the use of a ChannelProxy::MessageFilter which is inserted into the channel by the RenderProcessHost. This filter runs in the I/O thread, intercepts resource request messages, and forwards them directly to the resource dispatcher host. See [Multi-process Resource Loading](General_Architecture/Multi-process/Multi-process_Resource_Loading.md) for more information on resource loading.
+在浏览器中，与渲染器的交流是通过一个独立的I/O线程完成的。来自或者去往view的消息需要使用一个ChannelProxy代理到主线程。这种方案的优点是，资源请求（比如网页等），这种最经常且极其关注性能的消息，可以整个的在I/O线程中处理，不会阻塞用户界面。这些通过使用Channel::MessageFilter（由RenderProcessHost插入channel）来完成。这个过滤器运行在I/O线程里，拦截资源请求信息，将它们直接转发到资源分发主机。查看[多进程资源加载](General_Architecture/Multi-process/Multi-process_Resource_Loading.md)获取更多关于资源加载的信息。
 
-###IPC in the renderer
+###渲染器中的IPC
 
-Each renderer also has a thread that manages communication (in this case, the main thread), with the rendering and most processing happening on another thread (see the diagram in multi-process architecture). Most messages are sent from the browser to the WebKit thread through the main renderer thread and vice-versa. This extra thread is to support synchronous renderer-to-browser messages (see "Synchronous messages" below).
+每个渲染器也有一个线程管理交流（在这个例子里，是主线程），而大多数渲染和大多数处理发生在另一个线程里（查看多进程架构的那个图表）。大多数消息通过主渲染线程从浏览器发送给WebKit线程，反之亦然。这个额外的线程是用于支持同步的渲染器到浏览器的消息（参考下面的“同步消息”）。
 
-##Messages
 
-###Types of messages
 
-We have two primary types of messages: "routed" and "control."  Control messages are handled by the class that created the pipe.  Sometimes that class will allow others to received message by having a MessageRouter object that other listeners can register with and received "routed" messages sent with their unique (per pipe) id.
+##消息
 
-For example, when rendering, control messages are not specific to a given view and will be handled by the RenderProcess (renderer) or the RenderProcessHost (browser). Requests for resources or to modify the clipboard are not view-specific so are control messages.  An example of routed messages are a message to ask a view to paint a region.
+###消息的类型
 
-Routed messages have historically been used to get messages to a specific RenderViewHost. However, technically any class can receive routed messages by using RenderProcessHost::GetNextRoutingID and registering itself with RenderProcessHost::AddRoute. Currently both RenderFrameHost and RenderViewHost have their own routing IDs.
+我们有两种基本类型的消息：”路由“和”控制“。控制消息由创建管道的类处理，有时候这个类允许其他人通过一个MessageRouter对象接收消息，其他监听器可以通过这个对象注册和接收有着唯一管道id的消息。
 
-Independent of the message type is whether the message is sent from the browser to the renderer, or from the renderer to the browser. Messages sent from the browser to the renderer are called View messages because they are being sent to the RenderView. Messages sent from the renderer to the browser are called ViewHost messages because they are being sent to the RenderViewHost. You will notice the messages defined in render_messages_internal.h are separated into these two categories.
+例如，渲染时，控制消息没有消息指定目标view，会被RenderProcess（渲染器）或者RenderProcessHost（浏览器）处理。来自资源的请求或者修改剪贴板的请求是没有目标view的，所以是控制消息。一个路由消息的例子是要求一个view画一个区域消息。
 
-Plugins also have separate processes. Like the render messages, there are PluginProcess messages (sent from the browser to the plugin process) and PluginProcessHost messages (sent from the plugin process to the browser). These messages are all defined in plugin_messages_internal.h. The automation messages (for controlling the browser from the UI tests) are done in a similar manner.
+路由消息曾经被用于从指定的RenderViewHost获取消息。然而，技术上，任何类可以通过使用RenderProcessHost::GetNextRoutingID接收路由消息，并用RenderProcessHost::AddRoute注册它自己这个消息。现在，RenderFrameHost和RenderViewHost有了他们自己的路由ID了。
+
+消息是否是独立类型在于，消息是从浏览器发送到渲染器，还是从渲染器到浏览器。从浏览器到渲染器的被称为View消息，因为它们被发送给RenderViewHost。从渲染器发送到浏览器的消息叫做ViewHost消息，因为他们被发送给RenderViewHost。你会注意到render_messages_internal.h里定义的消息被分为两类。
+
+插件也有独立的进程。像渲染消息那样，PluginProcess消息（从浏览器发送到插件进程）和PluginProcessHost消息（从插件进程发送到浏览器）。这些消息都定义在plugin_messages_internal.h里。自动化消息（用于控制浏览器做UI测试）通过相同的方式完成。
 
 ###Declaring messages
 
