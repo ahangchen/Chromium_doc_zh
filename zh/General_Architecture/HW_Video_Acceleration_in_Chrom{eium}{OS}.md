@@ -1,4 +1,4 @@
-#HW Video Acceleration in Chrom{e,ium}{,OS}
+#Chrom{e,ium}{,OS}中的硬件视频加速
 
 Ami Fischman <fischman@chromium.org>
 
@@ -6,17 +6,17 @@ Status as of 2014/06/06: Up-to-date
 
 (could use some more details)
 
-##Introduction
+##介绍
 
-Video decode (e.g. YouTube playback) and encode (e.g. video chat applications) are some of the most complex compute operations on the modern web.  Moving these operations from software running on general-purpose CPUs to dedicated hardware blocks means lower power consumption, longer battery life, higher quality (e.g. HD instead of SD), and better interactive performance as the CPU is freed up to work on everything else it needs to do. 
+视频解码（e.g. Youtube点播）和编码（e.g. 视频聊天应用）是现代网络中最复杂的计算操作之一。将这些操作从运行在通常目的的CPU移动到指定的硬件块意味着更低的电力消耗，更长的电池寿命，更高的质量（e.g. HD而非SD），更好的交互表现（因为CPU可以被其他需要做的事情占满）。
 
-##Design
+##设计
 
-[media::VideoDecodeAccelerator](https://code.google.com/p/chromium/codesearch#chromium/src/media/video/video_decode_accelerator.h&q=media::VideoDecodeAccelerator&sq=package:chromium&ct=rc&cd=1&l=21&dr=Ss) (VDA) and [media::VideoEncodeAccelerator](https://code.google.com/p/chromium/codesearch#chromium/src/media/video/video_encode_accelerator.h&l=23) (VEA) (with their respective Client subclasses) are the interfaces at the center of all video HW acceleration in Chrome.  Each consumer of HW acceleration implements the relevant Client interface and calls an object of the relevant V[DE]A interface.
+[media::VideoDecodeAccelerator](https://code.google.com/p/chromium/codesearch#chromium/src/media/video/video_decode_accelerator.h&q=media::VideoDecodeAccelerator&sq=package:chromium&ct=rc&cd=1&l=21&dr=Ss) (VDA) 和 [media::VideoEncodeAccelerator](https://code.google.com/p/chromium/codesearch#chromium/src/media/video/video_encode_accelerator.h&l=23) (VEA) (有他们对应的客户端子类)是Chrome中所有视频硬件加速的中心接口。每个硬件加速的消费者实现相关的客户端接口，调用一个相关的V[DE]A对象。
 
-In general the classes that want to encode or decode video live in the renderer process (e.g. the <video> player, or WebRTC’s video encoders & decoders) and the HW being utilized is not accessible from within the renderer process, so [IPC](https://code.google.com/p/chromium/codesearch#chromium/src/content/common/gpu/gpu_messages.h&q=f:messages%5C.h%20acceleratedvideo&sq=package:chromium&type=cs&l=712) is used to bridge the renderer<->GPU process gap.
+通常这些类想要编码或解码存在于渲染器进程中的视频（e.g.<video>播放器，或者WebRTC的视频解编码器），被使用的硬件在渲染器进程内是不可访问的，所以[IPC](https://code.google.com/p/chromium/codesearch#chromium/src/content/common/gpu/gpu_messages.h&q=f:messages%5C.h%20acceleratedvideo&sq=package:chromium&type=cs&l=712)被用于连接渲染器<->GPU进程。
 
-##Implementation Details
+##实现细节
 
 The main consumers of the acceleration APIs are: <video> pipeline (what plays media on the web), WebRTC (enabling plugin-free real-time video chat on the web), and Pepper API (offering HW acceleration to pepper plugins such as Adobe Flash).
 The implementations of the acceleration APIs are specific to the OS (and sometimes HW platform) due to radically different options offered by the OS and drivers/HW present.
