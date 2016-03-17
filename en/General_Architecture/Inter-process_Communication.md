@@ -3,11 +3,11 @@
 
 Chromium has a [multi-process architecture](Start_Here_Background_Reading/Multi-process_Architecture.md) which means that we have a lot of processes communicating with each other. Our main inter-process communication primitive is the named pipe. On Linux & OS X, we use a socketpair(). A named pipe is allocated for each renderer process for communication with the browser process. The pipes are used in asynchronous mode to ensure that neither end is blocked waiting for the other.
 
-For advice on how to write safe IPC endpoints, please see Security Tips for IPC.
+For advice on how to write safe IPC endpoints, please see [Security Tips for IPC](https://www.chromium.org/Home/chromium-security/education/security-tips-for-ipc).
 
 ###IPC in the browser
 
-Within the browser, communication with the renderers is done in a separate I/O thread. Messages to and from the views then have to be proxied over to the main thread using a ChannelProxy. The advantage of this scheme is that resource requests (for web pages, etc.), which are the most common and performance critical messages, can be handled entirely on the I/O thread and not block the user interface. These are done through the use of a ChannelProxy::MessageFilter which is inserted into the channel by the RenderProcessHost. This filter runs in the I/O thread, intercepts resource request messages, and forwards them directly to the resource dispatcher host. See Multi-process Resource Loading for more information on resource loading.
+Within the browser, communication with the renderers is done in a separate I/O thread. Messages to and from the views then have to be proxied over to the main thread using a ChannelProxy. The advantage of this scheme is that resource requests (for web pages, etc.), which are the most common and performance critical messages, can be handled entirely on the I/O thread and not block the user interface. These are done through the use of a ChannelProxy::MessageFilter which is inserted into the channel by the RenderProcessHost. This filter runs in the I/O thread, intercepts resource request messages, and forwards them directly to the resource dispatcher host. See [Multi-process Resource Loading](General_Architecture/Multi-process/Multi-process_Resource_Loading.md) for more information on resource loading.
 
 ###IPC in the renderer
 
@@ -41,7 +41,7 @@ IPC_MESSAGE_CONTROL0(ViewMsg_MyMessage)
 
 Parameters are serialized and de-serialized to message bodies using the ParamTraits template. Specializations of this template are provided for most common types in ipc_message_utils.h. If you define your own types, you will also have to define your own ParamTraits specialization for it.
 
-Sometimes, a message has too many values to be reasonably put in a message. In this case, we define a separate structure to hold the values. For example, for the FrameMsg_Navigate message, the CommonNavigationParams structure is defined in navigation_params.h. frame_messages.h defines the ParamTraits specializations for the structures using the IPC_STRUCT_TRAITS family of macros.
+Sometimes, a message has too many values to be reasonably put in a message. In this case, we define a separate structure to hold the values. For example, for the FrameMsg_Navigate message, the CommonNavigationParams structure is defined in [navigation_params.h](https://code.google.com/p/chromium/codesearch/#chromium/src/content/common/navigation_params.h). [frame_messages.h](https://code.google.com/p/chromium/codesearch/#chromium/src/content/common/frame_messages.h) defines the ParamTraits specializations for the structures using the [IPC_STRUCT_TRAITS](https://code.google.com/p/chromium/codesearch/#chromium/src/ipc/param_traits_macros.h) family of macros.
 
 ###Sending messages
 
@@ -83,7 +83,7 @@ IPC_MESSAGE_FORWARD(ViewHostMsg_MyMessage, some_object_pointer, SomeObject::OnMy
 IPC_MESSAGE_HANDLER_GENERIC(ViewHostMsg_MyMessage, printf("Hello, world, I got the message."))
 ###Security considerations
 
-Security bugs in IPC can have nasty consequences (file theft, sandbox escapes, remote code execution). Check out our security for IPC document for tips on how to avoid common pitfalls.
+Security bugs in IPC can have [nasty consequences](http://blog.chromium.org/2012/05/tale-of-two-pwnies-part-1.html) (file theft, sandbox escapes, remote code execution). Check out our [security for IPC](https://www.chromium.org/Home/chromium-security/education/security-tips-for-ipc) document for tips on how to avoid common pitfalls.
 
 ##Channels
 
@@ -95,7 +95,7 @@ Channels are not thread safe. We often want to send messages using a channel on 
 
 Some messages should be synchronous from the renderer's perspective. This happens mostly when there is a WebKit call to us that is supposed to return something, but that we must do in the browser. Examples of this type of messages are spell-checking and getting the cookies for JavaScript. Synchronous browser-to-renderer IPC is disallowed to prevent blocking the user-interface on a potentially flaky renderer.
 
-Danger: Do not handle any synchronous messages in the UI thread! You must handle them only in the I/O thread. Otherwise, the application might deadlock because plug-ins require synchronous painting from the UI thread, and these will be blocked when the renderer is waiting for synchronous messages from the browser.
+**Danger**: Do not handle any synchronous messages in the UI thread! You must handle them only in the I/O thread. Otherwise, the application might deadlock because plug-ins require synchronous painting from the UI thread, and these will be blocked when the renderer is waiting for synchronous messages from the browser.
 
 ###Declaring synchronous messages
 
@@ -135,6 +135,6 @@ void RenderProcessHost::OnMyMessage(GURL input_param, std::string* result) {
 
 If you get a crash and you have the message type you can convert this to a message name. The message type will be 32-bit value, the high 16-bits are the class and the low 16-bits are the id. The class is based on the enums in ipc/ipc_message_start.h, the id is based on the line number in the file that defines the message. This means that you need to get the exact revision of Chromium in order to accurately get the message name.
 
-Example of this in 554011 was 0x1c0098 at Chromium revision ad0950c1ac32ef02b0b0133ebac2a0fa4771cf20. That's class 0x1c which is line 40 which matches ChildProcessMsgStart. ChildProcessMsgStart messages are in content/common/child_process_messages.h and the IPC will be on line 0x98 or line 152 which is ChildProcessHostMsg_ChildHistogramData.
+Example of this in [554011](https://crbug.com/554011) was 0x1c0098 at Chromium revision [ad0950c1ac32ef02b0b0133ebac2a0fa4771cf20](https://crrev.com/ad0950c1ac32ef02b0b0133ebac2a0fa4771cf20). That's class 0x1c which is line [40](https://chromium.googlesource.com/chromium/src/+/ad0950c1ac32ef02b0b0133ebac2a0fa4771cf20/ipc/ipc_message_start.h#40) which matches ChildProcessMsgStart. ChildProcessMsgStart messages are in content/common/child_process_messages.h and the IPC will be on line 0x98 or line 152 which is ChildProcessHostMsg_ChildHistogramData.
 
 This technique is particularly useful if you are dealing with crashes caused by content::RenderProcessHostImpl::OnBadMessageReceived
