@@ -1,12 +1,13 @@
 #跨进程通信 (IPC)
-##Overview
+##概览
 
-Chromium has a [multi-process architecture](Start_Here_Background_Reading/Multi-process_Architecture.md) which means that we have a lot of processes communicating with each other. Our main inter-process communication primitive is the named pipe. On Linux & OS X, we use a socketpair(). A named pipe is allocated for each renderer process for communication with the browser process. The pipes are used in asynchronous mode to ensure that neither end is blocked waiting for the other.
+Chromium有一个[多进程架构](Start_Here_Background_Reading/Multi-process_Architecture.md)，这意味着我们有许多需要互相交流的进程。我们的主要跨进程交流元素是命名管道。在Linux和OS X上，我们使用socketpair()。每个渲染器进程可以分配到一个命名管道来跟浏览器进程交流。这些管道是用异步方式使用的，确保没有哪个端会等待另一个端。
 
-For advice on how to write safe IPC endpoints, please see [Security Tips for IPC](https://www.chromium.org/Home/chromium-security/education/security-tips-for-ipc).
+想要得到如何编写安全的IPC端点的知识，请查看[IPC安全要点](https://www.chromium.org/Home/chromium-security/education/security-tips-for-ipc).
 
-###IPC in the browser
+###浏览器中IPC
 
+在浏览器中，与渲染器的交流是通过一个独立的I/O线程完成的。来自或者去往view的消息需要使用一个ChannelProxy代理到主线程。这种方案的优点是，资源请求（比如网页等），这种最经常且极其关注性能的消息，可以整个的在I/O线程中处理，不会阻塞用户界面。
 Within the browser, communication with the renderers is done in a separate I/O thread. Messages to and from the views then have to be proxied over to the main thread using a ChannelProxy. The advantage of this scheme is that resource requests (for web pages, etc.), which are the most common and performance critical messages, can be handled entirely on the I/O thread and not block the user interface. These are done through the use of a ChannelProxy::MessageFilter which is inserted into the channel by the RenderProcessHost. This filter runs in the I/O thread, intercepts resource request messages, and forwards them directly to the resource dispatcher host. See [Multi-process Resource Loading](General_Architecture/Multi-process/Multi-process_Resource_Loading.md) for more information on resource loading.
 
 ###IPC in the renderer
