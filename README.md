@@ -3,7 +3,7 @@
 
 > 翻译之加强对android webview理解
 
-> 不断更新ing，欢迎star
+> 还未完全完成，不断更新ing，欢迎star
 
 > gitbook地址：https://ahangchen.gitbooks.io/chromium_doc_zh/content/zh//
 
