@@ -20,10 +20,10 @@ In general the classes that want to encode or decode video live in the renderer 
 
 The main consumers of the acceleration APIs are: <video> pipeline (what plays media on the web), WebRTC (enabling plugin-free real-time video chat on the web), and Pepper API (offering HW acceleration to pepper plugins such as Adobe Flash).
 The implementations of the acceleration APIs are specific to the OS (and sometimes HW platform) due to radically different options offered by the OS and drivers/HW present.
-
+![hwvideo](../hwvideo.png)
 (not pictured: obsolete OpenMAX-IL-based OVDA, and never-launched MacVDA).
 
-Current Status
+##Current Status
 
 New devices are released all the time so this list is likely already out of date, but as of early June 2014, existing (public) support includes:
 Decode
