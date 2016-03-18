@@ -97,9 +97,10 @@ IPC_MESSAGE_FORWARD(ViewHostMsg_MyMessage, some_object_pointer, SomeObject::OnMy
 ```c++
 IPC_MESSAGE_HANDLER_GENERIC(ViewHostMsg_MyMessage, printf("Hello, world, I got the message."))
 ```
-###Security considerations
 
-Security bugs in IPC can have [nasty consequences](http://blog.chromium.org/2012/05/tale-of-two-pwnies-part-1.html) (file theft, sandbox escapes, remote code execution). Check out our [security for IPC](https://www.chromium.org/Home/chromium-security/education/security-tips-for-ipc) document for tips on how to avoid common pitfalls.
+###安全考虑
+
+IPC中的安全漏洞有着[严重的后果](http://blog.chromium.org/2012/05/tale-of-two-pwnies-part-1.html)(文件盗取，沙箱逃逸，远程代码执行)，查看我们的[IPC安全文档](https://www.chromium.org/Home/chromium-security/education/security-tips-for-ipc)以获取如何避免常见陷阱的一些提示。
 
 ##Channels
 
