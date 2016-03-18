@@ -29,32 +29,41 @@ Chromium有一个[多进程架构](Start_Here_Background_Reading/Multi-process_A
 
 插件也有独立的进程。像渲染消息那样，PluginProcess消息（从浏览器发送到插件进程）和PluginProcessHost消息（从插件进程发送到浏览器）。这些消息都定义在plugin_messages_internal.h里。自动化消息（用于控制浏览器做UI测试）通过相同的方式完成。
 
-###Declaring messages
+###声明消息
 
-Special macros are used to declare messages. The messages sent between the renderer and the browser are all declared in render_messages_internal.h. There are two sections, one for "View" messages sent to the renderer, and one for "ViewHost" messages sent to the browser.
+特殊的宏用于声明消息。渲染器和浏览器间发送的消息都声明在render_messages_internal.h里。有两个部分，一个给发送到渲染器的View消息，一个给发送到浏览器的ViewHost消息。
 
-To declare a message from the renderer to the browser (a "ViewHost" message) that is specific to a view ("routed") that contains a URL and an integer as an argument, write:
+如果要声明一个从渲染器发送到浏览器（一个ViewHost消息），并且指定一个view（路由）包含一个url和一个整数作为参数，这样写：
 
+```c++
 IPC_MESSAGE_ROUTED2(ViewHostMsg_MyMessage, GURL, int)
-To declare a control message from the browser to the renderer (a "View" message) that is not specific to a view ("control") that contains no parameters, write:
+```
 
+如果要声明一个从浏览器发往渲染器的控制消息（一个View消息），并且不指定目标view（控制），不包含参数，这样写：
+
+```c++
 IPC_MESSAGE_CONTROL0(ViewMsg_MyMessage)
+```
 ####Pickling values
 
-Parameters are serialized and de-serialized to message bodies using the ParamTraits template. Specializations of this template are provided for most common types in ipc_message_utils.h. If you define your own types, you will also have to define your own ParamTraits specialization for it.
+参数通过ParamTraits模板序列化或者反序列化到消息体中。这种模板的具体化在ipc_message_utils.h中提供给大多数常见的类型。如果你定义了你自己的类型，你也需要为它定义你自己的ParamTraits具体形式。
 
-Sometimes, a message has too many values to be reasonably put in a message. In this case, we define a separate structure to hold the values. For example, for the FrameMsg_Navigate message, the CommonNavigationParams structure is defined in [navigation_params.h](https://code.google.com/p/chromium/codesearch/#chromium/src/content/common/navigation_params.h). [frame_messages.h](https://code.google.com/p/chromium/codesearch/#chromium/src/content/common/frame_messages.h) defines the ParamTraits specializations for the structures using the [IPC_STRUCT_TRAITS](https://code.google.com/p/chromium/codesearch/#chromium/src/ipc/param_traits_macros.h) family of macros.
+有时候，一条消息有太多的值了，没法合理得放到消息里。这种情况下，我们定义一个独立的结构来存放这些值。例如，对于FrameMsg_Navigate消息，在[navigation_params.h](https://code.google.com/p/chromium/codesearch/#chromium/src/content/common/navigation_params.h)中，定义了CommonNavigationParams结构。[frame_messages.h](https://code.google.com/p/chromium/codesearch/#chromium/src/content/common/frame_messages.h)用[IPC_STRUCT_TRAITS](https://code.google.com/p/chromium/codesearch/#chromium/src/ipc/param_traits_macros.h)类型的宏定义了这个结构的具体ParamTraits。
 
-###Sending messages
 
-You send messages through "channels" (see below). In the browser, the RenderProcessHost contains the channel used to send messages from the UI thread of the browser to the renderer. The RenderWidgetHost (base class for RenderViewHost) provides a Send function that is used for convenience.
+###发送消息
 
-Messages are sent by pointer and will be deleted by the IPC layer after they are dispatched. Therefore, once you can find the appropriate Send function, just call it with a new message:
+你通过“channel（通道）”发送消息（往下看）。在浏览器里，RenderProcessHost包含了用于从浏览器UI线程发送消息到渲染器的channel。为了方便，RenderWidgetHost（RenderViewHost的基类）提供了一个Send函数。
 
+消息由指针发送，并将在它们分发后由IPC层删除。因此，一旦你发现合适的Send函数，尽管带着一条新消息去调用它：
+```c++
 Send(new ViewMsg_StopFinding(routing_id_));
-Notice that you must specify the routing ID in order for the message to be routed to the correct View/ViewHost on the receiving end. Both the RenderWidgetHost (base class for RenderViewHost) and the RenderWidget (base class for RenderView) have GetRoutingID() members that you can use.
+```
 
-###Handling messages
+注意，你必须按顺序指定路由ID，让消息能够路由到接收端正确的View/ViewHost。RenderWidgetHost(RenderViewHost的基类)和RenderWidget（RenderViewHost的基类）都有GetRoutingID()成员函数给你使用。
+
+
+###处理消息
 
 Messages are handled by implementing the IPC::Listener interface, the most important function on which is OnMessageReceived. We have a variety of macros to simplify message handling in this function, which can best be illustrated by example:
 
