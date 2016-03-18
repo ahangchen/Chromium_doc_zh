@@ -144,17 +144,19 @@ printf("The result is %s\n", result.c_str());
 ```
 ###处理同步消息
 
-Synchronous messages and asynchronous messages use the same IPC_MESSAGE_HANDLER, etc. macros for dispatching the message. The handler function for the message will have the same signature as the message constructor, and the function will simply write the output to the output parameter. For the above message you would add
-
+同步消息和异步消息使用相同的IPC\_MESSAGE\_HANDLER等宏来分发消息。消息处理函数与消息构造器有着相同的函数签名，这个函数会简单把输出写到输出参数中。在上面的消息里，你可以添加：
+```c++
 IPC_MESSAGE_HANDLER(MyMessage, OnMyMessage)
-to the OnMessageReceived function, and write:
+```
+到OnMessageReceived函数，然后这样写：
 ```c++
 void RenderProcessHost::OnMyMessage(GURL input_param, std::string* result) {
   *result = input_param.spec() + " is not available";
 }
 ```
-###Converting message type to a message name
+###转换消息类型为消息名
 
+如果运行崩溃了，并且此时你有消息的类型，你可以把它转为消息名。这种消息类型是一个32位值，高16位是类，低16位是ID。类基于ipc/ipc\_message
 If you get a crash and you have the message type you can convert this to a message name. The message type will be 32-bit value, the high 16-bits are the class and the low 16-bits are the id. The class is based on the enums in ipc/ipc_message_start.h, the id is based on the line number in the file that defines the message. This means that you need to get the exact revision of Chromium in order to accurately get the message name.
 
 Example of this in [554011](https://crbug.com/554011) was 0x1c0098 at Chromium revision [ad0950c1ac32ef02b0b0133ebac2a0fa4771cf20](https://crrev.com/ad0950c1ac32ef02b0b0133ebac2a0fa4771cf20). That's class 0x1c which is line [40](https://chromium.googlesource.com/chromium/src/+/ad0950c1ac32ef02b0b0133ebac2a0fa4771cf20/ipc/ipc_message_start.h#40) which matches ChildProcessMsgStart. ChildProcessMsgStart messages are in content/common/child_process_messages.h and the IPC will be on line 0x98 or line 152 which is ChildProcessHostMsg_ChildHistogramData.
