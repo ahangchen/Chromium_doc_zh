@@ -102,42 +102,47 @@ IPC_MESSAGE_HANDLER_GENERIC(ViewHostMsg_MyMessage, printf("Hello, world, I got t
 
 IPC中的安全漏洞有着[严重的后果](http://blog.chromium.org/2012/05/tale-of-two-pwnies-part-1.html)(文件盗取，沙箱逃逸，远程代码执行)，查看我们的[IPC安全文档](https://www.chromium.org/Home/chromium-security/education/security-tips-for-ipc)以获取如何避免常见陷阱的一些提示。
 
-##Channels
+##通道
 
-IPC::Channel (defined in ipc/ipc_channel.h) defines the methods for communicating across pipes. IPC::SyncChannel provides additional capabilities for synchronously waiting for responses to some messages (the renderer processes use this as described below in the "Synchronous messages" section, but the browser process never does).
+IPC::Channel()（定义在ipc/ipc_channel.h里）定义了通过管道交流的方法。IPC::SyncChannel提供了额外的功能用于同步等待一些消息的响应（正如下面的“同步消息”描述的，渲染器进程使用了这个特性，但浏览器进程不会这样做）。
 
-Channels are not thread safe. We often want to send messages using a channel on another thread. For example, when the UI thread wants to send a message, it must go through the I/O thread. For this, we use a IPC::ChannelProxy. It has a similar API as the regular channel object, but proxies messages to another thread for sending them, and proxies messages back to the original thread when receiving them. It allows your object (typically on the UI thread) to install a IPC::ChannelProxy::Listener on the channel thread (typically the I/O thread) to filter out some messages from getting proxied over. We use this for resource requests and other requests that can be handled directly on the I/O thread. RenderProcessHost installs a RenderMessageFilter object that does this filtering.
+通道不是线程安全的，我们通常希望用通道在另一个线程里发送消息。例如，当UI线程希望发送消息时，它必须通过I/O线程。为此，我们使用IPC::ChannelProxy。它有着与正常通道对象类似的API，但它把消息代理到另一个线程去发送，而在收到这些消息时，把消息代理回原来的线程。这允许你的对象（通常是在UI线程中）在通道线程（通常是在I/O线程中）安装一个IPC::ChannelProxy::Listener，以此从代理的消息中过滤掉一些消息。我们使用这个特性去做资源请求以及其他可以直接在I/O线程处理的请求。RenderProcessHost安装一个RenderMessageFilter对象执行这种过滤。
 
-##Synchronous messages
 
-Some messages should be synchronous from the renderer's perspective. This happens mostly when there is a WebKit call to us that is supposed to return something, but that we must do in the browser. Examples of this type of messages are spell-checking and getting the cookies for JavaScript. Synchronous browser-to-renderer IPC is disallowed to prevent blocking the user-interface on a potentially flaky renderer.
+##同步消息
+有些消息应该从渲染器的角度来同步。这大多数时候发生在，有一个支持返回值的WebKit调用，但我们必须在浏览器中执行这个调用。这种消息的例子是拼写检查以及在javaScript中获取cookie。同步浏览器到渲染器的IPC是不允许的，以此避免在一个潜在的片段渲染器中阻塞用户界面。
 
-**Danger**: Do not handle any synchronous messages in the UI thread! You must handle them only in the I/O thread. Otherwise, the application might deadlock because plug-ins require synchronous painting from the UI thread, and these will be blocked when the renderer is waiting for synchronous messages from the browser.
+**警告**: 不要在UI线程处理任何同步消息！你必须在I/O线程中处理他们。否则，应用程序可能因为插件等待UI线程的同步绘制而陷入死锁，而渲染器等待浏览器同步消息时也会有一些阻塞。
 
-###Declaring synchronous messages
 
-Synchronous messages are declared using the IPC_SYNC_MESSAGE_* macros. These macros have input and return parameters (non-synchronous messages lack the concept of return parameters). For a control function which takes two input parameters and returns one parameter, you would append 2_1 to the macro name to get:
+###声明同步消息
 
+同步消息用IPC\_SYNC\_MESSAGE\_\*这样的宏来声明。这些宏有输入，也有返回值()(非同步消息没有返回参数的概念)。对于一个有着两个输入参数和一个返回参数的控制函数，你应该在宏的名字中插入“2\_1”：
+```c++
 IPC_SYNC_MESSAGE_CONTROL2_1(SomeMessage,  // Message name
                             GURL, //input_param1
                             int, //input_param2
                             std::string); //result
-Likewise, you can also have messages that are routed to the view in which case you would replace "control" with "routed" to get IPC_SYNC_MESSAGE_ROUTED2_1. You can also have 0 input or return parameters. Having no return parameters is used when the renderer must wait for the browser to do something, but needs no results. We use this for certain printing and clipboard operations.
+                            ```
 
-###Issuing synchronous messages
+类似的，你也可以让消息路由到view，这种情况下你需要把“CONTROL”换成“ROUTED”，得到IPC\_SYNC\_MESSAGE\_\*。你也可以没有输入或返回参数。没有返回参数常用于渲染器必须等待浏览器完成某些操作但不需要结果时。我们在某些打印和剪贴板操作使用这种特性。
 
-When the WebKit thread issues a synchronous IPC request, the request object (derived from IPC::SyncMessage) is dispatched to the main thread on the renderer through a IPC::SyncChannel object (the same one is also used to send all asynchronous messages). The SyncChannel will block the calling thread when it receives a synchronous message, and will only unblock it when the reply is received.
 
-While the WebKit thread is waiting for the synchronous reply, the main thread is still receiving messages from the browser process. These messages will be added to the queue of the WebKit thread for processing when it wakes up. When the synchronous message reply is received, the thread will be un-blocked. Note that this means that the synchronous message reply can be processed out-of-order.
+###分发同步消息
 
-Synchronous messages are sent the same way normal messages are, with output parameters being given to the constructor. For example:
+当WebKit线程分发出一个同步IPC请求时，请求对象（继承自IPC::SyncMessage）会在渲染器中通过IPC::SyncChannel对象分发给主线程。所有同步的消息也是通过它发送的。同步通道在接收到同步消息时，会阻塞调用线程，只有当收到回复时，才会解除阻塞。
+
+在WebKit线程等待同步请求时，主线程仍然会从浏览器进程接收消息。这些消息会添加到WebKit线程里，等到WebKit线程被唤醒时处理它们。当同步消息回复被接收时，这个线程会解除阻塞。注意这意味着同步消息回复可以不按顺序处理。
+
+同步消息和正常的消息用同样的方式，带着赋予构造器的输出参数发送出去，例如：
+
 ```c++
 const GURL input_param("http://www.google.com/");
 std::string result;
 content::RenderThread::Get()->Send(new MyMessage(input_param, &result));
 printf("The result is %s\n", result.c_str());
 ```
-###Handling synchronous messages
+###处理同步消息
 
 Synchronous messages and asynchronous messages use the same IPC_MESSAGE_HANDLER, etc. macros for dispatching the message. The handler function for the message will have the same signature as the message constructor, and the function will simply write the output to the output parameter. For the above message you would add
 
