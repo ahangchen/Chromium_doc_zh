@@ -34,9 +34,11 @@ Special macros are used to declare messages. The messages sent between the rende
 To declare a message from the renderer to the browser (a "ViewHost" message) that is specific to a view ("routed") that contains a URL and an integer as an argument, write:
 
 IPC_MESSAGE_ROUTED2(ViewHostMsg_MyMessage, GURL, int)
+
 To declare a control message from the browser to the renderer (a "View" message) that is not specific to a view ("control") that contains no parameters, write:
 
 IPC_MESSAGE_CONTROL0(ViewMsg_MyMessage)
+
 ####Pickling values
 
 Parameters are serialized and de-serialized to message bodies using the ParamTraits template. Specializations of this template are provided for most common types in ipc_message_utils.h. If you define your own types, you will also have to define your own ParamTraits specialization for it.
