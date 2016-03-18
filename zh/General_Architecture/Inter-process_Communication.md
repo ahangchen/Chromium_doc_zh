@@ -123,7 +123,7 @@ IPC_SYNC_MESSAGE_CONTROL2_1(SomeMessage,  // Message name
                             GURL, //input_param1
                             int, //input_param2
                             std::string); //result
-                            ```
+```
 
 类似的，你也可以让消息路由到view，这种情况下你需要把“CONTROL”换成“ROUTED”，得到IPC\_SYNC\_MESSAGE\_\*。你也可以没有输入或返回参数。没有返回参数常用于渲染器必须等待浏览器完成某些操作但不需要结果时。我们在某些打印和剪贴板操作使用这种特性。
 
