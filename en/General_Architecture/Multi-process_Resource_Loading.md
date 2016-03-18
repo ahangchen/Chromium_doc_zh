@@ -8,6 +8,8 @@ All network communication is handled by the main browser process. This is done n
 
 Our multi-process application can be viewed in three layers. At the lowest layer is the WebKit library which renders pages. Above that are the renderer process (simplistically, one-per-tab), each of which contains one WebKit instance. Managing all the renderers is the browser process, which controls all network accesses.
 
+<center>
+![](../Resource-loading.png)
 
 
 ##Blink
