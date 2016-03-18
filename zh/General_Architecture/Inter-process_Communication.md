@@ -19,9 +19,9 @@ Chromium有一个[多进程架构](Start_Here_Background_Reading/Multi-process_A
 
 ###消息的类型
 
-我们有两种基本类型的消息：”路由“和”控制“。控制消息由创建管道的类处理，有时候这个类允许其他人通过一个MessageRouter对象接收消息，其他监听器可以通过这个对象注册和接收有着唯一管道id的消息。
+我们有两种基本的消息类型：”路由“和”控制“。控制消息由创建管道的类处理，有时候这个类允许其他人通过一个MessageRouter对象接收消息，其他监听器可以通过这个对象注册和接收有着唯一管道id的消息。
 
-例如，渲染时，控制消息没有消息指定目标view，会被RenderProcess（渲染器）或者RenderProcessHost（浏览器）处理。来自资源的请求或者修改剪贴板的请求是没有目标view的，所以是控制消息。一个路由消息的例子是要求一个view画一个区域消息。
+例如，渲染时，控制消息没有消息指定目标view，会被RenderProcess（渲染器）或者RenderProcessHost（浏览器）处理。来自资源的请求或者修改剪贴板的请求是没有目标view的，所以是控制消息。一个路由消息的例子是，要求一个view绘制一个区域的消息。
 
 路由消息曾经被用于从指定的RenderViewHost获取消息。然而，技术上，任何类可以通过使用RenderProcessHost::GetNextRoutingID接收路由消息，并用RenderProcessHost::AddRoute注册它自己这个消息。现在，RenderFrameHost和RenderViewHost有了他们自己的路由ID了。
 
@@ -31,9 +31,9 @@ Chromium有一个[多进程架构](Start_Here_Background_Reading/Multi-process_A
 
 ###声明消息
 
-特殊的宏用于声明消息。渲染器和浏览器间发送的消息都声明在render_messages_internal.h里。有两个部分，一个给发送到渲染器的View消息，一个给发送到浏览器的ViewHost消息。
+特殊的宏用于声明消息。渲染器和浏览器间发送的消息都声明在render\_messages\_internal.h里。有两个部分，一个是发送到渲染器的View消息，一个是发送到浏览器的ViewHost消息。
 
-如果要声明一个从渲染器发送到浏览器（一个ViewHost消息），并且指定一个view（路由）包含一个url和一个整数作为参数，这样写：
+如果要声明一个从渲染器发送到浏览器（一个ViewHost消息）的消息，并且指定一个view（路由）包含一个url和一个整数作为参数，这样写：
 
 ```c++
 IPC_MESSAGE_ROUTED2(ViewHostMsg_MyMessage, GURL, int)
