@@ -44,7 +44,7 @@ IPC_MESSAGE_ROUTED2(ViewHostMsg_MyMessage, GURL, int)
 ```c++
 IPC_MESSAGE_CONTROL0(ViewMsg_MyMessage)
 ```
-####Pickling values
+####包装数据
 
 参数通过ParamTraits模板序列化或者反序列化到消息体中。这种模板的具体化在ipc_message_utils.h中提供给大多数常见的类型。如果你定义了你自己的类型，你也需要为它定义你自己的ParamTraits具体形式。
 
