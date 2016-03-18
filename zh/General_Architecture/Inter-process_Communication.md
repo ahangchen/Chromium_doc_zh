@@ -156,9 +156,8 @@ void RenderProcessHost::OnMyMessage(GURL input_param, std::string* result) {
 ```
 ###转换消息类型为消息名
 
-如果运行崩溃了，并且此时你有消息的类型，你可以把它转为消息名。这种消息类型是一个32位值，高16位是类，低16位是ID。类基于ipc/ipc\_message
-If you get a crash and you have the message type you can convert this to a message name. The message type will be 32-bit value, the high 16-bits are the class and the low 16-bits are the id. The class is based on the enums in ipc/ipc_message_start.h, the id is based on the line number in the file that defines the message. This means that you need to get the exact revision of Chromium in order to accurately get the message name.
+如果运行崩溃了，并且此时你有消息的类型，你可以把它转为消息名。这种消息类型是一个32位值，高16位是类，低16位是ID。类基于ipc/ipc\_message\_start.h中的枚举值，id基于定义消息的文件中的行号。这意味着你需要获取准确的Chromium版本以获取消息名。
 
-Example of this in [554011](https://crbug.com/554011) was 0x1c0098 at Chromium revision [ad0950c1ac32ef02b0b0133ebac2a0fa4771cf20](https://crrev.com/ad0950c1ac32ef02b0b0133ebac2a0fa4771cf20). That's class 0x1c which is line [40](https://chromium.googlesource.com/chromium/src/+/ad0950c1ac32ef02b0b0133ebac2a0fa4771cf20/ipc/ipc_message_start.h#40) which matches ChildProcessMsgStart. ChildProcessMsgStart messages are in content/common/child_process_messages.h and the IPC will be on line 0x98 or line 152 which is ChildProcessHostMsg_ChildHistogramData.
+一个[554011](https://crbug.com/554011)中的例子是Chromium [ad0950c1ac32ef02b0b0133ebac2a0fa4771cf20](https://crrev.com/ad0950c1ac32ef02b0b0133ebac2a0fa4771cf20) 版0x1c0098中。类0x1c，意味着行[40](https://chromium.googlesource.com/chromium/src/+/ad0950c1ac32ef02b0b0133ebac2a0fa4771cf20/ipc/ipc_message_start.h#40)，匹配ChildProcessMsgStart。ChildProcessMsgStart消息在content/common/child_process_messages.h中，而0x98行，即152行，对应的IPC是ChildProcessHostMsg\_ChildHistogramData.
 
-This technique is particularly useful if you are dealing with crashes caused by content::RenderProcessHostImpl::OnBadMessageReceived
+当你在处理content::RenderProcessHostImpl::OnBadMessageReceived导致的crash时，这项技术非常有用。
