@@ -65,7 +65,8 @@ Send(new ViewMsg_StopFinding(routing_id_));
 
 ###处理消息
 
-Messages are handled by implementing the IPC::Listener interface, the most important function on which is OnMessageReceived. We have a variety of macros to simplify message handling in this function, which can best be illustrated by example:
+消息由对IPC::Listener的实现来处理，其中最重要的函数是OnMessageReceived。我们有大量的宏来简化这个函数中的消息处理，这个最好可以用例子来阐述：
+
 
 ```c++
 MyClass::OnMessageReceived(const IPC::Message& message) {
@@ -83,15 +84,19 @@ MyClass::OnMyMessage(const GURL& url, int something) {
 }
 ```
 
-You can also use IPC_DEFINE_MESSAGE_MAP to implement the function definition for you as well. In this case, do not specify a message variable name, it will declare a OnMessageReceived function on the given class and implement its guts.
+你也可以使用IPC_DEFINE_MESSAGE_MAP来实现自己的函数定义。在这个例子里，不要指定消息变量名，它会在给定的类上声明一个OnMessageReceived函数，并实现之。
 
-Other macros:
+其他宏：
 
-- IPC_MESSAGE_FORWARD: This is the same as IPC_MESSAGE_HANDLER but you can specify your own class to send the message to, instead of sending it to the current class.
+- IPC_MESSAGE_FORWARD:这与IPC_MESSAGE_HANDLER相同，但你可以指定你自己的类来作为消息发送的目的地，而非发送给当前类。
+```c++
 IPC_MESSAGE_FORWARD(ViewHostMsg_MyMessage, some_object_pointer, SomeObject::OnMyMessage)
-- IPC_MESSAGE_HANDLER_GENERIC: This allows you to write your own code, but you have to unpack the parameters from the message yourself:
+```
 
+- IPC_MESSAGE_HANDLER_GENERIC:这允许你编写自己的代码，但你必须自己从消息中解包出参数。
+```c++
 IPC_MESSAGE_HANDLER_GENERIC(ViewHostMsg_MyMessage, printf("Hello, world, I got the message."))
+```
 ###Security considerations
 
 Security bugs in IPC can have [nasty consequences](http://blog.chromium.org/2012/05/tale-of-two-pwnies-part-1.html) (file theft, sandbox escapes, remote code execution). Check out our [security for IPC](https://www.chromium.org/Home/chromium-security/education/security-tips-for-ipc) document for tips on how to avoid common pitfalls.
