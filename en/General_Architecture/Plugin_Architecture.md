@@ -1,10 +1,10 @@
-#Plugin Architecture
-##Background
+#插件架构
+##背景
+在阅读这个文档前，你应当熟悉Chromium的多进程架构。
 
-Before reading this document, you should be familiar with Chromium's multi-process architecture.
+##概述
 
-##Overview
-
+插件是浏览器不稳定的主要来源。插件首先
 Plugins are a major source of browser instability. Plugins also make sandboxing the process where the renderer runs impractical, as plugins are written by third-parties and we can't control their access to the operating system. The solution is to run plugins in their own separate process.
 
 ##Detailed design
