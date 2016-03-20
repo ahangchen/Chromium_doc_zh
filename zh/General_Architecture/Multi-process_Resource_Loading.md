@@ -4,8 +4,9 @@
 
 所有网络交流都是在主浏览器进程处理的。这样浏览器进程不仅可以控制每个渲染器的网络访问，还可以在进程间维持session状态一致性，像cookie和缓存数据。另一个重要的原因是，作为一个HTTP/1.1的用户代理，浏览器整体上在每个host上不能打开太多连接。
 
-##Overview
+##概述
 
+我们的多进程应用程序可以
 Our multi-process application can be viewed in three layers. At the lowest layer is the WebKit library which renders pages. Above that are the renderer process (simplistically, one-per-tab), each of which contains one WebKit instance. Managing all the renderers is the browser process, which controls all network accesses.
 
 ![](../Resource-loading.png)
