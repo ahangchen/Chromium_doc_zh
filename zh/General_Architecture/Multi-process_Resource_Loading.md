@@ -6,23 +6,23 @@
 
 ##概述
 
-我们的多进程应用程序可以从三个层面来看。在最底层是WebKit库，用来渲染页面。
-Our multi-process application can be viewed in three layers. At the lowest layer is the WebKit library which renders pages. Above that are the renderer process (simplistically, one-per-tab), each of which contains one WebKit instance. Managing all the renderers is the browser process, which controls all network accesses.
+我们的多进程应用程序可以从三个层面来看。在最底层是WebKit库，用来渲染页面。在它上面是渲染器进程（简单地，每个标签页对应一个进程），每个进程包含一个WebKit实例。管理所有渲染器的是浏览器进程，控制所有的网络访问。
+
 
 ![](../Resource-loading.png)
 
 
-##Blink
+##Blink（刷新器）
 
-Blink has a ResourceLoader object which is responsible for fetching data. Each loader has a WebURLLoader for performing the actual requests. The header file for this interface is inside the Blink repo.
+Blink有一个ResourceLoader对象，负责获取数据。每个加载器有一个WebURLLoader以展现真实的请求。这个实例的头文件在Blink仓库中。
 
-ResourceLoader implements the interface WebURLLoaderClient. This is the callback interface used by the renderer to dispatch data and other events to Blink.
+ResourceLoader实现了WebURLLoaderClient接口。这是渲染器使用的回调接口，用以获取数据和其他刷新用的事件。
 
-The test shell uses a different resource loader, so provides a different implementation, non-IPC version of ResourceLoaderBridge, located in webkit/tools/test_shell/simple_resource_loader_bridge.
+测试shell使用一个不同的资源加载器，提供了不同的实现，即，一个非IPC版本的ResourceLoaderBridge，位于webkit/tools/test_shell/simple_resource_loader_bridge。
 
-##Renderer
+##渲染器
 
-The renderer's implementation of WebURLLoader, called WebURLLoaderImpl, is located in content/child/. It uses the global ResourceDispatcher singleton object (one for each renderer process) to create a unique request ID and forward the request to the browser via IPC. Responses from the browser will reference this request ID, which can then be converted back to the RequestPeer object (WebURLRequestImpl) by the resource dispatcher.
+渲染器对WebURLLoader的实现，成为WebURLLoaderImplementation，位于content/child。它使用全局的ResourceDispatcher单例对象（每个渲染器内部单例），来创建一个唯一的request ID，通过IPC转发这个request给浏览器。浏览器的响应会引用这个request ID，将其转换后，通过资源分发起返回给RequestPeer对象（WebURLRequestImpl）。
 
 ##Browser
 
