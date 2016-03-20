@@ -1,8 +1,8 @@
-#Multi-process Resource Loading（need update）
+#多进程资源加载（需要更新）
 
-##Background
+##背景知识
 
-All network communication is handled by the main browser process. This is done not only so that the browser process can control each renderer's access to the network, but also so that we can maintain consistent session state across processes like cookies and cached data. It is also important because as a HTTP/1.1 user-agent, the browser as a whole should not open too many connections per host.
+所有网络交流都是在主浏览器进程处理的。这样浏览器进程不仅可以控制每个渲染器的网络访问，还可以在进程间维持session状态一致性，像cookie和缓存数据。另一个重要的原因是，作为一个HTTP/1.1的用户代理，浏览器整体上在每个host上不能打开太多连接。
 
 ##Overview
 
