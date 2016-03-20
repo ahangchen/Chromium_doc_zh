@@ -6,7 +6,7 @@
 
 ##概述
 
-我们的多进程应用程序可以
+我们的多进程应用程序可以从三个层面来看。在最底层是WebKit库，用来渲染页面。
 Our multi-process application can be viewed in three layers. At the lowest layer is the WebKit library which renders pages. Above that are the renderer process (simplistically, one-per-tab), each of which contains one WebKit instance. Managing all the renderers is the browser process, which controls all network accesses.
 
 ![](../Resource-loading.png)
