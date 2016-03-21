@@ -1,10 +1,10 @@
-#插件架构
-##背景
-在阅读这个文档前，你应当熟悉Chromium的多进程架构。
+#Plugin Architecture
+##Background
 
-##概述
+Before reading this document, you should be familiar with Chromium's multi-process architecture.
 
-插件是浏览器不稳定的主要来源。插件首先
+##Overview
+
 Plugins are a major source of browser instability. Plugins also make sandboxing the process where the renderer runs impractical, as plugins are written by third-parties and we can't control their access to the operating system. The solution is to run plugins in their own separate process.
 
 ##Detailed design
@@ -60,3 +60,4 @@ Why does the renderer keep a copy of the page background?  Because if the page b
 This image shows the overall system with the browser and two renderer processes, each communicating with one shared out-of-process Flash process. There are three total plugin instances. Note that this diagram is out of date, and WebPluginStub has been merged with WebPluginDelegateProxy.
 
 ![](../pluginsoutofprocess.png)
+
