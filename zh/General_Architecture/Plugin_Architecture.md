@@ -20,9 +20,10 @@ Chromium有着在进程内运行插件的能力（对测试来讲非常方便）
 历史经验：还没有WebKit嵌入层的时候，WebPluginImpl是对应的嵌入层。它会与“嵌入应用程序”通过WebPluginDelegate抽象接口交流，我们通过切换这个接口的实现，服务与进程内插件与进程外插件。在有了额外的Chromium WebKit API之后，我们增加了新的WebKit::WebPlugin抽象接口，它与旧的WebPluginDelegate接口有着相同的功能。这个接口的一个好一点的设计是，合并WebPluginImpl和WebPluginDelegateImpl，在WebKit::WebPlugin层做进程划分。由于这个问题的复杂性，现在还没有这样实现。
 
 
-###Out-of-process plugins
+###进程外插件
 
-Chromium switches out implementations at the layer indicated by the dotted line in the diagram above to support out-of-process plugins. This just interposes an IPC layer between the WebPluginImpl and WebPluginDelegateImpl layers, and lets us share all of our NPAPI code between each mode. All of the old WebPluginDelegateImpl code, as well as all of the NPAPI layer it talks to, now executes in the separate plugin process.
+Chromium通过切换上面的图中，虚线以上几层的实现来支持跨进程插件。这干预了WebPluginImpl层和WebPluginDelegateImpl之间的IPC层，并让我们在每个模式之间共享我们所有的NPAPI代码。所有旧的WebPluginDelegateImpl代码，以及与它通信的NPAPI层，现在是在独立的插件进程中执行了。
+
 
 The two sides of a Renderer/Plugin communication channel are represented by the PluginChannel and the PluginChannelHost. We have many renderer processes, and one plugin process for each unique plugin. This means there is one PluginChannelHost in the renderer for each type of plugin it uses (for example, Adobe Flash and Windows Media Player). In each plugin process, there will be one PluginChannel for each renderer process that has an instance of that type of plugin.
 
