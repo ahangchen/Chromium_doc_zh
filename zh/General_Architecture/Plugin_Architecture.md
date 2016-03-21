@@ -4,18 +4,21 @@
 
 ##概述
 
-插件是浏览器不稳定的主要来源。插件首先
-Plugins are a major source of browser instability. Plugins also make sandboxing the process where the renderer runs impractical, as plugins are written by third-parties and we can't control their access to the operating system. The solution is to run plugins in their own separate process.
+插件是浏览器不稳定的主要来源。插件也会在渲染器没有实际运行时，让进程沙箱化。因为进程是第三方编写的，我们无法控制他们对操作系统的访问。解决方案是，让插件在各自独立的进程中运行。
 
-##Detailed design
 
-###In-process plugins
+##设计细节
 
-Chromium has the ability to run plugins in process (this is handy for testing) as well as out of process. Both start at our non-multi-process-aware WebKit embedding layer, which expects the embedder to implement the WebKit::WebPlugin interface. This is implemented by WebPluginImpl. The WebPluginImpl talks "up" the chain to a WebPluginDelegate interface, which for in-process plugins is implemented by WebPluginDelegateImpl. This in turn talks to our NPAPI wrapper layer.
+###进程内插件
+
+Chromium有着在进程内运行插件的能力（对测试来讲非常方便），也可以在进程外运行插件。它们都始于我们的非多进程WebKit嵌入层，期待嵌入层实现WebKit::WebPlugin接口。这实际由WebPluginImpl实现。WebPluginImpl在图中的虚线以上，与WebPluginDelegate接口交流，对进程内插件而言，这个接口由WebPluginDelegateImpl实现，它会接着与我们的NPAPI包装层通信。
+
+
 
 ![](../in_process_plugins.png)
 
-Historical note: Before we had the WebKit embedding layer, WebPluginImpl was the embedding layer. It would talk to the "embedding application" through the WebPluginDelegate abstract interface, which we would switch implementations of for in-process and out-of-process plugins. With the addition of the Chromium WebKit API, we added the new WebKit::WebPlugin abstract interface, which has the same function as the old WebPluginDelegate interface. A better design with this interface would be to merge WebPluginImpl and WebPluginDelegateImpl and do the process split at the WebKit::WebPlugin level. This has not been changed due to its complexity.
+历史经验：还没有WebKit嵌入层的时候，WebPluginImpl是对应的嵌入层。它会与“嵌入应用程序”通过WebPluginDelegate抽象接口交流，我们通过切换这个接口的实现，服务与进程内插件与进程外插件。在有了额外的Chromium WebKit API之后，我们增加了新的WebKit::WebPlugin抽象接口，它与旧的WebPluginDelegate接口有着相同的功能。这个接口的一个好一点的设计是，合并WebPluginImpl和WebPluginDelegateImpl，在WebKit::WebPlugin层做进程划分。由于这个问题的复杂性，现在还没有这样实现。
+
 
 ###Out-of-process plugins
 
