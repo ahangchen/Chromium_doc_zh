@@ -37,11 +37,13 @@ Chromium通过切换上面的图中，虚线以上几层的实现来支持跨进
 **历史经验**：我们曾经考虑使用一个stub(存根)/proxy(代理)模型进行通信，每个IPC通道的端点有一个stub和一个proxy，分别接收和发送消息给对应的插件。这会导致许多类变得迷乱。因此，WebPluginStub被合并到WebPluginDelegateProxy，现在它处理渲染器端与一个插件实例的所有IPC通信。插件端还没有合并，还剩两个类WebPluginDelegateStub和WebPluginProxy,概念上他们是相同的对象，只是代表了通信的不同方向。
 
 
-###Windowless Plugins
+###无窗口插件
 
-Windowless plugins are designed to run directly within the rendering pipeline.  When WebKit wants to draw a region of the screen involving the plugin it calls into the plugin code, handing it a drawing context.  Windowless plugins are often used in situations where the plugin is expected to be transparent over the page -- it's up to the plugin drawing code to decide how it munges the bit of the page it's given.
+无窗口插件设计用于在渲染器管道内直接运行。当WebKit想要在屏幕上绘制一个区域时，调用插件代码，将它作为一个绘制上下文处理。无窗口插件通常用在希望插件在网页上透明的情况 -- 这取决于插件绘制代码，以决定它如何导航给定的网页。
 
-To take windowless plugins out of process, you still need to incorporate their rendering in the (synchronous) rendering pass done by WebKit.  A naively slow option is to clip out the region that the plugin will draw on then synchronously ship that over to the plugin process and let it draw.  This can then be sped up with some shared memory.
+为了将无窗口插件抽出进程，你仍然需要在同步的WebKit渲染端合并他们的渲染。一个简单但低速的方法是切掉插件将要绘制的区域，然后同步地切到插件进程让它绘制。这可以由一些共享内存的方式来加速。
+
+然而，渲染速度取决于插件进程（想象有着30个透明插件的页面，我们需要30轮插件进程的旅行）。所以，相反地，我们异步绘制无窗口插件，更像我们已有的页面是关于screen异步那样。渲染器
 
 However, rendering speed is then at the mercy of the plugin process (imagine a page with 30 transparent plugins -- we'd need 30 round trips to the plugin process).  So instead we have windowless plugins asynchronously paint, much like how our existing page rendering is asynchronous with respect to the screen.  The renderer has effectively a backing store of what the plugin's rendered area looks like and uses this image when drawing, and the plugin is free to asynchronously send over new updates representing changes to the rendered area.
 
