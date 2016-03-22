@@ -43,27 +43,27 @@ Chromium通过切换上面的图中，虚线以上几层的实现来支持跨进
 
 为了将无窗口插件抽出进程，你仍然需要在同步的WebKit渲染端合并他们的渲染。一个简单但低速的方法是切掉插件将要绘制的区域，然后同步地切到插件进程让它绘制。这可以由一些共享内存的方式来加速。
 
-然而，渲染速度取决于插件进程（想象有着30个透明插件的页面，我们需要30轮插件进程的旅行）。所以，相反地，我们异步绘制无窗口插件，更像我们已有的页面是关于screen异步那样。渲染器
+然而，渲染速度取决于插件进程（想象有着30个透明插件的页面，我们需要30轮插件进程的旅行）。所以，相反地，我们异步绘制无窗口插件，更像我们已有的页面是关于screen异步那样。渲染器有一个高效的回退存储，存储插件的渲染区域的图像，并使用这个图像来绘制，这样插件就可以异步发送新的代表更改渲染区域的更新。
 
-However, rendering speed is then at the mercy of the plugin process (imagine a page with 30 transparent plugins -- we'd need 30 round trips to the plugin process).  So instead we have windowless plugins asynchronously paint, much like how our existing page rendering is asynchronous with respect to the screen.  The renderer has effectively a backing store of what the plugin's rendered area looks like and uses this image when drawing, and the plugin is free to asynchronously send over new updates representing changes to the rendered area.
+所有的这些在透明插件上都有点复杂。这个插件进程需要知道它想要绘制的是哪些像素。所以它也要缓存渲染器最后发给它的东西，作为插件后面的页面背景，然后让插件反复地绘制这个区域。
 
-All of this is complicated a bit by "transparent" plugins.  The plugin process needs to know what pixels it wants to draw over.  So it also keeps a cache of what the renderer last sent it as the page background behind the plugin, then lets the plugin repeatedly draw over that. 
+因此，总的来说，无窗口插件绘制的区域会调用几个buffer。
 
-So, in all, here are the buffers involved for the region drawn by a windowless plugin:
+渲染器进程
+- 回退存储插件最后绘制的东西
+- 插件的共享内存，以接收更新（“透明的DIB”）
+- 复制插件背后的页面背景（在下面有描述）
 
-Renderer process
- - backing store of what the plugin last rendered as
- - shared memory with the plugin for receiving updates ("transport DIB")
- - copy of the page background behind the plugin (described below)
+插件进程
+- 复制插件背后的页面背景，作为绘制时的源材料使用
+- 渲染器共享内存以发送更新（“透明的DIB”）
 
-Plugin process
- - copy of the page background behind the plugin, used as the source
-material when drawing
- - shared memory with the renderer for sending updates ("transport DIB")
+渲染器为什么要保存页面背景的副本呢？因为如果页面背景改变了，我们需要同步地让插件重新绘制新的即将出现的背景。我们可以通过比较新绘制的背景和我们的插件存储的背景副本来判断背景的改变。因为插件和渲染器进程相互之间是异步的，他们需要独立的副本。
 
-Why does the renderer keep a copy of the page background?  Because if the page background changes, we need to synchronously get the plugin to redraw over the new background it will appear to lag.  We can tell that the background changed by comparing the newly-rendered background against our copy of what the plugin thinks the background.  Since the plugin and renderer processes are asynchronous with respect to one another, they need separate copies.
-###Overall system
 
+###系统全貌
+
+这个图片展示了整个系统，有浏览器和两个渲染进程，它们都与一个共享的进程外Flash进程交流。总共有三个插件实例。注意这个图表有一部分是过期的，WebPluginStub已经合并到WebPluginDelegateProxy中了。
 This image shows the overall system with the browser and two renderer processes, each communicating with one shared out-of-process Flash process. There are three total plugin instances. Note that this diagram is out of date, and WebPluginStub has been merged with WebPluginDelegateProxy.
 
 ![](../pluginsoutofprocess.png)
