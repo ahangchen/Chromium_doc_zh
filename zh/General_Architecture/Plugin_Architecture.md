@@ -24,17 +24,18 @@ Chromium有着在进程内运行插件的能力（对测试来讲非常方便）
 
 Chromium通过切换上面的图中，虚线以上几层的实现来支持跨进程插件。这干预了WebPluginImpl层和WebPluginDelegateImpl之间的IPC层，并让我们在每个模式之间共享我们所有的NPAPI代码。所有旧的WebPluginDelegateImpl代码，以及与它通信的NPAPI层，现在是在独立的插件进程中执行了。
 
+渲染器/插件通信通道的两端分别由PluginChannel和PluginChannelHost代表。我们有许多渲染器进程，以及每个插件唯一的一个插件进程。这意味着渲染器中，对于每种它所使用的插件都持有一个PluginChannelHost对象（例如，Adobe Flash和Windows Media Player）。在每个插件进程中，每个渲染器进程会有一个PluginChannel，它们各自持有一个那种插件的实例。
 
-The two sides of a Renderer/Plugin communication channel are represented by the PluginChannel and the PluginChannelHost. We have many renderer processes, and one plugin process for each unique plugin. This means there is one PluginChannelHost in the renderer for each type of plugin it uses (for example, Adobe Flash and Windows Media Player). In each plugin process, there will be one PluginChannel for each renderer process that has an instance of that type of plugin.
+接着，channel的每个端点，对应许多不同的插件实例。例如，如果网页中嵌有两个Adobe Flash视频，渲染器端就会有两个WebPluginDelegateProxies对象（以及相关的成员），插件端就会有两个WebPluginDelegateStubs（以及相关的成员）。channel用一个IPC连接管理这些对象直接复数的通信。
 
-Each end of the channel, in turn, maps to many different instances of a plugin. For example, if there are two Adobe Flash movies embedded in a web page, there will be two WebPluginDelegateProxies (and related stuff) in the renderer side, and two WebPluginDelegateStubs (and related stuff)
-in the plugin side. The channel is in charge of multiplexing the communication between these many objects over one IPC connection.
+在这个图中，你可以看到上面的进程内图表的类（用灰色表示），以及中间彩色的新的进程外代码层。
 
-In this diagram, you can see the classes from the above in-process diagram grayed out, with the new out-of-process layer (in color) in the middle.
 
 ![](../out_of_process_plugins.png)
 
-**Historical note**: We used to consistently use a stub/proxy model for communication, with one stub and one proxy on each side of the IPC channel for receiving and sending messages to one plugin, respectively. This leads to many classes that can get confusing. As a result, the WebPluginStub was merged into the WebPluginDelegateProxy which now handles the renderer side of all IPC communication for one plugin instance. The plugin side has not been merged yet, leaving two classes, the WebPluginDelegateStub and the WebPluginProxy as conceptually the same object, just representing different directions of communication.
+
+**历史经验**：我们曾经考虑使用一个stub(存根)/proxy(代理)模型进行通信，每个IPC通道的端点有一个stub和一个proxy，分别接收和发送消息给对应的插件。这会导致许多类变得迷乱。因此，WebPluginStub被合并到WebPluginDelegateProxy，现在它处理渲染器端与一个插件实例的所有IPC通信。插件端还没有合并，还剩两个类WebPluginDelegateStub和WebPluginProxy,概念上他们是相同的对象，只是代表了通信的不同方向。
+
 
 ###Windowless Plugins
 
