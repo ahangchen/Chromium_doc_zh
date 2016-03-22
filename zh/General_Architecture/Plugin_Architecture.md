@@ -64,6 +64,6 @@ Chromium通过切换上面的图中，虚线以上几层的实现来支持跨进
 ###系统全貌
 
 这个图片展示了整个系统，有浏览器和两个渲染进程，它们都与一个共享的进程外Flash进程交流。总共有三个插件实例。注意这个图表有一部分是过期的，WebPluginStub已经合并到WebPluginDelegateProxy中了。
-This image shows the overall system with the browser and two renderer processes, each communicating with one shared out-of-process Flash process. There are three total plugin instances. Note that this diagram is out of date, and WebPluginStub has been merged with WebPluginDelegateProxy.
+
 
 ![](../pluginsoutofprocess.png)
