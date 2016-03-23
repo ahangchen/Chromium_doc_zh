@@ -1,6 +1,6 @@
 #进程模型
 
-这个文档描述了Chromium支持的不同线程模型，包括它的渲染器进程，以及模型中现有的警告。
+这个文档描述了Chromium支持的不同线程模型，包括它的渲染器进程，以及现有模型实现的问题。
 
 ##概述
 
@@ -11,7 +11,7 @@ Web浏览器有许多方法可以分割成不同的操作系统进程，最佳�
 
 ##支持的模型
 
-Chromium支持四种不同的模型，它们影响浏览器分配页面给渲染进程的行为。默认情况下，Chromium为用户访问的每个网站使用一个独立的操作系统进程。然而，用户可以在启动Chromium时指定命令行选项，以选择其他的架构：全网站单进程，
+Chromium支持四种不同的模型，它们影响浏览器分配页面给渲染进程的行为。默认情况下，Chromium为用户访问的每个网站使用一个独立的操作系统进程。然而，用户可以在启动Chromium时指定命令行选项，以选择其他的架构：全网站单进程，每组相连标签页一个进程，或者每个东西都放在一个单独的进程中。这些模型的区别在于他们是否影响内容的源，是否影响标签页间的关系，或者两者都会影响。这个章节在更深的细节上讨论每种模型，以及当前Chromium的实现的一些
 Chromium supports four different models that affect how the browser allocates pages into renderer processes. By default, Chromium uses a separate OS process for each instance of a web site the user visits. However, users can specify command-line switches when starting Chromium to select one of the other architectures: one process for all instances of a web site, one process for each group of connected tabs, or everything in a single process. These models differ in whether they reflect the origin of the content, the relationships between tabs, or both. This section discusses each model in greater detail; caveats in Chromium's current implementation are described later in this document.
 ###Process-per-site-instance
 
