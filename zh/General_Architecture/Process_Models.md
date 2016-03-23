@@ -11,8 +11,8 @@ Web浏览器有许多方法可以分割成不同的操作系统进程，最佳�
 
 ##支持的模型
 
-Chromium支持四种不同的模型，它们影响浏览器分配页面给渲染进程的行为。默认情况下，Chromium为用户访问的每个网站使用一个独立的操作系统进程。然而，用户可以在启动Chromium时指定命令行选项，以选择其他的架构：全网站单进程，每组相连标签页一个进程，或者每个东西都放在一个单独的进程中。这些模型的区别在于他们是否影响内容的源，是否影响标签页间的关系，或者两者都会影响。这个章节在更深的细节上讨论每种模型，以及当前Chromium的实现的一些
-Chromium supports four different models that affect how the browser allocates pages into renderer processes. By default, Chromium uses a separate OS process for each instance of a web site the user visits. However, users can specify command-line switches when starting Chromium to select one of the other architectures: one process for all instances of a web site, one process for each group of connected tabs, or everything in a single process. These models differ in whether they reflect the origin of the content, the relationships between tabs, or both. This section discusses each model in greater detail; caveats in Chromium's current implementation are described later in this document.
+Chromium支持四种不同的模型，它们影响浏览器分配页面给渲染进程的行为。默认情况下，Chromium为用户访问的每个网站使用一个独立的操作系统进程。然而，用户可以在启动Chromium时指定命令行选项，以选择其他的架构：全网站单进程，每组相连标签页一个进程，或者每个东西都放在一个单独的进程中。这些模型的区别在于他们是否影响内容的源，是否影响标签页间的关系，或者两者都会影响。这个章节在更深的细节上讨论每种模型，并在这个文档的后面描述当前Chromium的实现的一些问题。
+
 ###Process-per-site-instance
 
 By default, Chromium creates a renderer process for each instance of a site the user visits. This ensures that pages from different sites are rendered independently, and that separate visits to the same site are also isolated from each other. Thus, failures (e.g., renderer crashes) or heavy resource usage in one instance of a site will not affect the rest of the browser. This model is based on both the origin of the content and relationships between tabs that might script each other. As a result, two tabs may display pages that are rendered in the same process, while navigating to a cross-site page in a given tab may switch the tab's rendering process. (Note that there are important caveats in Chromium's current implementation, discussed in the Caveats section below.)
@@ -20,34 +20,42 @@ By default, Chromium creates a renderer process for each instance of a site the 
 Concretely, we define a "site" as a registered domain name (e.g., google.com or bbc.co.uk) plus a scheme (e.g., https://). This is similar to the origin defined by the Same Origin Policy, but it groups subdomains (e.g., mail.google.com and docs.google.com) and ports (e.g., http://foo.com:8080) into the same site. This is necessary to allow pages that are in different subdomains or ports of a site to access each other via Javascript, which is permitted by the Same Origin Policy if they set their document.domain variables to be identical.
 
 A "site instance" is a collection of connected pages from the same site. We consider two pages as connected if they can obtain references to each other in script code (e.g., if one page opened the other in a new window using Javascript).
+
 **Strengths**
 
 
 - Isolates content from different sites. This provides a meaningful form of fate sharing for web content, where pages are isolated from failures caused by other web sites.
 - Isolates independent tabs showing the same site. Visiting the same site independently in different tabs will create different processes. This will prevent contention and failures in one instance from affecting other instances.
+- 
 **Weaknesses**
 
 - More memory overhead. In most workloads, this model will create more renderer processes than the process-per-site model described below. While this increases stability and may add opportunities for parallelism, it also increases memory overhead.
 - More complex to implement.  Unlike process-per-tab and single-process, this model requires complex logic to support swapping processes in a tab when it navigates between sites, as well as proxying a small set of JavaScript actions that are permitted between origins, such as postMessage.  (For more on this issue and our ongoing efforts to support it fully, see the Caveats section below and our Site Isolation project page.)
+
 ###Process-per-site
 
 Chromium also supports a process model that isolates different sites from each other, but groups all instances of the same site into the same process. To use this model, users should specify a --process-per-site command-line switch when starting Chromium. This creates fewer renderer processes, trading some robustness for lower memory overhead. This model is based on the origin of the content and not the relationships between tabs.
+
 **Strengths**
 
 - Isolates content from different sites. As in the process-per-site-instance model, pages from different sites will not share fate.
 - Less memory overhead. This model is likely to create fewer concurrent processes than the process-per-site-instance and process-per-tab models. This may be desirable to reduce Chromium's memory footprint.
+
 **Weaknesses**
 
 - Can result in large renderer processes. Sites like google.com host a wide variety of applications that may be open concurrently in the browser, all of which would be rendered in the same process. Thus, resource contention and failures in these applications could affect many tabs, making the browser seem less responsive. It is unfortunately hard to identify site boundaries at a finer granularity than the registered domain name without breaking backwards compatibility.
 - More complex to implement.  Like the process-per-site-instance model, this requires logic for swapping processes during navigation and proxying some JavaScript interactions.
+
 ###Process-per-tab
 
 The process-per-site-instance and process-per-site models both consider the origin of the content when creating renderer processes. Chromium also supports a simpler model which dedicates one renderer process to each group of script-connected tabs. This model can be selected using the --process-per-tab command-line switch.
 
 Specifically, we refer to a set of tabs with script connections to each other as a browsing instance, which also corresponds to a "unit of related browsing contexts" from the HTML5 spec. This set consists of a tab and any other tabs that it opens using Javascript code. Such tabs must be rendered in the same process to allow Javascript calls to be made between them (most commonly between pages from the same origin).
+
 **Strengths**
 
 - Simple to understand. Each tab has one renderer process dedicated to it that does not change over time.
+
 **Weaknesses**
 
 - Leads to undesirable fate sharing between pages. If the user navigates a tab in a browsing instance to a different web site, the new page will share fate with any other pages in the browsing instance.
@@ -59,14 +67,17 @@ It is worth noting that Chromium still forces process swaps within a tab in some
 Finally, for the purposes of comparison, Chromium supports a single process model that can be enabled using the --single-process command-line switch. In this model, both the browser and rendering engine are run within a single OS process.
 
 The single process model provides a baseline for measuring any overhead that the multi-process architectures impose. It is not a safe or robust architecture, as any renderer crash will cause the loss of the entire browser process. It is designed for testing and development purposes, and it may contain bugs that are not present in the other architectures.
+
 ##Sandboxes and plug-ins
 
 In each of the multi-process architectures, Chromium's renderer processes are executed within a sandboxed process that has limited access to the user's computer. These processes do not have direct access to the user's filesystem, display, or most other resources. Instead, they gain access to permitted resources only through the browser process, which can impose security policies on this access. As a result, Chromium's browser process can mitigate the damage that an exploited rendering engine can do.
 
 Browser plug-ins, such as Flash and Silverlight, are also executed in their own processes, and some plug-ins like Flash even run within Chromium's sandbox. In each of the multi-process architectures that Chromium supports, there is one process instance for each type of active plug-in. Thus, all Flash instances run in the same process, regardless of which sites or tabs they appear in.
+
 ##Caveats
 
 This section lists a few caveats with Chromium's current implementation of the process models, along with their implications.
+
 - Most renderer-initiated navigations within a tab do not yet lead to process swaps. If the user follows a link, submits a form, or is redirected by a script, Chromium will not attempt to switch renderer processes in the tab if the navigation is cross-site. Chromium only swaps renderer processes for browser-initiated cross-site navigations, such as typing a URL in the location bar or following a bookmark. As a result, pages from different sites may be rendered in the same process, even in the process-per-site-instance and process-per-site models. This is likely to change in future versions of Chromium as part of the Site Isolation project.
 
 However, there is a mechanism web pages can use to suggest that a link points to an unrelated page and can be safely rendered in a different process.  If a link has the rel=noreferrer target=_blank attributes, then Chromium will typically render it in a different process.
