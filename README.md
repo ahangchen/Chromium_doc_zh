@@ -33,7 +33,7 @@
   - [跨进程通信](General_Architecture/Inter-process_Communication.md): 浏览进程，绘制器，插件进程是如何交流的
   - [多进程资源加载](General_Architecture/Multi-process_Resource_Loading.md): 页面和图像是如何从网络加载到绘制器中的
   - [插件架构](General_Architecture/Plugin_Architecture.md)
-  - [进程模型](General_Architecture/Process_Models.md): Our 创建新绘制进程的策略
+  - [进程模型](General_Architecture/Process_Models.md): 创建新绘制进程的策略
   - [Profile架构](General_Architecture/Profile_Architecture.md)
   - [安全浏览](General_Architecture/SafeBrowsing.md)
   - [沙箱](General_Architecture/Sandbox.md)
