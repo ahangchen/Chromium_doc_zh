@@ -1,5 +1,6 @@
-#Process Models
+#进程模型
 
+这个文档描述了Chromium支持的不同线程模型，包括它的渲染器进程，以及
 This document describes the different process models that Chromium supports for its renderer processes, as well as caveats in the models as it exists currently.
 ##Overview
 
