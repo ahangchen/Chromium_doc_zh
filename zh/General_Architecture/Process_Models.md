@@ -23,7 +23,6 @@ A "site instance" is a collection of connected pages from the same site. We cons
 
 **Strengths**
 
-
 - Isolates content from different sites. This provides a meaningful form of fate sharing for web content, where pages are isolated from failures caused by other web sites.
 - Isolates independent tabs showing the same site. Visiting the same site independently in different tabs will create different processes. This will prevent contention and failures in one instance from affecting other instances.
 - 
