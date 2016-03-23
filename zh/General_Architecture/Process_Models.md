@@ -1,14 +1,17 @@
 #进程模型
 
-这个文档描述了Chromium支持的不同线程模型，包括它的渲染器进程，以及
-This document describes the different process models that Chromium supports for its renderer processes, as well as caveats in the models as it exists currently.
-##Overview
+这个文档描述了Chromium支持的不同线程模型，包括它的渲染器进程，以及模型中现有的警告。
 
-Web content has evolved to contain significant amounts of active code that run within the browser, making many web sites more like applications than documents. This evolution has changed the role of the browser into an operating system rather than a simple document renderer. Chromium is built like an operating system to run these applications in a safe and robust way, using multiple OS processes to isolate web sites from each other and from the browser itself. This improves robustness because each process runs in its own address space, is scheduled by the operating system, and can fail independently. Users can also view the resource usage of each process in Chromium's Task Manager.
+##概述
 
-There are many ways that a web browser could be segmented into different OS processes, and choosing the best architecture depends on many factors, including stability, resource usage, and observations from actual usage. Chromium supports four different process models to allow experimentation, with a default model that best fits most users.
-##Supported models
+网页内容已经发展到包含大量在浏览器内运行的活跃代码的地步，使得许多网站更像应用程序而非文档。这种变革改变了浏览器的角色，从一个简单的文档渲染器变成一个操作系统。Chromium构建得像一个操作系统那样，使用多进程隔离每个网站和浏览器自身，以一种安全而鲁棒的方式运行这些程序。这提高了鲁棒性，因为每个进程运行在自己的地址空间里，由操作系统调度，即使崩溃也不会互相影响。用户也可以在Chromium的任务管理器里查看每个进程的资源使用情况。
 
+Web浏览器有许多方法可以分割成不同的操作系统进程，最佳的架构的选择取决于许多因素，包括稳定性，资源使用，对实际情况的观察。Chromium支持四种不同的进程模型，允许开发者实验，也有最适合大部分用户的默认模式。
+
+
+##支持的模型
+
+Chromium支持四种不同的模型，它们影响浏览器分配页面给渲染进程的行为。默认情况下，Chromium为用户访问的每个网站使用一个独立的操作系统进程。然而，用户可以在启动Chromium时指定命令行选项，以选择其他的架构：全网站单进程，
 Chromium supports four different models that affect how the browser allocates pages into renderer processes. By default, Chromium uses a separate OS process for each instance of a web site the user visits. However, users can specify command-line switches when starting Chromium to select one of the other architectures: one process for all instances of a web site, one process for each group of connected tabs, or everything in a single process. These models differ in whether they reflect the origin of the content, the relationships between tabs, or both. This section discusses each model in greater detail; caveats in Chromium's current implementation are described later in this document.
 ###Process-per-site-instance
 
