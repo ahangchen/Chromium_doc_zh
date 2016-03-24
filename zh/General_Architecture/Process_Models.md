@@ -34,6 +34,8 @@ Chromium支持四种不同的模型，它们影响浏览器分配页面给渲染
 
 ###每个网站一个进程
 
+Chromium也支持这样一种进程模式，隔离不同的网站，但将相同网站的所有实例组合到一块。为了使用这个模型，用户需要在启动Chromium时在终端指定 --process-per-site开关。这创建更少的渲染进程，用鲁棒性交换更少的内存占用。这个模型基于内容的源，而非标签页间的关系。
+
 Chromium also supports a process model that isolates different sites from each other, but groups all instances of the same site into the same process. To use this model, users should specify a --process-per-site command-line switch when starting Chromium. This creates fewer renderer processes, trading some robustness for lower memory overhead. This model is based on the origin of the content and not the relationships between tabs.
 
 **优点**
