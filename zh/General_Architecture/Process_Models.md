@@ -15,33 +15,33 @@ Chromium支持四种不同的模型，它们影响浏览器分配页面给渲染
 
 ###每个网站实例一个进程
 
-默认情况情况下，Chromium为用户访问的每个网站实例创建一个渲染器进程。这保证了不同网站的网页独立渲染，让对同一个网站的不同访问相互独立。
-By default, Chromium creates a renderer process for each instance of a site the user visits. This ensures that pages from different sites are rendered independently, and that separate visits to the same site are also isolated from each other. Thus, failures (e.g., renderer crashes) or heavy resource usage in one instance of a site will not affect the rest of the browser. This model is based on both the origin of the content and relationships between tabs that might script each other. As a result, two tabs may display pages that are rendered in the same process, while navigating to a cross-site page in a given tab may switch the tab's rendering process. (Note that there are important caveats in Chromium's current implementation, discussed in the Caveats section below.)
+默认情况下，Chromium为用户访问的每个网站实例创建一个渲染器进程。这保证了不同网站的网页独立渲染，让对同一个网站的不同访问相互独立。因此一个网站实例中的失败（比如，渲染器崩溃）或者重的资源使用不会影响浏览器的其他部分。这个模型基于内容的源和脚本会相互影响的标签页间的关系。因此，两个标签页可以在同一个渲染进程里展示页面，同时在给定的一个标签页中导航到网站外的一个网页，可能切换标签页的渲染进程。（注意，Chromium当前的实现有一些重要的问题，会在下面的Caveat(警告)部分讨论。）
 
-Concretely, we define a "site" as a registered domain name (e.g., google.com or bbc.co.uk) plus a scheme (e.g., https://). This is similar to the origin defined by the Same Origin Policy, but it groups subdomains (e.g., mail.google.com and docs.google.com) and ports (e.g., http://foo.com:8080) into the same site. This is necessary to allow pages that are in different subdomains or ports of a site to access each other via Javascript, which is permitted by the Same Origin Policy if they set their document.domain variables to be identical.
+具体说来，我们把一个注册域名（例如：google.com或bbc.co.uk）加一个scheme（例如：https://）定义为一个网站。这与同源策略定义相似，但它将子域名（比如：mail.google.com和docs.google.com）和端口（比如http://foo.com:8080）合并到同一个网站中。允许网站的不同子域名或端口中的页面通过Javascript访问是有必要的，如果他们的document.domain变量相同的话，同源策略也会这样允许。
 
-A "site instance" is a collection of connected pages from the same site. We consider two pages as connected if they can obtain references to each other in script code (e.g., if one page opened the other in a new window using Javascript).
+一个网站实例是一些相同网站的相连网页的集合。我们这样认为两个页面是相连的：如果他们可以在脚本代码中获取彼此的引用的话（比如：如果一个页面被另一个页面用Javascript在一个新窗口中打开）。
 
-**Strengths**
 
-- Isolates content from different sites. This provides a meaningful form of fate sharing for web content, where pages are isolated from failures caused by other web sites.
-- Isolates independent tabs showing the same site. Visiting the same site independently in different tabs will create different processes. This will prevent contention and failures in one instance from affecting other instances.
-- 
-**Weaknesses**
+**优点**
 
-- More memory overhead. In most workloads, this model will create more renderer processes than the process-per-site model described below. While this increases stability and may add opportunities for parallelism, it also increases memory overhead.
-- More complex to implement.  Unlike process-per-tab and single-process, this model requires complex logic to support swapping processes in a tab when it navigates between sites, as well as proxying a small set of JavaScript actions that are permitted between origins, such as postMessage.  (For more on this issue and our ongoing efforts to support it fully, see the Caveats section below and our Site Isolation project page.)
+- 隔离不同网站的内容。这提供了网页内容的关键分享的一种有意义的形式，在这种形式中，网页间的失败不会相互影响。
+- 隔离展示相同网站的独立标签页。在不同的标签页中独立访问同样的网站会创建不同的进程。这可以避免同个实例中的争夺与失败，使其不会影响其他实例。
+ 
+**缺点**
+- 更多的内存负载。在大多数工作负载下，这个模型会比下面的每个网站一个进程创建更多渲染器进程。这虽然能增加稳定性并且增加并发的机会，但它也增加了内存负载。
+- 更复杂的实现。不像每个标签页一个进程或者单进程，这个模型需要复杂的逻辑以支持标签在网页间导航时的进程交换，以及代理一些允许的源之间的JavaScript行为，比如传递消息。（关于这个话题的更多内容以及我们正在进行的对这种模型的完全支持的努力，查看下面的Caveats(警告)部分以及我们的站点隔离工程页面。）
 
-###Process-per-site
+
+###每个网站一个进程
 
 Chromium also supports a process model that isolates different sites from each other, but groups all instances of the same site into the same process. To use this model, users should specify a --process-per-site command-line switch when starting Chromium. This creates fewer renderer processes, trading some robustness for lower memory overhead. This model is based on the origin of the content and not the relationships between tabs.
 
-**Strengths**
+**优点**
 
 - Isolates content from different sites. As in the process-per-site-instance model, pages from different sites will not share fate.
 - Less memory overhead. This model is likely to create fewer concurrent processes than the process-per-site-instance and process-per-tab models. This may be desirable to reduce Chromium's memory footprint.
 
-**Weaknesses**
+**缺点**
 
 - Can result in large renderer processes. Sites like google.com host a wide variety of applications that may be open concurrently in the browser, all of which would be rendered in the same process. Thus, resource contention and failures in these applications could affect many tabs, making the browser seem less responsive. It is unfortunately hard to identify site boundaries at a finer granularity than the registered domain name without breaking backwards compatibility.
 - More complex to implement.  Like the process-per-site-instance model, this requires logic for swapping processes during navigation and proxying some JavaScript interactions.
@@ -52,11 +52,11 @@ The process-per-site-instance and process-per-site models both consider the orig
 
 Specifically, we refer to a set of tabs with script connections to each other as a browsing instance, which also corresponds to a "unit of related browsing contexts" from the HTML5 spec. This set consists of a tab and any other tabs that it opens using Javascript code. Such tabs must be rendered in the same process to allow Javascript calls to be made between them (most commonly between pages from the same origin).
 
-**Strengths**
+**优点**
 
 - Simple to understand. Each tab has one renderer process dedicated to it that does not change over time.
 
-**Weaknesses**
+**缺点**
 
 - Leads to undesirable fate sharing between pages. If the user navigates a tab in a browsing instance to a different web site, the new page will share fate with any other pages in the browsing instance.
 
