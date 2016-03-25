@@ -24,7 +24,7 @@ Chromium支持四种不同的模型，它们影响浏览器分配页面给渲染
 
 **优点**
 
-- 隔离不同网站的内容。这提供了网页内容的关键分享的一种有意义的形式，在这种形式中，网页间的失败不会相互影响。
+- 隔离不同网站的内容。这提供了网页内容的命运共享的一种有意义的形式，在这种形式中，网页间的失败不会相互影响。
 - 隔离展示相同网站的独立标签页。在不同的标签页中独立访问同样的网站会创建不同的进程。这可以避免同个实例中的争夺与失败，使其不会影响其他实例。
  
 **缺点**
@@ -39,13 +39,14 @@ Chromium也支持这样一种进程模式，隔离不同的网站，但将相同
 
 **优点**
 
-- Isolates content from different sites. As in the process-per-site-instance model, pages from different sites will not share fate.
-- Less memory overhead. This model is likely to create fewer concurrent processes than the process-per-site-instance and process-per-tab models. This may be desirable to reduce Chromium's memory footprint.
+- 隔离不同网站的内容。正如每个网站实例一个进程的模型那样，不同网站的页面不会共享命运（不会同生共死。。）。
+
+- 更少的内存占用。这个模型比上一个模型和每个标签一个进程的模型可能创建更少的并行进程。这对于减少Chromium的内存足迹可能是需要的。
 
 **缺点**
 
-- Can result in large renderer processes. Sites like google.com host a wide variety of applications that may be open concurrently in the browser, all of which would be rendered in the same process. Thus, resource contention and failures in these applications could affect many tabs, making the browser seem less responsive. It is unfortunately hard to identify site boundaries at a finer granularity than the registered domain name without breaking backwards compatibility.
-- More complex to implement.  Like the process-per-site-instance model, this requires logic for swapping processes during navigation and proxying some JavaScript interactions.
+- 可能导致更大的渲染进程。像google.com这样的站点上有着大量的应用程序，它们可能在浏览器里被同时打开，并且全部在同一个进程里渲染。因此，这些应用程序中的资源争夺与失败会影响许多标签页，使得浏览器看起来不能更好地响应。不幸的是，在细粒度上而非通过注册域名区分网站边界，并且不影响向后兼容性是很困难的。
+- 实现更加复杂。与每个网站实例一个进程的模型相似，这需要在导航中交换进程以及代理一些javascript操作的逻辑。
 
 ###Process-per-tab
 
