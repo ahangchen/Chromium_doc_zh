@@ -81,11 +81,12 @@ Chromium也支持这样一种进程模式，隔离不同的网站，但将相同
 浏览器插件，比如Flash和Silverlight，也在他们自己的进程中执行，并且有些插件，比如Flash运行在Chromium的沙箱中。在Chromium支持的每个多进程架构中，对每种活跃的插件都只有一个进程。因此，所有的Flash实例运行在同一个进程里，不论它们出现在哪个网站或标签页中。
 
 
-##Caveats
+##警告
 
-This section lists a few caveats with Chromium's current implementation of the process models, along with their implications.
+这个部分列出一些Chromium当前进程模型实现的警告，以及它们的意义。
 
-- Most renderer-initiated navigations within a tab do not yet lead to process swaps. If the user follows a link, submits a form, or is redirected by a script, Chromium will not attempt to switch renderer processes in the tab if the navigation is cross-site. Chromium only swaps renderer processes for browser-initiated cross-site navigations, such as typing a URL in the location bar or following a bookmark. As a result, pages from different sites may be rendered in the same process, even in the process-per-site-instance and process-per-site models. This is likely to change in future versions of Chromium as part of the Site Isolation project.
+- 大多数始于渲染器的标签页中的导航还没有列入进程交换中。如果用户点击一个链接，提交一个表单，或者被脚本重定向，，如果导航是跨站的话，Chromium不会试图切换标签页中的渲染器进程。Chromium只会为始于浏览器的跨站导航交换进程，比如在地址栏输入一个URL或者打开一个书签。因此，不同网站的页面可能会在同一个进程中渲染，甚至是在单网站实例单进程模型和单网站单进程模型中。这很可能在将来的Chromium版本中，作为网站隔离工程的一部分进行修改。
+
 
 However, there is a mechanism web pages can use to suggest that a link points to an unrelated page and can be safely rendered in a different process.  If a link has the rel=noreferrer target=_blank attributes, then Chromium will typically render it in a different process.
 
