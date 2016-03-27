@@ -74,11 +74,12 @@ Chromium也支持这样一种进程模式，隔离不同的网站，但将相同
 单进程模型提供了一个衡量多进程架构带来的负荷的基线。这不是一个安全的架构，也不是一个鲁棒的架构，因为任何渲染器的崩溃会导致整个浏览器进程挂掉。它只是设计用于测试和开发目的，并且可能包含在其他架构中没有的bug。
 
 
-##Sandboxes and plug-ins
+##沙箱与插件
 
-In each of the multi-process architectures, Chromium's renderer processes are executed within a sandboxed process that has limited access to the user's computer. These processes do not have direct access to the user's filesystem, display, or most other resources. Instead, they gain access to permitted resources only through the browser process, which can impose security policies on this access. As a result, Chromium's browser process can mitigate the damage that an exploited rendering engine can do.
+在每个多进程架构里，Chromium的渲染器进程运行在一个沙箱进程中，它对用户电脑只有有限的访问权限。这些进程对用户的文件系统，显示器，或者大部分其他的资源没有直接的接触。相反，他们只通过浏览器进程获得对允许的资源的访问，而浏览器进程可以在这种访问上附加安全策略。因此，Chromium的浏览器进程可以减轻一个被利用的渲染器引擎能做的事情。
 
-Browser plug-ins, such as Flash and Silverlight, are also executed in their own processes, and some plug-ins like Flash even run within Chromium's sandbox. In each of the multi-process architectures that Chromium supports, there is one process instance for each type of active plug-in. Thus, all Flash instances run in the same process, regardless of which sites or tabs they appear in.
+浏览器插件，比如Flash和Silverlight，也在他们自己的进程中执行，并且有些插件，比如Flash运行在Chromium的沙箱中。在Chromium支持的每个多进程架构中，对每种活跃的插件都只有一个进程。因此，所有的Flash实例运行在同一个进程里，不论它们出现在哪个网站或标签页中。
+
 
 ##Caveats
 
