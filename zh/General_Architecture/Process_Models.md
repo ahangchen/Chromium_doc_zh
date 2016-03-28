@@ -110,18 +110,17 @@ Charles Reis, Steven D. Gribble  (both authors at UW + Google)
 
 Eurosys 2009. Nuremberg, Germany, April 2009.
 
-摘要:
+**摘要**
 
-今天的许多网站包含
-*Many of today's web sites contain substantial amounts of client-side code, and consequently, they act more like programs than simple documents. This creates robustness and performance challenges for web browsers. To give users a robust and responsive platform, the browser must identify program boundaries and provide isolation between them.*
+今天的许多网站包含大量客户端代码，因此，他们不再是简单的文档，而更多地表现出程序的特征。这给浏览器提出了鲁棒性与性能的挑战。为了给用户提供一个鲁棒而又快速响应的平台，浏览器必须识别应用程序边界，在他们之间提供隔离。
 
-*We provide three contributions in this paper. First, we present abstractions of web programs and program instances, and we show that these abstractions clarify how browser components interact and how appropriate program boundaries can be identified. Second, we identify backwards compatibility tradeoffs that constrain how web content can be divided into programs without disrupting existing web sites. Third, we present a multi-process browser architecture that isolates these web program instances from each other, improving fault tolerance, resource management, and performance. We discuss how this architecture is implemented in Google Chrome, and we provide a quantitative performance evaluation examining its benefits and costs.*
+我们在这篇文章中提出三个点。第一，我们为web程序和程序实例提供抽象，并说明这些抽象描绘了浏览器组件是如何交互的，合适的程序边界该如何识别出来；第二，我们识别回退可用性的代价，因为这约束了在不干扰已有网站的情况下，将网页内容划分为程序所能做到的程度；第三，我们展示了一个多进程浏览器架构，相互隔离这些web应用程序，提高容错度，优化资源管理和性能。我们会讨论这个架构在Google Chrome中是如何实现的，然后我们会提供一个量化的性能评估以检查这种架构的好处与代价。
 
-[Security Architecture of the Chromium Browser](http://crypto.stanford.edu/websec/chromium/)
+[Chromium浏览器安全架构](http://crypto.stanford.edu/websec/chromium/)
 Adam Barth, Collin Jackson, Charles Reis, and The Google Chrome Team
 
 Stanford Technical Report, September 2008. 
 
-Abstract:
+**摘要**
 
-*Most current web browsers employ a monolithic architecture that combines "the user" and "the web" into a single protection domain. An attacker who exploits an arbitrary code execution vulnerability in such a browser can steal sensitive files or install malware. In this paper, we present the security architecture of Chromium, the open-source browser upon which Google Chrome is built. Chromium has two modules in separate protection domains: a browser kernel, which interacts with the operating system, and a rendering engine, which runs with restricted privileges in a sandbox. This architecture helps mitigate high-severity attacks without sacrificing compatibility with existing web sites. We define a threat model for browser exploits and evaluate how the architecture would have mitigated past vulnerabilities.*
+大多数当前网页浏览器使用一个单片架构，将user和web合并到同一个保护域中。如果一个攻击者在这样的浏览器中利用了任意一个代码执行漏洞，他们都可以盗取敏感文件或者安装恶意软件。在这篇文章里，我们会展示Chromium（Google Chrome是在这个开源软件的基础上构建的）的安全架构。Chromium有两个处于不同保护域中的模块：一个是浏览器内核，与操作系统交流，一个是渲染引擎，在沙箱中运行，有着有限的权限。这个架构能够减轻高危攻击，而且不牺牲已有网站的可用性。我们为每个浏览器调用定义了一个威胁模型，并评估这个架构能够如何减少过去的漏洞。
