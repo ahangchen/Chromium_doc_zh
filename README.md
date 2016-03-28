@@ -5,7 +5,7 @@
 
 > 还未完全完成，不断更新ing，欢迎star
 
-> gitbook地址：https://ahangchen.gitbooks.io/chromium_doc_zh/content/zh//
+> gitbook地址：https://ahangchen.gitbooks.io/chromium_doc_zh/content/zh// 适合阅读，可以导出pdf
 
 > github地址： https://github.com/ahangchen/Chromium_doc_zh 
 
