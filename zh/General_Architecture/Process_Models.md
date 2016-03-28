@@ -87,31 +87,32 @@ Chromium也支持这样一种进程模式，隔离不同的网站，但将相同
 
 - 大多数始于渲染器的标签页中的导航还没有列入进程交换中。如果用户点击一个链接，提交一个表单，或者被脚本重定向，，如果导航是跨站的话，Chromium不会试图切换标签页中的渲染器进程。Chromium只会为始于浏览器的跨站导航交换进程，比如在地址栏输入一个URL或者打开一个书签。因此，不同网站的页面可能会在同一个进程中渲染，甚至是在单网站实例单进程模型和单网站单进程模型中。这很可能在将来的Chromium版本中，作为网站隔离工程的一部分进行修改。
 
+然而，网页可以使用一种机制来让一个链接指向一个不相关的页面，这样它们可以在不同的进程中安全地渲染。如果一个link有rel=noreferrer或target=blank这样的属性，那么Chromium会在另外的进程中渲染它。
 
-However, there is a mechanism web pages can use to suggest that a link points to an unrelated page and can be safely rendered in a different process.  If a link has the rel=noreferrer target=_blank attributes, then Chromium will typically render it in a different process.
+- 子页面现在是与父页面在相同进程中渲染的。虽然跨站点的子页面没有访问它们的父页面的脚本，而且它们可以在不同的进程中安全地渲染，但Chromium还没有在独立的进程中渲染它们。与上面的第一个警告相似，这意味着不同站点的页面会在同样的进程中渲染。这很可能在Chromium将来的版本中进行修改。
 
-- Subframes are currently rendered in the same process as their parent page. Although cross-site subframes do not have script access to their parents and could safely be rendered in a separate process, Chromium does not yet render them in their own processes. Similar to the first caveat, this means that pages from different sites may be rendered in the same process. This will likely change in future versions of Chromium.
+- Chromium创建的渲染进程数目有上限。这避免浏览器占用用户电脑的太多进程。这个限制与计算机的内存成比例，并且最多可以有80个进程。因为这样的限制，一个渲染器可能被分配给多个站点。这种重用现在是随机进行的，但将来的版本中，Chromium会做一个启发式的策略，智能的把站点分配给渲染器进程。
 
-- There is a limit to the number of renderer processes that Chromium will create. This prevents the browser from overwhelming the user's computer with too many processes. The limit is is proportional to the amount of memory on the computer, and may be as high as 80 processes. Because of the limit, a single renderer process may be dedicated to multiple sites. This reuse is currently done at random, but future versions of Chromium may apply heuristics to more intelligently allocate sites to renderer processes.
 
-##Implementation notes
+##实现记录
 
-Two classes in Chromium represent the abstractions needed for the various process models: BrowsingInstance and SiteInstance.
+Chromium中有两个类代表了不同的进程模型实现的抽象需要：BrowsingInstance和SiteInstance。
+BrowsingInstance类代表了一个浏览器中脚本相连的集合，在HTML5领域中也被称为相关浏览上下文单元。在单标签页单进程模型中，我们为每个BrowsingInstance创建一个渲染器进程。
 
-The BrowsingInstance class represents a set of script-connected tabs within the browser, also known as a unit of related browsing contexts in the HTML 5 spec. In the process-per-tab model, we create a renderer process for each BrowsingInstance.
+SiteInstance类代表了来自相同站点的相同页面。它是BrowsingInstance内部页面的一个子集，因为在BrowsingInstance内部，每个站点只有一个SiteInstance，所以它很重要。在单网站实例单进程模型中，我们为每个SiteInstance创建一个渲染器进程。为了实现单网站单进程，我们必须确保来自同一个站点的所有的SiteInstance归入相同的进程中。
 
-The SiteInstance class represents a set of connected pages from the same site. It is a subdivision of pages within a BrowsingInstance, and it is important that there is only one SiteInstance per site within a BrowsingInstance. In the process-per-site-instance model, we create a renderer process for each SiteInstance. To implement process-per-site, we ensure that all SiteInstances from the same site end up in the same process.
 
-##Academic Papers
+##学术论文
 
-[Isolating Web Programs in Modern Browser Architectures](http://www.charlesreis.com/research/publications/eurosys-2009.pdf)
+[现代浏览器架构中隔离Web程序](http://www.charlesreis.com/research/publications/eurosys-2009.pdf)
 
 Charles Reis, Steven D. Gribble  (both authors at UW + Google)
 
 Eurosys 2009. Nuremberg, Germany, April 2009.
 
-Abstract:
+摘要:
 
+今天的许多网站包含
 *Many of today's web sites contain substantial amounts of client-side code, and consequently, they act more like programs than simple documents. This creates robustness and performance challenges for web browsers. To give users a robust and responsive platform, the browser must identify program boundaries and provide isolation between them.*
 
 *We provide three contributions in this paper. First, we present abstractions of web programs and program instances, and we show that these abstractions clarify how browser components interact and how appropriate program boundaries can be identified. Second, we identify backwards compatibility tradeoffs that constrain how web content can be divided into programs without disrupting existing web sites. Third, we present a multi-process browser architecture that isolates these web program instances from each other, improving fault tolerance, resource management, and performance. We discuss how this architecture is implemented in Google Chrome, and we provide a quantitative performance evaluation examining its benefits and costs.*
