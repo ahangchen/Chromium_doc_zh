@@ -73,6 +73,7 @@ In addition, BrowserContextKeyedServiceFactory provides these other knobs for ho
 - By default, BCKSF will lazily create your service. If you override ServiceIsCreatedWithProfile() to return true, your service will be created alongside the profile.
 - BCKSF gives you multiple ways to control behavior during unit tests. See the header for more details.
 - BCKSF gives you a way to augment and tweak the shutdown and deallocation behavior.
+
 ###A Few Types of Factories
 
 Not all objects have the same lifecycle and memory management. The previous paragraph was a major simplification; there is a base class BrowserContextKeyedBaseFactory that defines the most general dependency stuff while BrowserContextKeyedServiceFactory is a specialization that deals with normal objects. There is a second RefcountedBrowserContextKeyedServiceFactory that gives slightly different semantics and storage for RefCountedThreadSafe objects.
@@ -123,6 +124,7 @@ Behind the scenes, ProfileDependencyManager takes the stated dependency edges, p
 If you need an example of what the above looks like, try looking at these patches:
 - [r100516](http://src.chromium.org/viewvc/chrome?view=rev&revision=100516): A simple example, adding a new ProfileKeyedService. This shows off a minimal ServiceFactory subclass.
 - [r104806](http://src.chromium.org/viewvc/chrome?view=rev&revision=104806): plugin_prefs_factory.h gives an example of how to deal with things that are (and have to stay) refcounted. This patch also shows off how to move your preferences into your ProfileKeyedServiceFactory.
+
 ##Debugging Tips
 
 ###Using the dependency visualizer
