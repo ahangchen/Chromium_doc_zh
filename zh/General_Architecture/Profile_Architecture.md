@@ -1,12 +1,13 @@
-#Profile Architecture
+#Profile架构
 
-This page details an ongoing design refactoring, started in January 2012.
+这篇文章描述了一个进行中的设计重构，始于2012年1月。
 
-Note: As of Jun 2013, this doc needs updating.  The classes have been renamed (s/ProfileKeyed/BrowserContextKeyed/) and moved into components/browser_context_keyed_service.
+注意：2013年六月之后，这篇文章需要更新。相关的类被重命名(s/ProfileKeyed/BrowserContextKeyed/)以及移动到components/browser_context_keyed_service中。
 
-Chromium has lots of features that hook into a **Profile**, a bundle of data about the current user and the current chrome session that can span multiple browser windows. When Chromium first started, the profile had only a few moving parts: the cookie jar, the history database, the bookmark database, and things to do with user preferences. In the three years of the Chromium Project, Profile became the join point for every feature, leading to things like Profile::GetInstantPromoCounter() or Profile::GetHostContentSettingsMap(). As of this writing there are 58 pure virtual methods that start with "Get" in Profile.
+Chromium有许多与**Profile**挂钩的特性，所谓Profile，即一些与当前用户以及跨越多个浏览器window的当前chrome会话。当Chromium第一次打开的时候，profile只有一些动态的部分：cookie jar包，历史记录数据库，书签数据库，以及与用户首选项相关的一些东西。在Chromium工程三年的时间里，Profile变成了各个特性的连接点，派生出了一些东西像Profile::GetInstantPromoCounter()或者Profile::GetHostContentSettingsMap()。直到这个文章完成时，在Profile里已经有58个纯虚函数了。
 
-Profile should be a minimal reference, a sort of handle object that doesn't own the world.
+Profile应当是一个最小引用，即一种不拥有实体的句柄对象。
+
 
 
 ##Design Goals
