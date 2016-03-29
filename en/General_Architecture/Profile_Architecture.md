@@ -11,7 +11,7 @@ Profile should be a minimal reference, a sort of handle object that doesn't own 
 
 ##Design Goals
 
-- *We must be able to move to the new architecture piece-wise.* One service and feature at a time. We can not stop the world and convert everything in one operation. As of this writing, we've moved 19 services out of Profile.
+- **We must be able to move to the new architecture piece-wise.** One service and feature at a time. We can not stop the world and convert everything in one operation. As of this writing, we've moved 19 services out of Profile.
   - We should only make small modifications at the callsite where a Profile is used to get the service in question.
 
 - We must fix Profile shutdown. When we started and only had a few objects hanging off of Profile, manual ordering was acceptable for destruction. Now we have over seventy five components and we know that our manual destruction ordering is incorrect as written today. We can not rely on manual ordering when we have so many components.
