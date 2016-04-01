@@ -15,7 +15,7 @@ Profile应当是一个最小引用，即一种不拥有实体的句柄对象。
 - **我们必须能够分段地转移到新的架构中。**每次转移一个服务和特性。我们不能停止地球的转动，不能在一瞬间转换所有的东西。写下这些东西的时候，我们已经将19个服务移出Profile了。
 - 我们应当只对调用端做小的修改，在调用端，Profile被用于在问题中获取服务。
 - 我们必须修复Profile崩溃问题。当我们开始这项工作时，Profile外只有一小部分对象，处于拆分目的手动整理它们是可接受的。但现在我们有了75个组件，我们知道手动拆分整理是不对的，正如这里所写的。有着这么多组件的话，我们不能再依赖手动整理了。
-
+- 我们必须允许加入编译新特性或者移除旧特性。现在我们有一些chromium的分支，它们不包含标准Windows/Mac/Linux Google Chrome构建中所有的特性。
 - We must fix Profile shutdown. When we started and only had a few objects hanging off of Profile, manual ordering was acceptable for destruction. Now we have over seventy five components and we know that our manual destruction ordering is incorrect as written today. We can not rely on manual ordering when we have so many components.
 - We must allow features to be compiled in and out. Now that we have chromium variants that don't contain all the features in a standard Windows/Mac/Linux Google Chrome build, we need a way to allow these variants to compile without #ifdefing profile.h and profile_impl.h into a mess. These variants also have their own services that they'd like to provide. (Letting chromium variants add their own services also touches on why we can't rely on manual ordering in Profile shutdown.)
   - Stretch goal: Separate features go in their own .a/.so files to further minimize our ridiculous linking time.
