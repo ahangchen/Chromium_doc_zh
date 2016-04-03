@@ -21,9 +21,9 @@ Profile应当是一个最小引用，即一种不拥有实体的句柄对象。
 ##BrowserContextKeyedServiceFactory
 > 浏览器上下文关键服务工厂
 
-###The Old Way: Profile interface and ProfileImpl
+###旧的方式：Profile接口和ProfileImpl实现
+在以前的设计里，服务通常用Profile里的一个访问器来获得：
 
-In the previous design, services were fetched through an accessor on Profile:
 ```c++
 class ProfileImpl {
   public:
@@ -33,13 +33,13 @@ class ProfileImpl {
 };
 ```
 
-In the previous system, Profile was an interface with mostly pure virtual accessors. There were separate versions of Profile for Normal, Incognito and Testing profiles.
+在之前的系统里，Profile是由大部分是纯虚访问器组成的结构。Normal（正常），Incognito（匿名）和Testing（测试）profile。
 
-In this world, the Profile was the center of all activity. The profile owned all of its service and handed them out. Profile destruction was according to whatever order the services were listed in ProfileImpl. There wasn't a way for another variant to add its own services (or leave out ones it didn't need) without modifying the Profile interface.
+在这个世界里，Profile是所有活动的中心。profile有用它所有的服务，并向外界传递出去。Profile拆分遵循ProfileImpl中对服务排序的任何原则。另外的分支如果想要增加自己的服务或移除不需要的服务，而不修改Profile接口，都是不可能的。
 
-###The New Way: BrowserContextKeyedServiceFactory
+###新的方式：BrowserContextKeyedServiceFactory
+我们不再让Profile拥有某个service，而是设计了专用的单例FooServiceFactory，比如这样一个最小实现：
 
-Instead of having the Profile own FooService, we have a dedicated singleton FooServiceFactory, like this minimal one:
 ```c++
 class FooServiceFactory : public BrowserContextKeyedServiceFactory {
  public:
@@ -58,22 +58,25 @@ class FooServiceFactory : public BrowserContextKeyedServiceFactory {
     content::BrowserContext* context) const OVERRIDE;
 };
 ```
-We have a generalized BrowserContextKeyedServiceFactory which performs most of the work of associating a profile with an object provided by your BuildServiceInstanceFor() method. The BrowserContextKeyedServiceFactory provides an interface for you to override while managing the lifetime of your Service object in response to Profile lifetime events and making sure your service is shut down before services it depends on.
+我们有一个通用的BrowserContextKeyedServiceFactory，它用一个由你的BuildServiceInstanceFor()方法提供的对象，执行与profile相关的大部分工作。BrowserContextKeyedServiceFactory为你提供了一个重写接口，让你在响应Profile生命周期事件时，管理你的Service对象的生命周期，并在service依赖的service关闭前，关闭它本身。
 
-An absolutely minimal factory will supply the following methods:
-- A static GetInstance() method that refers to your Factory as a Singleton.
-- A constructor that associates this BrowserContextKeyedServiceFactory with the ProfileDependencyManager singleton, and makes DependsOn() declarations.
-- A GetForProfile() method that wraps BrowserContextKeyedServiceFactory, casting the result back to whatever type you need to return.
-- A BuildServiceInstanceFor() method which is called once by the framework for each |profile|, which must return a proper instance of your service.
+一个绝对最小工厂会提供下面的方法：
+- 一个static GetInstance()方法，单例指向你的工厂。
+- 一个构造函数，关联这个BrowserContextKeyedServiceFactory和ProfileDependencyManager实例，并做DependsOn()声明。
+- 一个GetForProfile()方法，包装BrowserContextKeyedServiceFactory，将返回结果转换为你需要的返回值。
+- 一个BuildServiceInstanceFor()方法，框架会为每个|profile|调用一次这个方法，它必须返回你的服务的一个合适的实例。
 
-In addition, BrowserContextKeyedServiceFactory provides these other knobs for how you can control behavior:
-- RegisterUserPrefs() is called once per Profile during initialization and is where you can place any user pref registration.
-- By default, BCKSF return NULL when given an Incognito profile.
-  - If you override ServiceRedirectedInIncognito() to return true, it will return the associated normal Profile's service.
-  - If you override ServiceHasOwnInstanceInIncognito() to return true, it will create a new service for the incognito profile.
-- By default, BCKSF will lazily create your service. If you override ServiceIsCreatedWithProfile() to return true, your service will be created alongside the profile.
-- BCKSF gives you multiple ways to control behavior during unit tests. See the header for more details.
-- BCKSF gives you a way to augment and tweak the shutdown and deallocation behavior.
+另外，BrowserContextKeyedServiceFactory为你的控制行为提供了这些另外的辅助：
+
+- RegisterUserPrefs()：每个Profile在初始化和用户首选项注册的地方会调用它一次
+- 默认情况下，BCKSF在给定一个Incognito profile时会返回NULL
+  - 如果你重写ServiceRedirectedInIncognito()方法并返回true，它会返回与normal Profile相关的服务。
+  - 如果你重写ServiceHasOwnInstanceInIncognito()并返回true，它会为incognito profile创建一个新的服务。
+- 默认情况下，BCKSF会延迟创建你的service，如果你重写ServiceIsCreatedWithProfile()并返回true，你的service会与profile一同创建。
+
+- BCKSF为你在单元测试时提供了多种方式来控制行为。查看头文件了解更多。
+- BCKSF为你一种方式提供一种方式增加并固定移除的和释放的行为。
+
 
 ###A Few Types of Factories
 
