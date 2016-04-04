@@ -78,20 +78,23 @@ class FooServiceFactory : public BrowserContextKeyedServiceFactory {
 - BCKSF为你一种方式提供一种方式增加并固定移除的和释放的行为。
 
 
-###A Few Types of Factories
+###几种工厂
 
-Not all objects have the same lifecycle and memory management. The previous paragraph was a major simplification; there is a base class BrowserContextKeyedBaseFactory that defines the most general dependency stuff while BrowserContextKeyedServiceFactory is a specialization that deals with normal objects. There is a second RefcountedBrowserContextKeyedServiceFactory that gives slightly different semantics and storage for RefCountedThreadSafe objects.
-###A Brief Interlude About Complexity
+并非所有对象都有一样的生命周期和内存管理。前面的段落是一个主要的简化版本；基类BrowserContextKeyedBaseFactory定义了大多数常见依赖部分，BrowserContextKeyedServiceFactory是一个具体处理通常对象的工厂。另一个RefcountedBrowserContextKeyedServiceFactory在语义上以及对RefCountedThreadSafe对象的存储上有轻微的差异。
 
-So the above, from an implementation standpoint is significantly more complex than what came before it. Is all this really worth it?
+##关于复杂度的一个小插曲
+
+上面的这些，在实现上比之前的版本要复杂许多，这是否值得呢？
 
 *Yes.*
 
-We absolutely have to address the interdependency of services. As it stands today, we do not shut down profiles after they are no longer needed in multiprofile mode because our crash rate when shutting down a profile is too high to ship to users. We have about 75 components that plug into the profile lifecycle and their dependency graph is complex enough that our naive manual ordering can not handle the complexity. All of the overrideable behavior above exists because it was implemented per service, ad hoc and copy pasted.
+我们绝对应该强调服务的独立性。正如它今天的样子，在多profile模式不再有必要之后，我们没有马上去掉profile，因为在去掉profile时，我们的crash率太高了，不能为用户所接受。我们有75个组件插在profile的生命周期当中，他们之间的依赖图如此复杂以至于我们简单的手动整理不能处理这种复杂度。上面所有可重写的行为之所以存在，是因为它由每个服务，特定的广告，以及复制粘贴实现。
 
-We likewise need to make it easy for other chromium variants to add their own features/compile features out of their build.
-###Dependency Management Overview
+我们同样需要让其他chromium分支能够方便地添加他们自己的特性，或者排除它们的构建以外的特性。
 
+###依赖管理概览
+
+考虑这一点，让我们看一下依赖管理是如何工作的。
 With that in mind, let's look at how dependency management works. There is a single ProfileDependencyManager singleton, which is what is alerted to Profile creation and destruction. A PKSF will register and unregister itself with the ProfileDependencyManager. The job of the ProfileDependencyManager is to make sure that individual services are created and destroyed in a safe ordering.
 
 Consider the case of these three service factories:
