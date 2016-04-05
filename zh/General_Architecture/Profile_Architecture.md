@@ -94,10 +94,10 @@ class FooServiceFactory : public BrowserContextKeyedServiceFactory {
 
 ###依赖管理概览
 
-考虑这一点，让我们看一下依赖管理是如何工作的。
-With that in mind, let's look at how dependency management works. There is a single ProfileDependencyManager singleton, which is what is alerted to Profile creation and destruction. A PKSF will register and unregister itself with the ProfileDependencyManager. The job of the ProfileDependencyManager is to make sure that individual services are created and destroyed in a safe ordering.
+考虑这一点，让我们看一下依赖管理是如何工作的。我们有ProfileDependencyManager的一个单例，它与Profile创建与销毁相关联。一个PKSF由ProfileDependencyManager来注册以及注销。ProfileDependencyManager的工作是确保各个服务用一种安全的方式创建与销毁。
 
-Consider the case of these three service factories:
+
+考虑下面这个有者三个服务工厂的例子：
 ```c++
 AlphaServiceFactory::AlphaServiceFactory()
     : BrowserContextKeyedServiceFactory(ProfileDependencyManager::GetInstance()) {
@@ -113,24 +113,28 @@ GammaServiceFactory::GammaServiceFactory()
   DependsOn(BetaServiceFactory::GetInstance());
      }
 ```
-The explicitly stated dependencies in this simplified graph mean that the only valid creation order for services is [Alpha, Beta, Gamma] and the destruction order is [Gamma, Beta, Alpha]. The above is all you, as a user of the framework, have to do to specify dependencies.
 
-Behind the scenes, ProfileDependencyManager takes the stated dependency edges, performs a Kahn topological sort, and uses that in CreateProfileServices() and DestroyProfileServices().
-##The Five Minute Tutorial of How to Convert Your Code
+在这个简化的代码结构中，显式声明的依赖意味着这些服务唯一有效的创建顺序是[Alpha, Beta, Gamma],唯一有效的销毁顺序是[Gamma, Beta, Alpha]。上面的这些是你，也就是这个框架的使用者，所必须指定的依赖。
 
-1. ***Make Your Existing FooService derive from BrowserContextKeyedService.**
-2. **If possible, make your FooService no longer refcounted.** Most of the refcounted objects that hang off of Profile appear to be that way because they aren't using [base::bind/WeakPtrFactory](Threading.md) instead of needing to own data on multiple threads. (In case you have a real reason for being a RefCountedThreadSafe, such as being accessed on multiple threads, derive your factory from RefcountedBrowserContextKeyedServiceFactory and everything should just work.)
-3. **Build a simple FooServiceFactory derived from BrowserContextKeyedServiceFactory. **Your FooServiceFactory will be the main access point consumers will ask for FooService. BrowserContextKeyedServiceFactory gives you a bunch of virtual methods that control behavior.
-  1. BrowserContextKeyedService* BrowserContextKeyedServiceFactory::BuildServiceInstanceFor(content::BrowserContext* context) is the only required method. Given a BrowserContext handle, return a valid FooService.
-  2. You can control the incognito behavior with ServiceRedirectedInIncognito() and ServiceHasOwnInstanceInIncognito().
-4. **Add your service to the** EnsureBrowserContextKeyedServiceFactoriesBuilt() **list in** chrome_browser_main_extra_parts_profiles.cc.
-5. **Understand shutdown behavior. **For historical reasons, we have a two phase deletion process:
-  1. Every BrowserContextKeyedService will first have its Shutdown() method called. Use this method to drop weak references to the Profile or other service objects.
-  2. Every BrowserContextKeyedService is deleted and its destructor is run. Minimal work should be done here. Attempts to call any *ServiceFactory::GetForProfile() will cause an assertion in debug mode.
-6. Change each instance of "profile_->GetFooService()" to "FooServiceFactory::GetForProfile(profile_)".
-If you need an example of what the above looks like, try looking at these patches:
-- [r100516](http://src.chromium.org/viewvc/chrome?view=rev&revision=100516): A simple example, adding a new ProfileKeyedService. This shows off a minimal ServiceFactory subclass.
-- [r104806](http://src.chromium.org/viewvc/chrome?view=rev&revision=104806): plugin_prefs_factory.h gives an example of how to deal with things that are (and have to stay) refcounted. This patch also shows off how to move your preferences into your ProfileKeyedServiceFactory.
+在幕后，ProfileDependencyManager管理所声明的依赖的关系，展示了一个Kahn的拓扑排序，并在CreateProfileServices()和DestroyProfileServices()中得到应用。
+
+
+##五分钟了解如何转换你的代码
+
+1. **让你已有的FooService继承BrowserContextKeyedService。**
+2. **可能的话，不要再让你的FooService得到引用计数了。**大多数与Profile相关的被引用计数的对象似乎因为他们没有使用[base::bind/WeakPtrFactory](Threading.md)，而需要在多线程使用自己的数据。（在这个例子里，线程安全的引用计数是有必要的，比如，多线程访问时，让你的工厂继承自RefcountedBrowserContextKeyedServiceFactory，这样一切都能正常工作。）
+3. **构建一个简单继承自BrowserContextKeyedServiceFactory的FooServiceFactory。**消费者请求FooService时，你的FooServiceFactory将会是主要的访问点。
+  1. BrowserContextKeyedService\* BrowserContextKeyedServiceFactory::BuildServiceInstanceFor(content::BrowserContext\* context)是唯一需要的函数。传入一个BrowserContext句柄，返回一个有效的FooService。
+  2. 你可以用ServiceRedirectedInIncognito() 和 ServiceHasOwnInstanceInIncognito()控制incognito行为。
+4. **把你的服务添加到**chrome_browser_main_extra_parts_profiles.cc中中的EnsureBrowserContextKeyedServiceFactoriesBuilt()**列表**。
+5. **理解Shutdown行为。**出于历史原因，我们必须做两个阶段的Shutdown操作：
+  1. 每个BrowserContextKeyedService首先要调用它的Shutdown()方法。使用这个方法来移除对Profile或其他服务对象的弱引用。
+  2. 删除每个BrowserContextKeyedService，运行它的析构器。最小化的工作需要在这里完成。调用任何\*ServiceFactory::GetForProfile()会在调试模式下触发的一个断言。
+6. 将每个"profile_->GetFooService()"实例改为"FooServiceFactory::GetForProfile(profile_)"。
+
+如果你需要上面这些步骤的例子，可以看看这些补丁：
+- [r100516](http://src.chromium.org/viewvc/chrome?view=rev&revision=100516): 一个简单的例子，添加了一个新的ProfileKeyedService。这展示了一个最小的ServiceFactory子类。
+- [r104806](http://src.chromium.org/viewvc/chrome?view=rev&revision=104806): plugin_prefs_factory.h给出了一个例子，阐述了如何处理（必须）引用计数的东西。 这个补丁也展示了如何将你的首选项移到你的ProfileKeyedServiceFactory中。
 
 ##Debugging Tips
 
