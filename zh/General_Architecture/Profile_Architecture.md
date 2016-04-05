@@ -136,23 +136,23 @@ GammaServiceFactory::GammaServiceFactory()
 - [r100516](http://src.chromium.org/viewvc/chrome?view=rev&revision=100516): 一个简单的例子，添加了一个新的ProfileKeyedService。这展示了一个最小的ServiceFactory子类。
 - [r104806](http://src.chromium.org/viewvc/chrome?view=rev&revision=104806): plugin_prefs_factory.h给出了一个例子，阐述了如何处理（必须）引用计数的东西。 这个补丁也展示了如何将你的首选项移到你的ProfileKeyedServiceFactory中。
 
-##Debugging Tips
+##调试技巧
 
-###Using the dependency visualizer
+###使用依赖抽象器
 
-Chrome has a built in method to dump the profile dependency graph to a file in [GraphViz](http://www.graphviz.org/) format. When you run chrome with the command line flag  --dump-browser-context-graph, chrome will write the dependency information to your /path/to/profile/browser-context-dependencies.dot file. You can then convert this text file with dot, which is part of GraphViz:
+Chrome有一个内置的方法来导出profile依赖图，生成一个[GraphViz](http://www.graphviz.org/)格式的文件。当你命令行运行chrome，附带--dump-browser-context-graph标记时，chrome会将依赖信息写到你的/path/to/profile/browser-context-dependencies.dot文件。然后你可以用dot转化这个文件，dot是GraphViz的一个部分：
 ```
 dot -Tpng /path/to/profile/browser-context-dependencies.dot > png-file.png
 ```
-This will give you a visual graph like this (generated January 23rd, 2012, click through for full size):
+这会给你一个像下面这样的抽象图(2012年1月23日生成，点击查看大图):
 
 ![](graph5.png)
 
-Graph as of Aug 15, 2012
 
-###Crashes at Shutdown
 
-If you get a stack that looks like this:
+###Shutdown时的crash
+
+如果出现了一个这样的栈：
 ```
 ProfileDependencyManager::AssertProfileWasntDestroyed()
 ProfileKeyedServiceFactory::GetServiceForProfile()
@@ -163,4 +163,4 @@ ProfileKeyedServiceFactory::ProfileDestroyed()
 ProfileDependencyManager::DestroyProfileServices()
 ProfileImpl::~ProfileImpl()
 ```
-The problem is that OtherService is improperly depending on MyService. The framework asserts if you try to use a Shutdown()ed component.
+问题就是，OtherService没有正确地依赖MyService。在你使用Shutdown()组件时，框架会触发一个assert。
