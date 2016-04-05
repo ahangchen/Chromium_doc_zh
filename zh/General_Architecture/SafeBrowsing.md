@@ -1,6 +1,6 @@
-#Safe Browsing
+#安全浏览
 
-##Browsing Protection
+##浏览保护
 
 When Safe Browsing is enabled, all URLs will be checked before the content is allowed to begin loading.  URLs are checked against two lists: malware and phishing.  Depending on which list is matched we show a different warning message on the interstitial page.
 
