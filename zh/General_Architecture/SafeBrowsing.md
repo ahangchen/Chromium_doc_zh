@@ -2,12 +2,18 @@
 
 ##浏览保护
 
-When Safe Browsing is enabled, all URLs will be checked before the content is allowed to begin loading.  URLs are checked against two lists: malware and phishing.  Depending on which list is matched we show a different warning message on the interstitial page.
+启动安全浏览后，在允许内容开始加载前，所有的URL都会被检查。URL通过两个列表进行检查：恶意软件和钓鱼网站。根据匹配到的列表，我们会在一个中转页面显示不同的警告页面。
 
-Checking the safe browsing database is a multistep process.  The URL is hashed and a synchronous check against the in-memory prefix list is done.  If no match is found, the URL is considered safe immediately.  If the prefix matches, an asynchronous request is made to the safe browsing servers for a list of all full hashes matching that prefix.  Once the list is returned, the full hash is compared against the list and the URL request can be continued or cancelled.  For more information, you may check the full description of the Safe Browsing Protocol.
-###Resource Handlers
+检查安全浏览数据库是一个多步骤的过程。
+- URL首先会被哈希，然后会用内存中前缀列表进行同步的检查。
+- 如果前缀得到匹配，会向安全浏览服务器发起一个异步请求，拉取这个前缀的全量哈希列表。
+- 一旦这个列表返回，完整的哈希会与列表中的每项进行比较，URL请求可以继续执行或者终止。
+- 如果想要知道更多内容，你可以查看安全浏览协议的完整描述。
 
-Whenever a resource is requested, the ResourceDispatcherHost will create a chain of ResourceHandlers. For each event in the loading of the resource, each handler can choose to cancel the request, defer the request (to do some asynchronous work before deciding what to do), or continue (letting the next handler in the chain have a chance to decide). The SafeBrowsingResourceHandler is created at the head of the chain so that it has first say over whether to allow loading a resource. If safe browsing is disabled, the SafeBrowsingResourceHandler is simply not added to the chain, and thus no browsing-related safe browsing actions occur.
+###资源处理器
+
+当一个资源被请求时，ResourceDispatcherHost会创建一串的ResourceHandlers。对于加载资源时的每个事件，每个处理器可以选择取消请求，延迟请求（在决定要做的事情前，做一些异步工作），或者继续（让处理链中下一个处理器做决策）。SafeBrowsingResourceHandler在链的头部创建，所以它对于是否允许加载资源有着优先权。如果安全浏览被关闭，SafeBrowsingResourceHandler就不加入链中，因此没有浏览相关的安全浏览动作会发生。
+
 ###Safe Browsing Interstitial Page
 
 When a resource is marked as unsafe the resource request is paused and an interstitial page (SafeBrowsingBlockingPage) is displayed. The user can choose to continue anyway, which will resume the resource request, or to go back, which will cancel the resource request and return to the previous page. 
