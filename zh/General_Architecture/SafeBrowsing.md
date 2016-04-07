@@ -14,23 +14,27 @@
 
 当一个资源被请求时，ResourceDispatcherHost会创建一串的ResourceHandlers。对于加载资源时的每个事件，每个处理器可以选择取消请求，延迟请求（在决定要做的事情前，做一些异步工作），或者继续（让处理链中下一个处理器做决策）。SafeBrowsingResourceHandler在链的头部创建，所以它对于是否允许加载资源有着优先权。如果安全浏览被关闭，SafeBrowsingResourceHandler就不加入链中，因此没有浏览相关的安全浏览动作会发生。
 
-###Safe Browsing Interstitial Page
+###安全浏览中间页面
 
-When a resource is marked as unsafe the resource request is paused and an interstitial page (SafeBrowsingBlockingPage) is displayed. The user can choose to continue anyway, which will resume the resource request, or to go back, which will cancel the resource request and return to the previous page. 
+当资源被标识为不安全时，资源请求会被暂停，并展示一个中间页面（SafeBrowsingBlockingPage）。用户可以选择继续，这会唤醒资源请求，或者返回，这会取消资源请求，然后返回之前的页面。
 
-###Threat Details Collection
 
-If the interstitial is for a hit in the threat list (including malware, phishing, and UwS), the page is http (not https), and the tab is not in an incognito window, there is an opt-in option to send extra details about the the unsafe resources for further analysis.
+###一些威胁细节的收集
 
-When the interstitial appears an IPC is sent to the renderer process to collect details from the DOM. The data consists of a tree of the URLs for the various frames, iframes, scripts and embeds.
+如果中间页面是因为命中下面这些规则而展现：处于威胁列表中（包括恶意软件，钓鱼网站，以及Uws），页面是http而非https，标签页不处于一个匿名窗口中，那么会有一个可选项，让你发送关于这个不安全资源的具体细节，以进行更进一步的分析。
 
-If the checkbox is checked when the user chooses dismisses the interstitial page, various extra details will be collected asynchronously on the browser side. First the History service is queried to get the list of redirects involved in all the URLs, then the Cache is queried to get the headers for each of the requests for those URLs, and finally the report will be sent.
-##Download Protection
+当中间页面出现时，一个IPC会发送给渲染器进程，从DOM收集细节。这些数据由一棵URL树组成，有各种frame，iframe，脚本，和嵌入标签。
 
-###URL Checking
+如果用户勾选了忽视中间页面，各种具体细节会异步地在浏览器端收集。首先会查询历史服务以获得所有URL的重定向列表，然后会查询Cache以获得这些URL请求的头，最后发送一个报告。
 
-The download checks operate in a similar manner to the browsing ones, though with some changes due to the different nature of downloads.  It is not known that a resource request will be a download until the headers are received, therefore all downloads also go through the browsing checks.  For the same reason, we cannot check the redirect URLs as we go along like is done in the browsing tests.  Instead the chain of redirects is saved in the URLRequest object and once we begin the download checks, all the URLs in the chain will be checked simultaneously.  Since downloads are less latency sensitive than page loads, we also dispense with the in-memory database and the caching of full hash results.  Finally, the check is done in parallel to the download rather than pausing the download request until the checks are done, however the file will be given a temporary name until the checks complete.
-If a download is flagged as malicious, the item in the download bar will be replaced with a warning and buttons to keep or discard the file.  If discard is chosen, the request will be cancelled and the file deleted. If the file is kept, it will be renamed to its actual name (with .crdownload if the download is still in progress). 
+##下载保护
+
+###URL检查
+
+下载检查操作与浏览页面的操作类似，尽管由于下载的本质不同会有一些差异。在接收到头之前，我们都不知道一个资源请求是否是一个下载请求，因此所有下载也会通过浏览检查。同理，我们不能检查重定向URL，因为在浏览测试中我们已经放过它了。相反，重定向链保存在一个URLRequest对象里，一旦我们开始下载检查，链中所有的URL同时会被检查。因为下载不像页面加载那样具备潜在的敏感，我们也会在内存数据库和全量哈希结果中分发要检查的内容。最后，检查与下载并行完成，而不会阻塞下载结果直到检查完成，然而直到检查完成前，文件都会被赋予一个临时的名字。
+
+如果一个下载被标记为恶意的，下载栏的这个项目会被替换为一个警告和一个保留或删除该文件的按钮。如果选择了删除，下载会被取消，文件会被删除。如果选择了保留，文件会被重命名为它原来的名字（如果下载仍在进行，后缀会是.crdownload）。
+
 
 ###Hash Checking
 
