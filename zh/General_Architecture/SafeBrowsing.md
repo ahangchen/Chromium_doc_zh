@@ -36,30 +36,34 @@
 如果一个下载被标记为恶意的，下载栏的这个项目会被替换为一个警告和一个保留或删除该文件的按钮。如果选择了删除，下载会被取消，文件会被删除。如果选择了保留，文件会被重命名为它原来的名字（如果下载仍在进行，后缀会是.crdownload）。
 
 
-###Hash Checking
+###哈希检查
 
-As the file downloads, we also compute a hash of the file data.  Once the file has completed downloading this hash is checked against the download digest list.  Currently we are evaluating the usefulness of the hash check so no UI is displayed.
+文件下载时，我们也会计算文件数据的哈希值。一旦文件完成下载，这个哈希值就会与下载摘要列表进行对照。当前我们在评估哈希检查的有效性，所以不会有UI展示出来。
 
-This is an overview of the code flow of handling a download.  Some details are omitted to keep the size reasonable. This is an overview of the code flow of handling a request.  Some details are omitted to keep the size reasonable.  The green line indicates the common case where loading a non-malware page only requires a synchronous check to the in-memory safe browsing database.  The dashed lines indicate asynchronous calls.  The dotted magenta lines indicates a request to Google's Safe Browsing server.
+这是一个处理下载的代码流的概览。一些细节被隐藏以保证规模的合理性。这是处理一个请求的代码流的概览。一些细节被隐藏以保证规模的合理性。绿线意味着一种常见情况，加载非恶意页面的页面时，需要同步检查内存中安全浏览数据库。短划线表示异步调用。点状箭头表示对Google安全浏览器的请求。
+
 
 ![](legend.png)
 ![](download_protection_without_legend.png)
 
-##Client Side Phishing Detection
+##客户端钓鱼检测
 
-Client Side Phishing Detection runs a detection model on pages the user visits to try to detect phishing pages that are not in the safe browsing lists.  On startup, and periodically afterwards, the ClientSideDetectionService will fetch an updated model.  The model is sent in an IPC to every Render Process, then assigned to PhishingClassifierDelegate associated with each RenderView.   This allows the classification to be done in the render process, which has access to the page text.
+客户端钓鱼检测运行在用户访问的页面的检测模式上，以检测钓鱼网站没有被列入安全浏览列表。启动时，以及之后的周期中，ClientSideDetectionService会抓取最新的模型。这个模型会通过IPC发送给每个渲染进程，然后分配给与每个RenderView关联的PhishingClassifierDelegate。这允许了在渲染进程检查中完成分类。（渲染进程访问页面文本。）
+
+
 ![](csdservice.svg)
 
-##Resource Request Flow
+##资源请求流
 
-This is an overview of the code flow of handling a request.  Some details are omitted to keep the size reasonable.  The green line indicates the common case where loading a non-malware page only requires a synchronous check to the in-memory safe browsing database.  The dashed lines indicate asynchronous calls.  The dotted magenta lines indicates a request to Google's Safe Browsing server.
+这是一个处理请求的代码流的概览图。一些细节被隐藏以保证规模合理性。绿线意味着一种常见情况，加载非恶意页面的页面时，需要同步检查内存中安全浏览数据库。短划线表示异步调用。点状箭头表示对Google安全浏览器的请求。
 
-Safe Browsing Resource Request Diagram
+安全浏览资源请求图
 
 ![](chrome_safe_browsing_wo_legend_wo_download.png)
 
-##Metrics
+##规范
 
+安全浏览柱状图使用“SB2.”前缀。
 Safe browsing histograms use the "SB2." prefix.  Histograms for older versions used "SB.".  There are also a few safe browsing UserMetrics (filter on "SB"), and safe browsing Rappor metrics (starts with "interstitial").
 
 ##Safe Browsing Database
