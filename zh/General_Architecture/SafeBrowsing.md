@@ -63,10 +63,9 @@
 
 ##规范
 
-安全浏览柱状图使用“SB2.”前缀。
-Safe browsing histograms use the "SB2." prefix.  Histograms for older versions used "SB.".  There are also a few safe browsing UserMetrics (filter on "SB"), and safe browsing Rappor metrics (starts with "interstitial").
+安全浏览柱状图使用“SB2.”前缀。旧版本的柱状图使用“SB.”前缀。也有一些安全浏览用户规范（可以用“SB”前缀过滤），和一些浏览Rappor规范（前缀是“interstitial”）。
 
-##Safe Browsing Database
+##安全浏览数据库
+SafeBrowsingService负责更新各种安全浏览使用的数据库。
 
-The SafeBrowsingService is responsible for updating the various databases used by safe browsing.
-TODO(mattm): provide more details about database format and update process.
+TODO(mattm): 提供更多关于数据库格式和更新过程的信息。
