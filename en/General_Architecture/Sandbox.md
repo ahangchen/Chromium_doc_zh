@@ -190,8 +190,9 @@ Most process mitigation policies can be applied to the target process by means o
 
 * \>= Win10 TH2
 * ProcessImageLoadPolicy
-E.g. UNC path to network resource.
-Disable Image Load of "mandatory low" (low integrity level):
+* E.g. UNC path to network resource.
+
+**Disable Image Load of "mandatory low" (low integrity level):**
 
 * \>= Win10 TH2
 * ProcessImageLoadPolicy
