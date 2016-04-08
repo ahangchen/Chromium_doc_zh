@@ -210,53 +210,62 @@ The operating system might have bugs. Of interest are bugs in the Windows API th
 
 In addition, third party software, particularly anti-malware solutions, can create new attack vectors. The most troublesome are applications that inject dlls in order to enable some (usually unwanted) capability. These dlls will also get injected in the sandbox process. In the best case they will malfunction, and in the worst case can create backdoors to other processes or to the file system itself, enabling specially crafted malware to escape the sandbox. 
 
-Sandbox policy
+##Sandbox policy
 
 The actual restrictions applied to a target process are configured by a policy. The policy is just a programmatic interface that the broker calls to define the restrictions and allowances. Four functions control the restrictions, roughly corresponding to the four Windows mechanisms:
-TargetPolicy::SetTokenLevel()
-TargetPolicy::SetJobLevel()
-TargetPolicy::SetIntegrityLevel()
-TargetPolicy::SetDesktop()
+* TargetPolicy::SetTokenLevel()
+* TargetPolicy::SetJobLevel()
+* TargetPolicy::SetIntegrityLevel()
+* TargetPolicy::SetDesktop()
+
 The first three calls take an integer level parameter that goes from very strict to very loose; for example, the token level has 7 levels and the job level has 5 levels. Chromium renderers are typically run with the most strict level in all four mechanisms. Finally, the last (desktop) policy is binary and can only be used to indicate if a target is run on an alternate desktop or not.
 
 The restrictions are by design coarse in that they affect all securable resources that the target can touch, but sometimes a more finely-grained resolution is needed. The policy interface allows the broker to specify exceptions. An exception is a way to take a specific Windows API call issued in the target and proxy it over to the broker. The broker can inspect the parameters and re-issue the call as is, re-issue the call with different parameters, or simply deny the call. To specify exceptions there is a single call: AddRule. The following kinds of rules for different Windows subsystems are supported at this time:
-Files
-Named pipes
-Process creation
-Registry
-Synchronization objects
+* Files
+* Named pipes
+* Process creation
+* Registry
+* Synchronization objects
+
 The exact form of the rules for each subsystem varies, but in general rules are triggered based on a string pattern. For example, a possible file rule is:
-
+```c
 AddRule(SUBSYS_FILES, FILES_ALLOW_READONLY, L"c:\\temp\\app_log\\d*.dmp")
-
+```
 This rule specifies that access will be granted if a target wants to open a file, for read-only access as long as the file matches the pattern expression; for example c:\temp\app_log\domino.dmp is a file that satisfies the pattern. Consult the header files for an up-to-date list of supported objects and supported actions.
 
 Rules can only be added before each target process is spawned, and cannot be modified while a target is running, but different targets can have different rules.
 
-Target bootstrapping
+##Target bootstrapping
 
 Targets do not start executing with the restrictions specified by policy. They start executing with a token that is very close to the token the regular user processes have. The reason is that during process bootstrapping the OS loader accesses a lot of resources, most of them are actually undocumented and can change at any time. Also, most applications use the standard CRT provided with the standard development tools; after the process is bootstrapped the CRT needs to initialize as well and there again the internals of the CRT initialization are undocumented.
 
 Therefore, during the bootstrapping phase the process actually uses two tokens: the lockdown token which is the process token as is and the initial token which is set as the impersonation token of the initial thread. In fact the actual SetTokenLevel definition is:
-
+```c
 SetTokenLevel(TokenLevel initial, TokenLevel lockdown)
-
+```
 After all the critical initialization is done, execution continues at main() or WinMain(), here the two tokens are still active, but only the initial thread can use the more powerful initial token. It is the target's responsibility to discard the initial token when ready. This is done with a single call:
-
+```
 LowerToken()
-
+```
 After this call is issued by the target the only token available is the lockdown token and the full sandbox restrictions go into effect. The effects of this call cannot be undone. Note that the initial token is a impersonation token only valid for the main thread, other threads created in the target process use only the lockdown token and therefore should not attempt to obtain any system resources subject to a security check.
 
 The fact that the target starts with a privileged token simplifies the explicit policy since anything privileged that needs to be done once, at process startup can be done before the LowerToken() call and does not require to have rules in the policy.
-Important
-Make sure any sensitive OS handles obtained with the initial token are closed before calling LowerToken(). Any leaked handle can be abused by malware to escape the sandbox.
+
+>**Important**
+
+> Make sure any sensitive OS handles obtained with the initial token are closed before calling LowerToken(). Any leaked handle can be abused by malware to escape the sandbox.
 
 
-References
+##References
 
 [01] Richter, Jeffrey "Make Your Windows 2000 Processes Play Nice Together With Job Kernel Objects" 
+
 http://www.microsoft.com/msj/0399/jobkernelobj/jobkernelobj.aspx
+
 [02] Brown, Keith "What Is a Token" (wiki) 
+
 http://alt.pluralsight.com/wiki/default.aspx/Keith.GuideBook/WhatIsAToken.htm
+
 [03] Windows Integrity Mechanism Design (MSDN)
+
 http://msdn.microsoft.com/en-us/library/bb625963.aspx
