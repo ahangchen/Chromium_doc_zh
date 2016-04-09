@@ -1,7 +1,7 @@
 # Chromium_doc_zh
 > Chromium中文文档 for https://www.chromium.org/developers/design-documents
 
-> 翻译之加强对android webview理解
+> 翻译之加强对android webview理解，同时作为架构设计的学习。
 
 > 还未完全完成，不断更新ing，欢迎star
 
