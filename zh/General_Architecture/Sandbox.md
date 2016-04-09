@@ -178,7 +178,7 @@ Most process mitigation policies can be applied to the target process by means o
 **App Container (low box token):**
 
 * \>= Win8
-* In Windows this is implemented at the kernel level by a Low Box token which is a stripped version of a normal token with limited privilege (normally just SeChangeNotifyPrivilege and SeIncreaseWorkingSetPrivilege), running at Low integrity level and an array of "Capabilities" which can be mapped to allow/deny what the process is allowed to do (see MSDN for a high level description). The capability most interesting from a sandbox perspective is denying is access to the network, as it turns out network checks are enforced if the token is a Low Box token and the INTERNET_CLIENT Capability is not present.
+* In Windows this is implemented at the kernel level by a Low Box token which is a stripped version of a normal token with limited privilege (normally just SeChangeNotifyPrivilege and SeIncreaseWorkingSetPrivilege), running at Low integrity level and an array of "Capabilities" which can be mapped to allow/deny what the process is allowed to do (see [MSDN](https://msdn.microsoft.com/en-us/library/windows/apps/hh464936.aspx) for a high level description). The capability most interesting from a sandbox perspective is denying is access to the network, as it turns out network checks are enforced if the token is a Low Box token and the INTERNET_CLIENT Capability is not present.
 * The sandbox therefore takes the existing restricted token and adds the Low Box attributes, without granting any Capabilities, so as to gain the additional protection of no network access from the sandboxed process.
 
 **Disable Font Loading:**
@@ -202,7 +202,7 @@ Most process mitigation policies can be applied to the target process by means o
 
 * \>= Win10 TH2
 * If the Job level <= JOB_LIMITED_USER, set PROC_THREAD_ATTRIBUTE_CHILD_PROCESS_POLICY to PROCESS_CREATION_CHILD_PROCESS_RESTRICTED via UpdateProcThreadAttribute().
-* This is an extra layer of defense, given that Job levels can be broken out of. [REF: ticket, Project Zero blog.]
+* This is an extra layer of defense, given that Job levels can be broken out of. [REF: [ticket](https://bugs.chromium.org/p/project-zero/issues/detail?id=213&redir=1), [Project Zero blog](http://googleprojectzero.blogspot.co.uk/2015/05/in-console-able.html).]
 
 ###Other caveats
 
