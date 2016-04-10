@@ -1,19 +1,18 @@
 #Sandbox
 安全是Chromium最重要的目标之一。安全的关键在于理解下面这点：在我们完整地理解了系统在所有可能的输入组合下表现出的行为之后，我们才能够真的保证系统安全。对于像Chromium这样庞大而多样化的代码库，推理它的各个部分可能的行为的组合几乎是不可能的。沙箱的目标是提供这样一种保证：不论输入什么，保证一段代码最终能或不能做的事情。
 
-沙盒利用操作系统提供的安全性，允许不能对计算机做出持久性改变或者访问持续变化的信息的代码的执行。
+沙盒利用操作系统提供的安全性，允许不能对计算机做出持久性改变或者访问持续变化的信息的代码的执行。沙箱提供的架构和具体保证依赖于操作系统。这个文档覆盖了Windows实现与一般的设计。Linux实现和OSX实现也会在这里描述。
 
-Sandbox leverages the OS-provided security to allow code execution that cannot make persistent changes to the computer or access information that is confidential. The architecture and exact assurances that the sandbox provides are dependent on the operating system. This document covers the Windows implementation as well as the general design. The Linux implementation is described here, the OSX implementation here.
+如果你不想要阅读这整个文档，你可以阅读[Sandbox FAQ](Sandbox_FAQ.md)。沙箱保护与不保护的内容也可以在FAQ中找到。
 
-If you don't feel like reading this whole document you can read the Sandbox FAQ instead. A description of what the sandbox does and doesn't protect against may also be found in the FAQ.
 
-##Design principles
+##设计原则
 
-* **Do not re-invent the wheel**: It is tempting to extend the OS kernel with a better security model. Don't. Let the operating system apply its security to the objects it controls. On the other hand, it is OK to create application-level objects (abstractions) that have a custom security model.
-* **Principle of least privilege**: This should be applied both to the sandboxed code and to the code that controls the sandbox. In other words, the sandbox should work even if the user cannot elevate to super-user.
-* **Assume sandboxed code is malicious code**: For threat-modeling purposes, we consider the sandbox compromised (that is, running malicious code) once the execution path reaches past a few early calls in the main() function. In practice, it could happen as soon as the first external input is accepted, or right before the main loop is entered.
-* **Be nimble**: Non-malicious code does not try to access resources it cannot obtain. In this case the sandbox should impose near-zero performance impact. It's ok to have performance penalties for exceptional cases when a sensitive resource needs to be touched once in a controlled manner. This is usually the case if the OS security is used properly.
-* **Emulation is not security**: Emulation and virtual machine solutions do not by themselves provide security. The sandbox should not rely on code emulation, code translation, or patching to provide security.
+* **不要重新发明轮子**: 用更好的安全模型扩展操作系统内核很有诱惑力。但不要这样做。让操作系统在所控制的对象上应用它的安全策略。另一方面，创建有自定义安全模型的应用程序层级对象（抽象）是可以的。
+* **最小权限原则**: 这既应该用于沙箱代码也应该用于控制沙箱的代码。换言之，即使用于不能提升权限到超级用户，沙箱也需要能够工作。
+* **假定沙盒代码是恶意代码**: 出于威胁建模的目的，我们认为沙箱中的代码一旦执行路径越过了一些main()函数的早期调用，那么它是有害的（即，它会运行有害代码），实践中，在第一外部输入被接收时，或者在进入主循环前，这就可能发生。
+* **敏感**: 非恶意代码不会尝试访问它不能获得的资源。在这种情况下，沙箱产生的性能影响应该接近零。一旦敏感资源需要以一种控制行为访问时，一点性能损失是必要的。这是在操作系统安全合适事情情况下的常见例子。
+* **仿真不是安全**: 仿真和虚拟机方案本身不能提供安全。沙箱不会出于安全目的，依赖于代码仿真，或者代码转换，或者代码修复。
 ##Sandbox windows architecture
 
 The Windows sandbox is a user-mode only sandbox. There are no special kernel mode drivers, and the user does not need to be an administrator in order for the sandbox to operate correctly. The sandbox is designed for both 32-bit and 64-bit processes and has been tested on all Windows OS flavors between Windows 7 and Windows 10, both 32-bit and 64-bit.
