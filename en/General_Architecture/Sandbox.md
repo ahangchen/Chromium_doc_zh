@@ -1,7 +1,5 @@
 #Sandbox
-安全是Chromium最重要的目标之一。安全的关键在于理解下面这点：在我们完整地理解了系统在所有可能的输入组合下表现出的行为之后，我们才能够真的保证系统安全。对于像Chromium这样庞大而多样化的代码库，推理它的各个部分可能的行为的组合几乎是不可能的。沙箱的目标是提供这样一种保证：不论输入什么，保证一段代码最终能或不能做的事情。
 
-沙盒利用操作系统提供的安全性，允许不能对计算机做出持久性改变或者访问持续变化的信息的代码的执行。
 Sandbox leverages the OS-provided security to allow code execution that cannot make persistent changes to the computer or access information that is confidential. The architecture and exact assurances that the sandbox provides are dependent on the operating system. This document covers the Windows implementation as well as the general design. The Linux implementation is described here, the OSX implementation here.
 
 If you don't feel like reading this whole document you can read the Sandbox FAQ instead. A description of what the sandbox does and doesn't protect against may also be found in the FAQ.
