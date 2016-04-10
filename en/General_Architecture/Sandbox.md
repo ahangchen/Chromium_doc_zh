@@ -1,4 +1,5 @@
 #Sandbox
+Security is one of the most important goals for Chromium. The key to security is understanding: we can only truly secure a system if we fully understand its behaviors with respect to the combination of all possible inputs in all possible states. For a codebase as large and diverse as Chromium, reasoning about the combined behavior of all its parts is nearly impossible. The sandbox objective is to provide hard guarantees about what ultimately a piece of code can or cannot do no matter what its inputs are.
 
 Sandbox leverages the OS-provided security to allow code execution that cannot make persistent changes to the computer or access information that is confidential. The architecture and exact assurances that the sandbox provides are dependent on the operating system. This document covers the Windows implementation as well as the general design. The Linux implementation is described here, the OSX implementation here.
 
