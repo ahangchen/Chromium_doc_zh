@@ -58,13 +58,13 @@ broker应该始终比所有它生成的目标进程还要活的久。沙箱IPC�
 * Windows桌面对象
 * Windows Vista及以上:集成层
 
-这些机制在保护操作系统，操作系统的限制，用户提供的数据上相当的高效
+这些机制在保护操作系统，操作系统的限制，用户提供的数据上相当的高效，前提是：
 
 * 所有可以安全化的资源都有一个比null更好的安全描述符。换言之，没有关键资源会有错误的安全配置。
 * 计算机并未被恶意软件所损害。
 * 第三方软件不能弱化系统安全。
 
-** 注意：上面具体的措施以及在内核外的措施Note that extra mitigations above and beyond this base/core will be described in the "Process Mitigations" section below.**
+** 注意：上面具体的措施以及在内核外的措施会在下面的“进程措施”部分阐述。
 
 ###Token
 
