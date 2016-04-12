@@ -13,11 +13,12 @@
 * **假定沙盒代码是恶意代码**: 出于威胁建模的目的，我们认为沙箱中的代码一旦执行路径越过了一些main()函数的早期调用，那么它是有害的（即，它会运行有害代码），实践中，在第一外部输入被接收时，或者在进入主循环前，这就可能发生。
 * **敏感**: 非恶意代码不会尝试访问它不能获得的资源。在这种情况下，沙箱产生的性能影响应该接近零。一旦敏感资源需要以一种控制行为访问时，一点性能损失是必要的。这是在操作系统安全合适事情情况下的常见例子。
 * **仿真不是安全**: 仿真和虚拟机方案本身不能提供安全。沙箱不会出于安全目的，依赖于代码仿真，或者代码转换，或者代码修复。
-##Sandbox windows architecture
+##沙箱windows架构
 
-The Windows sandbox is a user-mode only sandbox. There are no special kernel mode drivers, and the user does not need to be an administrator in order for the sandbox to operate correctly. The sandbox is designed for both 32-bit and 64-bit processes and has been tested on all Windows OS flavors between Windows 7 and Windows 10, both 32-bit and 64-bit.
+Windows沙箱是一种仅用户模式可用的沙箱。没有特殊的内核模式驱动，用户不需要为了沙箱正确运行而成为管理员。沙箱设计了32位和64位两种进程，在所有windows7和windows10之间的所有操作系统版本都被测试过。
 
-Sandbox operates at process-level granularity. Anything that needs to be sandboxed needs to live on a separate process. The minimal sandbox configuration has two processes: one that is a privileged controller known as the broker, and one or more sandboxed processes known as the target. Throughout the documentation and the code these two terms are used with that precise connotation. The sandbox is provided as a static library that must be linked to both the broker and the target executables.
+沙箱在进程级粒度进行运作。凡是需要沙箱化的任何东西需要放到独立进程里运行。最小化沙箱配置有两个过程：一个是被成为broker的权限控制器，以及被称为target的一个或多个沙箱化进程。在整个文档和代码中这两个词有着上述两种精确的内涵。沙箱是一个必须被链接到broker和target可执行程序的静态库。
+
 ###The broker process
 
 In Chromium, the broker is always the browser process. The broker, is in broad terms, a privileged controller/supervisor of the activities of the sandboxed processes. The responsibilities of the broker process are:
