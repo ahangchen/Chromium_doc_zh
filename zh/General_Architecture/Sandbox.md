@@ -44,26 +44,29 @@ broker应该始终比所有它生成的目标进程还要活的久。沙箱IPC�
 
 拦截器（也称为hook）是通过沙箱转发的Windows API调用。由broker重新发出API 调用，并返回结果或者干脆终止调用。拦截器+IPC机制不能提供安全性；它的目的是在沙箱中的代码因沙箱限制不能修改时，提供兼容性。为了节省不必要的IPC，在进行IPC调用前，target中进程策略也会被评估，尽管这不是用作安全保障，但这仅仅是一个速度优化。
 
-It is the expectation that in the future most plugins will run inside a target process.
+期望在未来大部分plugin会运行在target进程里。
+
 
 ![](sbox_top_diagram.PNG)
 
-##Sandbox restrictions
+##沙箱限制
 
-At its core, the sandbox relies on the protection provided by four Windows mechanisms:
-* A restricted token
-* The Windows job object
-* The Windows desktop object
-* Windows Vista and above: The integrity levels
+在它的核心，沙箱依赖于4个Windows提供的机制：
 
-These mechanisms are highly effective at protecting the OS, its configuration, and the user's data provided that:
-* All the securable resources have a better than null security descriptor. In other words, there are no critical resources with misconfigured security.
-* The computer is not already compromised by malware.
-*Third party software does not weaken the security of the system.
+* 限定的token
+* Windows工作对象
+* Windows桌面对象
+* Windows Vista及以上:集成层
 
-** Note that extra mitigations above and beyond this base/core will be described in the "Process Mitigations" section below.**
+这些机制在保护操作系统，操作系统的限制，用户提供的数据上相当的高效
 
-###The token
+* 所有可以安全化的资源都有一个比null更好的安全描述符。换言之，没有关键资源会有错误的安全配置。
+* 计算机并未被恶意软件所损害。
+* 第三方软件不能弱化系统安全。
+
+** 注意：上面具体的措施以及在内核外的措施Note that extra mitigations above and beyond this base/core will be described in the "Process Mitigations" section below.**
+
+###Token
 
 One issue that other similar sandbox projects face is how restricted can the token and job be while still having a properly functioning process. For the Chromium sandbox, the most restrictive token for Windows XP takes the following form:
 
