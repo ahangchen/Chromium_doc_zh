@@ -19,28 +19,30 @@ Windows沙箱是一种仅用户模式可用的沙箱。没有特殊的内核模�
 
 沙箱在进程级粒度进行运作。凡是需要沙箱化的任何东西需要放到独立进程里运行。最小化沙箱配置有两个过程：一个是被成为broker的权限控制器，以及被称为target的一个或多个沙箱化进程。在整个文档和代码中这两个词有着上述两种精确的内涵。沙箱是一个必须被链接到broker和target可执行程序的静态库。
 
-###The broker process
+###broker进程
 
-In Chromium, the broker is always the browser process. The broker, is in broad terms, a privileged controller/supervisor of the activities of the sandboxed processes. The responsibilities of the broker process are:
-1. Specify the policy for each target process
-2. Spawn the target processes
-3. Host the sandbox policy engine service
-4. Host the sandbox interception manager
-5. Host the sandbox IPC service (to the target processes)
-6. Perform the policy-allowed actions on behalf of the target process
+在Chromium中，broker总是浏览进程。broker，广泛概念里，是一个权限控制器，沙箱进程活动的管理员。broker进程的责任是：
 
-The broker should always outlive all the target processes that it spawned. The sandbox IPC is a low-level mechanism (different from Chromium's IPC) that is used to transparently forward certain windows API calls from the target to the broker: these calls are evaluated against the policy. The policy-allowed calls are then executed by the broker and the results returned to the target process via the same IPC. The job of the interceptions manager is to patch the windows API calls that should be forwarded via IPC to the broker.
-###The target process
+1. 指定每个目标进程中的策略
+2. 生成目标进程
+3. 维护沙箱策略引擎服务
+4. 维护沙箱拦截管理器
+5. 维护沙箱IPC服务（与target进程的通信）
+6. 代表目标进程执行策略允许的操作。
 
-In Chromium, the renderers are always target processes, unless the --no-sandbox command line has been specified for the browser process. The target process hosts all the code that is going to run inside the sandbox, plus the sandbox infrastructure client side:
-1. All code to be sandboxed
-2. The sandbox IPC client
-3. The sandbox policy engine client
-4. The sandbox interceptions
+broker应该始终比所有它生成的目标进程还要活的久。沙箱IPC是一种低级别的机制（与ChromiumIPC机制不同），这些调用会被策略评估。策略允许的调用会由broker执行，结果会通过同样的IPC返回给目标进程。拦截管理器是为应该通过IPC转发给broker的windows API调用提供补丁。
 
-Items 2,3 and 4 are part of the sandbox library that is linked with the code to be sandboxed.
+###目标进程
+在Chromium中，渲染器总是target进程，除非浏览进程被指定了--no-sandbox命令行参数。target进程维护所有将在沙箱中允许的代码，以及沙箱基础设施的客户端：
 
-The interceptions (also known as hooks) are how Windows API calls are forwarded via the sandbox IPC to the broker. It is up to the broker to re-issue the API calls and return the results or simply fail the calls. The interception + IPC mechanism does not provide security; it is designed to provide compatibility when code inside the sandbox cannot be modified to cope with sandbox restrictions.  To save unnecessary IPCs, policy is also evaluated in the target process before making an IPC call, although this is not used as a security guarantee but merely a speed optimization.
+1. 所有代码沙箱化
+2. 沙箱IPC客户端
+3. 沙箱策略引擎客户端
+4. 沙箱拦截
+
+第2,3,4条是沙箱库的一部分，与需要被沙箱化的代码关联。
+
+拦截器（也称为hook）是通过沙箱转发的Windows API调用。由broker重新发出API 调用，并返回结果或者干脆终止调用。拦截器+IPC机制不能提供安全性；它的目的是在沙箱中的代码因沙箱限制不能修改时，提供兼容性。为了节省不必要的IPC，在进行IPC调用前，target中进程策略也会被评估，尽管这不是用作安全保障，但这仅仅是一个速度优化。
 
 It is the expectation that in the future most plugins will run inside a target process.
 
