@@ -68,24 +68,26 @@ broker应该始终比所有它生成的目标进程还要活的久。沙箱IPC�
 
 ###Token
 
-One issue that other similar sandbox projects face is how restricted can the token and job be while still having a properly functioning process. For the Chromium sandbox, the most restrictive token for Windows XP takes the following form:
+其他类似的沙箱项目面临的一个问题是，限制程度应当如何，才能使得token和作业同时还保持有正常的功能。在Chromium沙箱里，对于Windows XP最严格的token如下：
 
-**Regular Groups**
 
-Logon SID : mandatory
+**普通组**
 
-All other SIDs : deny only, mandatory
+登录 SID : 强制
 
-**Restricted Groups**
+其他所有SID : 仅拒绝, 强制
 
-S-1-0-0 : mandatory
+**限制组**
 
-**Privileges**
+S-1-0-0 : 强制
 
-None
+**特权**
 
-With the caveats described above, it is near impossible to find an existing resource that the OS will grant access with such a token. As long as the disk root directories have non-null security, even files with null security cannot be accessed. In Vista, the most restrictive token is the same but it also includes the low integrity level label. The Chromium renderer normally runs with this token, which means that almost all resources that the renderer process uses have been acquired by the Browser and their handles duplicated into the renderer process.
+无
 
+正如上面所述的警告，如果操作系统授予了这样一个token，几乎不可能找到存在的资源。只要磁盘根目录有着非空的安全性，即使空安全的文件也不能被访问。在Vista中，最严格的token也是这样的，但它也包括了完整性级别较低的标签。Chromium渲染器通常使用这种token，这意味着渲染器进程使用的大部分资源已经由浏览器获取，并且他们的句柄被复制到了渲染器进程中。
+
+注意，token不是从匿名token或来宾token而来的，它继承自用户的token，因此与用户的登录相关联。因此，系统或domain
 Note that the token is not derived from anonymous or from the guest token; it is derived from the user's token and thus associated to the user logon. As a result, any auditing that the system or the domain has in place can still be used.
 
 By design, the sandbox token cannot protect the following non-securable resources:
