@@ -126,7 +126,7 @@ Chromium渲染器在激活所有这些限制的情况下允许。每个渲染器
 额外的桌面对象唯一的优点是它从一个隔离的池使用接近4MB的内存，在Vista里可能更多。
 
 
-###The integrity levels
+###信用等级
 
 Integrity levels are available on Windows Vista and later versions. They don't define a security boundary in the strict sense, but they do provide a form of mandatory access control (MAC) and act as the basis of Microsoft's Internet Explorer sandbox. 
 
