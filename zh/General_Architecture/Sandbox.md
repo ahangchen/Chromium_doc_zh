@@ -87,14 +87,14 @@ S-1-0-0 : 强制
 
 正如上面所述的警告，如果操作系统授予了这样一个token，几乎不可能找到存在的资源。只要磁盘根目录有着非空的安全性，即使空安全的文件也不能被访问。在Vista中，最严格的token也是这样的，但它也包括了完整性级别较低的标签。Chromium渲染器通常使用这种token，这意味着渲染器进程使用的大部分资源已经由浏览器获取，并且他们的句柄被复制到了渲染器进程中。
 
-注意，token不是从匿名token或来宾token而来的，它继承自用户的token，因此与用户的登录相关联。因此，系统或domain
-Note that the token is not derived from anonymous or from the guest token; it is derived from the user's token and thus associated to the user logon. As a result, any auditing that the system or the domain has in place can still be used.
+注意，token不是从匿名token或来宾token而来的，它继承自用户的token，因此与用户的登录相关联。因此，系统或域名拥有的任何备用的审计仍然可以使用。
 
-By design, the sandbox token cannot protect the following non-securable resources:
-* Mounted FAT or FAT32 volumes: The security descriptor on them is effectively null. Malware running in the target can read and write to these volumes as long it can guess or deduce their paths.
-* TCP/IP: The security of TCP/IP sockets in Windows 2000 and Windows XP (but not in Vista) is effectively null. It might be possible for malicious code in the target to send and receive network packets to any host.
-* 
-More information about the Windows token object can be found at [02].
+根据设计，沙箱token不能保护下面这些不安全资源：
+
+* 挂载的FAT或FAT32卷: 它们上面的安全描述符是有效空。在target中运行的恶意软件可以读写这些磁盘空间，因为恶意软件可以猜测或者推出出它们的路径。
+* TCP/IP: Windows 200和Windows XP（但在Vista中不会）中的TCP/IP socket的安全是有效空。使得恶意代码与任何主机收发网络包成为可能。
+
+关于Windows token对象的更多信息可以在底部参考文献[02]查看。
 
 ###The Job object
 
