@@ -53,7 +53,7 @@ broker应该始终比所有它生成的目标进程还要活的久。沙箱IPC�
 
 在它的核心，沙箱依赖于4个Windows提供的机制：
 
-* 限定的token
+* 限定的令牌
 * Windows工作对象
 * Windows桌面对象
 * Windows Vista及以上:集成层
@@ -66,9 +66,9 @@ broker应该始终比所有它生成的目标进程还要活的久。沙箱IPC�
 
 ** 注意：上面具体的措施以及在内核外的措施会在下面的“进程措施”部分阐述。
 
-###Token
+###令牌
 
-其他类似的沙箱项目面临的一个问题是，限制程度应当如何，才能使得token和作业同时还保持有正常的功能。在Chromium沙箱里，对于Windows XP最严格的token如下：
+其他类似的沙箱项目面临的一个问题是，限制程度应当如何，才能使得令牌和作业同时还保持有正常的功能。在Chromium沙箱里，对于Windows XP最严格的令牌如下：
 
 
 **普通组**
@@ -85,54 +85,54 @@ S-1-0-0 : 强制
 
 无
 
-正如上面所述的警告，如果操作系统授予了这样一个token，几乎不可能找到存在的资源。只要磁盘根目录有着非空的安全性，即使空安全的文件也不能被访问。在Vista中，最严格的token也是这样的，但它也包括了完整性级别较低的标签。Chromium渲染器通常使用这种token，这意味着渲染器进程使用的大部分资源已经由浏览器获取，并且他们的句柄被复制到了渲染器进程中。
+正如上面所述的警告，如果操作系统授予了这样一个令牌，几乎不可能找到存在的资源。只要磁盘根目录有着非空的安全性，即使空安全的文件也不能被访问。在Vista中，最严格的令牌也是这样的，但它也包括了完整性级别较低的标签。Chromium渲染器通常使用这种令牌，这意味着渲染器进程使用的大部分资源已经由浏览器获取，并且他们的句柄被复制到了渲染器进程中。
 
-注意，token不是从匿名token或来宾token而来的，它继承自用户的token，因此与用户的登录相关联。因此，系统或域名拥有的任何备用的审计仍然可以使用。
+注意，令牌不是从匿名令牌或来宾令牌而来的，它继承自用户的令牌，因此与用户的登录相关联。因此，系统或域名拥有的任何备用的审计仍然可以使用。
 
-根据设计，沙箱token不能保护下面这些不安全资源：
+根据设计，沙箱令牌不能保护下面这些不安全资源：
 
 * 挂载的FAT或FAT32卷: 它们上面的安全描述符是有效空。在target中运行的恶意软件可以读写这些磁盘空间，因为恶意软件可以猜测或者推出出它们的路径。
 * TCP/IP: Windows 200和Windows XP（但在Vista中不会）中的TCP/IP socket的安全是有效空。使得恶意代码与任何主机收发网络包成为可能。
 
-关于Windows token对象的更多信息可以在底部参考文献[02]查看。
+关于Windows 令牌对象的更多信息可以在底部参考文献[02]查看。
 
-###The Job object
+###作业对象
 
-The target process also runs under a Job object. Using this Windows mechanism, some interesting global restrictions that do not have a traditional object or security descriptor associated with them are enforced:
-* Forbid per-use system-wide changes using SystemParametersInfo(), which can be used to swap the mouse buttons or set the screen saver timeout
-* Forbid the creation or switch of Desktops
-* Forbid changes to the per-user display configuration such as resolution and primary display
-* No read or write to the clipboard
-* Forbid Windows message broadcasts
-* Forbid setting global Windows hooks (using SetWindowsHookEx())
-* Forbid access to the global atoms table
-* Forbid access to USER handles created outside the Job object
-* One active process limit (disallows creating child processes)
+target进程也运行着一个作业对象。使用这个Windows机制，一些有趣的，不拥有传统对象或者不关联安全描述符的全局限制可以被强制执行：
 
-Chromium renderers normally run with all these restrictions active. Each renderers run in its own Job object. Using the Job object, the sandbox can (but currently does not) prevent:
-* Excessive use of CPU cycles
-* Excessive use of memory
-* Excessive use of IO
+* 禁止用SystemParametersInfo()做用户共享的系统范围的修改，这可以用于切换鼠标按钮或者设置屏幕保护程序超时
+* 禁止创建或修改桌面对象
+* 禁止修改用户共享的显示设置，比如分辨率和主显示器
+* 禁止读写剪贴板
+* 禁止设置全局Windows hook（使用SetWindowsHookEx()）
+* 禁止访问全局原子表
+* 禁止访问在作业对象外创建的USER句柄
+* 单活跃的进程限制（不允许创建子进程）
 
-More information about Windows Job Objects can be found in [1]. 
+Chromium渲染器在激活所有这些限制的情况下允许。每个渲染器运行在自己的作业对象里。使用作业对象，沙箱可以（但当前还不行）避免：
+* 过度使用CPU周期
+* 过度使用内存
+* 过度使用IO
 
-###The alternate desktop
 
-The token and the job object define a security boundary: that is, all processes with the same token and in the same job object are effectively in the same security context. However, one not-well-understood fact is that applications that have windows on the same desktop are also effectively in the same security context because the sending and receiving of window messages is not subject to any security checks. Sending messages across desktops is not allowed. This is the source of the infamous "shatter" attacks, which is why services should not host windows on the interactive desktop. A Windows desktop is a regular kernel object that can be created and assigned a security descriptor.
+有关Windows作业对象的详细信息可以在底部参考文献[1]中找到。
 
-In a standard Windows installation, at least two desktops are attached to the interactive window station; the regular (default) desktop, and the logon desktop. The sandbox creates a third desktop that is associated to all target processes. This desktop is never visible or interactive and effectively isolates the sandboxed processes from snooping the user's interaction and from sending messages to windows operating at more privileged contexts.
+###额外的桌面对象
 
-The only disadvantage of an alternate desktop is that it uses approximately 4MB of RAM from a separate pool, possibly more on Vista.
+令牌和作业对象定义来一个安全边界：即，所有的进程有着相同的令牌，同一个作业对象中所有进程也处于同样的安全上下文。然而。一个难以理解的事实是相同桌面上都有窗口上的应用程序也处于相同的安全上下文中，因为收发window消息是不受任何安全检查。通过桌面对象发送消息是不允许的。这是臭名昭著的“shatter”攻击的来源，也是服务不应该在交互桌面上托管窗口的原因。Windows桌面是一个常规的内核对象，它可以被创建然后分配一个安全描述符。
 
-More information about Window Stations
+在标准Windows安装中，至少两个桌面会与交互窗口站相关联，一个是常规（默认）桌面，另一个是登录桌面。沙箱创建了第三个与所有target进程关联的桌面。这个桌面永远不可见，也不可交互，它有效地隔离了沙箱化进程，使其不能窥探用户的交互，不能在更多特权的环境下发送消息到Windows。
+
+额外的桌面对象唯一的优点是它从一个隔离的池使用接近4MB的内存，在Vista里可能更多。
+
 
 ###The integrity levels
 
 Integrity levels are available on Windows Vista and later versions. They don't define a security boundary in the strict sense, but they do provide a form of mandatory access control (MAC) and act as the basis of Microsoft's Internet Explorer sandbox. 
 
-Integrity levels are implemented as a special set of SID and ACL entries representing five levels of increasing privilege: untrusted, low, medium, high, system. Access to an object may be restricted if the object is at a higher integrity level than the requesting token. Integrity levels also implement User Interface Privilege Isolation, which applies the rules of integrity levels to window messages exchanged between different processes on the same desktop.
+Integrity levels are implemented as a special set of SID and ACL entries representing five levels of increasing privilege: untrusted, low, medium, high, system. Access to an object may be restricted if the object is at a higher integrity level than the requesting 令牌. Integrity levels also implement User Interface Privilege Isolation, which applies the rules of integrity levels to window messages exchanged between different processes on the same desktop.
 
-By default, a token can read an object of a higher integrity level, but not write to it. Most desktop applications run at medium integrity (MI), while less trusted processes like Internet Explorer's protected mode and our own sandbox run at low integrity (LI). A low integrity mode token can access only the following shared resources:
+By default, a 令牌 can read an object of a higher integrity level, but not write to it. Most desktop applications run at medium integrity (MI), while less trusted processes like Internet Explorer's protected mode and our own sandbox run at low integrity (LI). A low integrity mode 令牌 can access only the following shared resources:
 * Read access to most files
 * Write access to %USER PROFILE%\AppData\LocalLow
 * Read access to most of the registry
@@ -145,7 +145,7 @@ Clipboard (copy and paste for certain formats)
 * COM interfaces with LI (low integrity) launch activation rights
 * Named pipes exposed via LI (low integrity) labels
 
-You'll notice that the previously described attributes of the token, job object, and alternate desktop are more restrictive, and would in fact block access to everything allowed in the above list. So, the integrity level is a bit redundant with the other measures, but it can be seen as an additional degree of defense-in-depth, and its use has no visible impact on performance or resource usage. 
+You'll notice that the previously described attributes of the 令牌, job object, and alternate desktop are more restrictive, and would in fact block access to everything allowed in the above list. So, the integrity level is a bit redundant with the other measures, but it can be seen as an additional degree of defense-in-depth, and its use has no visible impact on performance or resource usage. 
 
 More information on integrity levels can be found at [03].
 
@@ -184,11 +184,11 @@ Most process mitigation policies can be applied to the target process by means o
 * ProcessSystemCallDisablePolicy, which allows selective disabling of system calls available from the target process.
 * Renderer processes now have this set to DisallowWin32kSystemCalls which means that calls from user mode that are serviced by win32k.sys are no longer permitted. This significantly reduces the kernel attack surface available from a renderer.  See here for more details.
 
-**App Container (low box token):**
+**App Container (low box 令牌):**
 
 * \>= Win8
-* In Windows this is implemented at the kernel level by a Low Box token which is a stripped version of a normal token with limited privilege (normally just SeChangeNotifyPrivilege and SeIncreaseWorkingSetPrivilege), running at Low integrity level and an array of "Capabilities" which can be mapped to allow/deny what the process is allowed to do (see [MSDN](https://msdn.microsoft.com/en-us/library/windows/apps/hh464936.aspx) for a high level description). The capability most interesting from a sandbox perspective is denying is access to the network, as it turns out network checks are enforced if the token is a Low Box token and the INTERNET_CLIENT Capability is not present.
-* The sandbox therefore takes the existing restricted token and adds the Low Box attributes, without granting any Capabilities, so as to gain the additional protection of no network access from the sandboxed process.
+* In Windows this is implemented at the kernel level by a Low Box 令牌 which is a stripped version of a normal 令牌 with limited privilege (normally just SeChangeNotifyPrivilege and SeIncreaseWorkingSetPrivilege), running at Low integrity level and an array of "Capabilities" which can be mapped to allow/deny what the process is allowed to do (see [MSDN](https://msdn.microsoft.com/en-us/library/windows/apps/hh464936.aspx) for a high level description). The capability most interesting from a sandbox perspective is denying is access to the network, as it turns out network checks are enforced if the 令牌 is a Low Box 令牌 and the INTERNET_CLIENT Capability is not present.
+* The sandbox therefore takes the existing restricted 令牌 and adds the Low Box attributes, without granting any Capabilities, so as to gain the additional protection of no network access from the sandboxed process.
 
 **Disable Font Loading:**
 
@@ -222,12 +222,12 @@ In addition, third party software, particularly anti-malware solutions, can crea
 ##Sandbox policy
 
 The actual restrictions applied to a target process are configured by a policy. The policy is just a programmatic interface that the broker calls to define the restrictions and allowances. Four functions control the restrictions, roughly corresponding to the four Windows mechanisms:
-* TargetPolicy::SetTokenLevel()
+* TargetPolicy::Set令牌Level()
 * TargetPolicy::SetJobLevel()
 * TargetPolicy::SetIntegrityLevel()
 * TargetPolicy::SetDesktop()
 
-The first three calls take an integer level parameter that goes from very strict to very loose; for example, the token level has 7 levels and the job level has 5 levels. Chromium renderers are typically run with the most strict level in all four mechanisms. Finally, the last (desktop) policy is binary and can only be used to indicate if a target is run on an alternate desktop or not.
+The first three calls take an integer level parameter that goes from very strict to very loose; for example, the 令牌 level has 7 levels and the job level has 5 levels. Chromium renderers are typically run with the most strict level in all four mechanisms. Finally, the last (desktop) policy is binary and can only be used to indicate if a target is run on an alternate desktop or not.
 
 The restrictions are by design coarse in that they affect all securable resources that the target can touch, but sometimes a more finely-grained resolution is needed. The policy interface allows the broker to specify exceptions. An exception is a way to take a specific Windows API call issued in the target and proxy it over to the broker. The broker can inspect the parameters and re-issue the call as is, re-issue the call with different parameters, or simply deny the call. To specify exceptions there is a single call: AddRule. The following kinds of rules for different Windows subsystems are supported at this time:
 * Files
@@ -246,23 +246,23 @@ Rules can only be added before each target process is spawned, and cannot be mod
 
 ##Target bootstrapping
 
-Targets do not start executing with the restrictions specified by policy. They start executing with a token that is very close to the token the regular user processes have. The reason is that during process bootstrapping the OS loader accesses a lot of resources, most of them are actually undocumented and can change at any time. Also, most applications use the standard CRT provided with the standard development tools; after the process is bootstrapped the CRT needs to initialize as well and there again the internals of the CRT initialization are undocumented.
+Targets do not start executing with the restrictions specified by policy. They start executing with a 令牌 that is very close to the 令牌 the regular user processes have. The reason is that during process bootstrapping the OS loader accesses a lot of resources, most of them are actually undocumented and can change at any time. Also, most applications use the standard CRT provided with the standard development tools; after the process is bootstrapped the CRT needs to initialize as well and there again the internals of the CRT initialization are undocumented.
 
-Therefore, during the bootstrapping phase the process actually uses two tokens: the lockdown token which is the process token as is and the initial token which is set as the impersonation token of the initial thread. In fact the actual SetTokenLevel definition is:
+Therefore, during the bootstrapping phase the process actually uses two 令牌s: the lockdown 令牌 which is the process 令牌 as is and the initial 令牌 which is set as the impersonation 令牌 of the initial thread. In fact the actual Set令牌Level definition is:
 ```c
-SetTokenLevel(TokenLevel initial, TokenLevel lockdown)
+Set令牌Level(令牌Level initial, 令牌Level lockdown)
 ```
-After all the critical initialization is done, execution continues at main() or WinMain(), here the two tokens are still active, but only the initial thread can use the more powerful initial token. It is the target's responsibility to discard the initial token when ready. This is done with a single call:
+After all the critical initialization is done, execution continues at main() or WinMain(), here the two 令牌s are still active, but only the initial thread can use the more powerful initial 令牌. It is the target's responsibility to discard the initial 令牌 when ready. This is done with a single call:
 ```
-LowerToken()
+Lower令牌()
 ```
-After this call is issued by the target the only token available is the lockdown token and the full sandbox restrictions go into effect. The effects of this call cannot be undone. Note that the initial token is a impersonation token only valid for the main thread, other threads created in the target process use only the lockdown token and therefore should not attempt to obtain any system resources subject to a security check.
+After this call is issued by the target the only 令牌 available is the lockdown 令牌 and the full sandbox restrictions go into effect. The effects of this call cannot be undone. Note that the initial 令牌 is a impersonation 令牌 only valid for the main thread, other threads created in the target process use only the lockdown 令牌 and therefore should not attempt to obtain any system resources subject to a security check.
 
-The fact that the target starts with a privileged token simplifies the explicit policy since anything privileged that needs to be done once, at process startup can be done before the LowerToken() call and does not require to have rules in the policy.
+The fact that the target starts with a privileged 令牌 simplifies the explicit policy since anything privileged that needs to be done once, at process startup can be done before the Lower令牌() call and does not require to have rules in the policy.
 
 >**Important**
 
-> Make sure any sensitive OS handles obtained with the initial token are closed before calling LowerToken(). Any leaked handle can be abused by malware to escape the sandbox.
+> Make sure any sensitive OS handles obtained with the initial 令牌 are closed before calling Lower令牌(). Any leaked handle can be abused by malware to escape the sandbox.
 
 
 ##References
@@ -271,9 +271,9 @@ The fact that the target starts with a privileged token simplifies the explicit 
 
 http://www.microsoft.com/msj/0399/jobkernelobj/jobkernelobj.aspx
 
-[02] Brown, Keith "What Is a Token" (wiki) 
+[02] Brown, Keith "What Is a 令牌" (wiki) 
 
-http://alt.pluralsight.com/wiki/default.aspx/Keith.GuideBook/WhatIsAToken.htm
+http://alt.pluralsight.com/wiki/default.aspx/Keith.GuideBook/WhatIsA令牌.htm
 
 [03] Windows Integrity Mechanism Design (MSDN)
 
