@@ -128,121 +128,127 @@ Chromium渲染器在激活所有这些限制的情况下允许。每个渲染器
 
 ###信用等级
 
-Integrity levels are available on Windows Vista and later versions. They don't define a security boundary in the strict sense, but they do provide a form of mandatory access control (MAC) and act as the basis of Microsoft's Internet Explorer sandbox. 
+信用等级在Windows Vista及其之后的版本可用。它们不会用严格的方式定义安全的边界，但他们确实提供了一种强制访问控制（MAC），并且作为微软IE沙箱的基础而存在。
 
-Integrity levels are implemented as a special set of SID and ACL entries representing five levels of increasing privilege: untrusted, low, medium, high, system. Access to an object may be restricted if the object is at a higher integrity level than the requesting 令牌. Integrity levels also implement User Interface Privilege Isolation, which applies the rules of integrity levels to window messages exchanged between different processes on the same desktop.
+信用等级由一个特殊的SID和ACL对的集合实现，它们代表了五种递增等级：不受信任的，低级的，中级的，高级的，系统的。如果一个对象处于比请求令牌更高级的信用等级，访问它就会受限。信用等级也实现了用户界面权限隔离，这种隔离应用了信用等级规则，让同一个桌面中的不同进程可用交换窗口消息。
 
-By default, a 令牌 can read an object of a higher integrity level, but not write to it. Most desktop applications run at medium integrity (MI), while less trusted processes like Internet Explorer's protected mode and our own sandbox run at low integrity (LI). A low integrity mode 令牌 can access only the following shared resources:
-* Read access to most files
-* Write access to %USER PROFILE%\AppData\LocalLow
-* Read access to most of the registry
-* Write access to HKEY_CURRENT_USER\Software\AppDataLow
-Clipboard (copy and paste for certain formats)
-* Remote procedure call (RPC)
-* TCP/IP Sockets
-* Window messages exposed via ChangeWindowMessageFilter
-* Shared memory exposed via LI (low integrity) labels
-* COM interfaces with LI (low integrity) launch activation rights
-* Named pipes exposed via LI (low integrity) labels
+默认情况下，令牌可以读高信用等级的对象，但不能写。大多数桌面应用运行在中信用等级（MI），而较不受信任的进程像IE保护模式和我们自己的沙箱运行在低信用等级（LI）。一个低信用等级模式的令牌只可以访问下面这些共享资源：
 
-You'll notice that the previously described attributes of the 令牌, job object, and alternate desktop are more restrictive, and would in fact block access to everything allowed in the above list. So, the integrity level is a bit redundant with the other measures, but it can be seen as an additional degree of defense-in-depth, and its use has no visible impact on performance or resource usage. 
+* 对大部分文件可以做读访问
+* 对%USER PROFILE%、AppData、LocalLow目录的写访问
+* 读注册表的大部分内容
+* 对HKEY_CURRENT_USER\Software\AppDataLow目录做写访问
+* 剪贴板(为某些格式做复制粘贴)
+* 远程过程调用（RPC）
+* TCP/IP Socket
+* 通过ChangeWindowMessageFilter暴露窗口消息
+* 通过LI标签共享内存
+* 拥有LI启动激活的权限，访问COM接口
+* 通过LI标签暴露的命名管道
 
-More information on integrity levels can be found at [03].
+你会注意到之前描述的令牌属性，工作对象，额外的桌面限制性更大，并且事实上会阻碍对上面列出的所有东西的访问。所以，信用等级比其他措施更宽松，但这也可以被视为一种对深度防御的否定，并且，它的使用对性能或者资源使用不会有明显的影响。
 
-###Process mitigation policies
 
-Most process mitigation policies can be applied to the target process by means of SetProcessMitigationPolicy.  The sandbox uses this API to set various policies on the target process for enforcing security characteristics.
+更多关于信用等级的信息可以在底部参考文献[03]找到。
 
-**Relocate Images:**
+###进程轻量化策略
 
-* \>= Win8
-* Address-load randomization (ASLR) on all images in process (and must be supported by all images).
+大多数进程轻量化策略可以可以通过SetProcessMitigationPolicy方法应用于Mtarget进程。沙箱使用这个API为target进程设置不同的各种策略，以强化安全特性。
 
-**Heap Terminate:**
+**重定位图像:**
 
 * \>= Win8
-* Terminates the process on Windows heap corruption.
+* 在进程中对所有图片做随机地址加载(ASLR)（必须被所有图片支持）
 
-**Bottom-up ASLR:**
-
-* \>= Win8
-* Sets random lower bound as minimum user address for the process.
-
-**High-entropy ASLR:**
+**堆之终结:**
 
 * \>= Win8
-* Increases randomness range for bottom-up ASLR to 1TB.
+* 结束Windows堆占用进程
 
-**Strict Handle Checks:**
-
-* \>= Win8
-* Immediately raises an exception on a bad handle reference.
-
-**Win32k.sys lockdown:**
+**自底向上ASLR:**
 
 * \>= Win8
-* ProcessSystemCallDisablePolicy, which allows selective disabling of system calls available from the target process.
-* Renderer processes now have this set to DisallowWin32kSystemCalls which means that calls from user mode that are serviced by win32k.sys are no longer permitted. This significantly reduces the kernel attack surface available from a renderer.  See here for more details.
+* 设置随机的下界作为进程的最小用户地址
 
-**App Container (low box 令牌):**
+**高熵值ASLR:**
 
 * \>= Win8
-* In Windows this is implemented at the kernel level by a Low Box 令牌 which is a stripped version of a normal 令牌 with limited privilege (normally just SeChangeNotifyPrivilege and SeIncreaseWorkingSetPrivilege), running at Low integrity level and an array of "Capabilities" which can be mapped to allow/deny what the process is allowed to do (see [MSDN](https://msdn.microsoft.com/en-us/library/windows/apps/hh464936.aspx) for a high level description). The capability most interesting from a sandbox perspective is denying is access to the network, as it turns out network checks are enforced if the 令牌 is a Low Box 令牌 and the INTERNET_CLIENT Capability is not present.
-* The sandbox therefore takes the existing restricted 令牌 and adds the Low Box attributes, without granting any Capabilities, so as to gain the additional protection of no network access from the sandboxed process.
+* 为自底向上ASLR增加随机等级到1TB。
 
-**Disable Font Loading:**
+**严格句柄检查:**
+
+* \>= Win8
+* 对于恶意句柄引用立即抛出异常
+
+**Win32k.sys锁定:**
+
+* \>= Win8
+* ProcessSystemCallDisablePolicy，允许选择性关闭target进程可用的系统调用
+* 渲染器进程现在把这个功能设置到了DisallowWin32kSystemCalls上，这意味着win32k.sys用户模式的调用不再被允许。这极大地减少了来自渲染器的可用的内核攻击。查看[这里](https://docs.google.com/document/d/1gJDlk-9xkh6_8M_awrczWCaUuyr0Zd2TKjNBCiPO_G4)获取更多细节。
+
+**App容器(Low Box Token):**
+
+* \>= Win8
+* 在Windows里，这由内核层的一个Low Box Token实现，它是有着限制优先权（通常只有SeChangeNotifyPrivilege和 SeIncreaseWorkingSetPrivilege）的一个剥离版本，运行在低信用等级，这个容器还由一组“能力”实现，它们可以映射到进程允许/拒绝做的事情（查看[MSDN](https://msdn.microsoft.com/en-us/library/windows/apps/hh464936.aspx)获取更详细的描述）。从沙箱角度看，最有趣的能力是否决是对网络的访问，如果令牌是Low Box Token，INTERNET_CLIENT能力没有出现的话，就会执行网络检查。
+
+* 因此沙箱对已有的限制令牌，添加了Low Box相关的属性，并且不授予任何能力，以获得没有来自沙箱化进程的网络访问这样的额外的网络保护。
+
+**禁用字体加载:**
 
 * \>= Win10
 * ProcessFontDisablePolicy
 
-**Disable Image Load from Remote Devices:**
+**禁用远程设备图像加载:**
 
 * \>= Win10 TH2
 * ProcessImageLoadPolicy
-* E.g. UNC path to network resource.
+* 例：网络资源的UNC路径
 
-**Disable Image Load of "mandatory low" (low integrity level):**
+**禁用“强制低信用等级”的图像加载:**
 
 * \>= Win10 TH2
 * ProcessImageLoadPolicy
-* E.g. temporary internet files.
+* 例：临时Internet文件
 
-**Extra Disable Child Process Creation:**
+**禁用额外的子进程创建:**
 
 * \>= Win10 TH2
-* If the Job level <= JOB_LIMITED_USER, set PROC_THREAD_ATTRIBUTE_CHILD_PROCESS_POLICY to PROCESS_CREATION_CHILD_PROCESS_RESTRICTED via UpdateProcThreadAttribute().
-* This is an extra layer of defense, given that Job levels can be broken out of. [REF: [ticket](https://bugs.chromium.org/p/project-zero/issues/detail?id=213&redir=1), [Project Zero blog](http://googleprojectzero.blogspot.co.uk/2015/05/in-console-able.html).]
+* 如果作业等级\<= JOB_LIMITED_USER，用UpdateProcThreadAttribute()设置PROC_THREAD_ATTRIBUTE_CHILD_PROCESS_POLICY为PROCESS_CREATION_CHILD_PROCESS_RESTRICTED。
+* 这是额外层面的防御，使得作业层可以从外部打破。[引用: [ticket](https://bugs.chromium.org/p/project-zero/issues/detail?id=213&redir=1), [Project Zero blog](http://googleprojectzero.blogspot.co.uk/2015/05/in-console-able.html).]
 
-###Other caveats
+###其他警告
 
-The operating system might have bugs. Of interest are bugs in the Windows API that allow the bypass of the regular security checks. If such a bug exists, malware will be able to bypass the sandbox restrictions and broker policy and possibly compromise the computer. Under Windows, there is no practical way to prevent code in the sandbox from calling a system service.
+操作系统可能有一些bug。令人感兴趣的是Windows API中允许跳过常规安全检查的一些bug。如果存在这样的bug，恶意软件能够穿透安全限制，broker策略，并且可能危害计算机。在Windows环境下，没有实用的方式可以避免沙箱中的代码调用系统服务。
 
-In addition, third party software, particularly anti-malware solutions, can create new attack vectors. The most troublesome are applications that inject dlls in order to enable some (usually unwanted) capability. These dlls will also get injected in the sandbox process. In the best case they will malfunction, and in the worst case can create backdoors to other processes or to the file system itself, enabling specially crafted malware to escape the sandbox. 
+另外，第三方软件，尤其是反病毒解决方案，可能创建新的攻击角度。最麻烦的是为了使用一些（通常是系统不愿其使用的）功能，注入动态链接库的应用程序。这些动态链接库也会注入到沙箱进程中。在最好的情况下，他们会产生故障，在最糟的情况下，可能为其他进程或文件系统本身造出后门，让精心设计的恶意软件逃离沙箱。
 
-##Sandbox policy
 
-The actual restrictions applied to a target process are configured by a policy. The policy is just a programmatic interface that the broker calls to define the restrictions and allowances. Four functions control the restrictions, roughly corresponding to the four Windows mechanisms:
-* TargetPolicy::Set令牌Level()
+##沙箱策略
+
+应用与target进程的真实限制通过策略设置。这些策略只是一种broker调用的编程接口，它们定义了限制与权限。四个函数控制这种限制，对应四种Windows机制：
+* TargetPolicy::SetTokenLevel()
 * TargetPolicy::SetJobLevel()
 * TargetPolicy::SetIntegrityLevel()
 * TargetPolicy::SetDesktop()
 
-The first three calls take an integer level parameter that goes from very strict to very loose; for example, the 令牌 level has 7 levels and the job level has 5 levels. Chromium renderers are typically run with the most strict level in all four mechanisms. Finally, the last (desktop) policy is binary and can only be used to indicate if a target is run on an alternate desktop or not.
+前三个调用接收从非常严格到非常宽松的整数等级参数，例如令牌有七个等级，作业有五个等级。Chromium渲染器通常运行四种机制中最严格的模式。最后，桌面策略有两种，只能用于表示一个target进程是否运行在额外的桌面对象中。
 
-The restrictions are by design coarse in that they affect all securable resources that the target can touch, but sometimes a more finely-grained resolution is needed. The policy interface allows the broker to specify exceptions. An exception is a way to take a specific Windows API call issued in the target and proxy it over to the broker. The broker can inspect the parameters and re-issue the call as is, re-issue the call with different parameters, or simply deny the call. To specify exceptions there is a single call: AddRule. The following kinds of rules for different Windows subsystems are supported at this time:
-* Files
-* Named pipes
-* Process creation
-* Registry
-* Synchronization objects
 
-The exact form of the rules for each subsystem varies, but in general rules are triggered based on a string pattern. For example, a possible file rule is:
+这些限制是粗糙设计的，因为它们会影响目标可访问的所有可保护资源，但有时我们需要更精细粒度的分辨能力。沙箱策略接口允许broker指定例外的情况。一个例外是，在target中发出特定Windows API调用，将其代理给broker的方式。broker可以检查参数，使用不同的参数重新发出调用，或者干脆拒绝调用。为了指定例外情况，需要有一个独立的调用：AddRule。现在支持以下几种针对不同的Windows子系统的规则：
+*文件
+*命名管道
+*进程创建
+*登记
+*同步对象
+
+每种子系统的具体形式各不相同，但通常规则会基于字符串模式得到触发。例如，一种可能的文件规则是：
 ```c
 AddRule(SUBSYS_FILES, FILES_ALLOW_READONLY, L"c:\\temp\\app_log\\d*.dmp")
 ```
-This rule specifies that access will be granted if a target wants to open a file, for read-only access as long as the file matches the pattern expression; for example c:\temp\app_log\domino.dmp is a file that satisfies the pattern. Consult the header files for an up-to-date list of supported objects and supported actions.
+这个规则指定了当一个target进程想要打开文件时，可以授予的权限，以及匹配字符串格式的文件的只读权限；例如 c:\temp\app_log\domino.dmp是一个满足上面那种格式的文件。查询头文件可以获得最新支持的对象与行为的列表。
 
-Rules can only be added before each target process is spawned, and cannot be modified while a target is running, but different targets can have different rules.
+规则只能在每个进程产生前添加，当target运行时不能修改，但不同的target可以有不同的规则。
+
 
 ##Target bootstrapping
 
