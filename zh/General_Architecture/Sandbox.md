@@ -279,7 +279,7 @@ target始于特权令牌的事实简化了显式策略，因为任何特权相�
 
 http://www.microsoft.com/msj/0399/jobkernelobj/jobkernelobj.aspx
 
-[02] Brown, Keith "What Is a 令牌" (wiki) 
+[02] Brown, Keith "What Is a Token" (wiki) 
 
 http://alt.pluralsight.com/wiki/default.aspx/Keith.GuideBook/WhatIsA令牌.htm
 
