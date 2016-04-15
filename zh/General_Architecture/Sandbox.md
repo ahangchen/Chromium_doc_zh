@@ -250,28 +250,30 @@ AddRule(SUBSYS_FILES, FILES_ALLOW_READONLY, L"c:\\temp\\app_log\\d*.dmp")
 规则只能在每个进程产生前添加，当target运行时不能修改，但不同的target可以有不同的规则。
 
 
-##Target bootstrapping
+##Target引导
 
-Targets do not start executing with the restrictions specified by policy. They start executing with a 令牌 that is very close to the 令牌 the regular user processes have. The reason is that during process bootstrapping the OS loader accesses a lot of resources, most of them are actually undocumented and can change at any time. Also, most applications use the standard CRT provided with the standard development tools; after the process is bootstrapped the CRT needs to initialize as well and there again the internals of the CRT initialization are undocumented.
+Target不会从策略定义的限制开始执行。他们从与常规用户进程拥有的令牌非常接近的一个令牌开始执行。因为在进程引导的过程中，操作系统加载器会访问大量的资源，其中大部分是未认证且随时会变化的。另外，大部分应用程序使用标准开发工具提供的标准CRT，在进程得到引导后，CRT也需要初始化，这时CRT初始化的内部再次变成未认证状态了。
 
-Therefore, during the bootstrapping phase the process actually uses two 令牌s: the lockdown 令牌 which is the process 令牌 as is and the initial 令牌 which is set as the impersonation 令牌 of the initial thread. In fact the actual Set令牌Level definition is:
+因此，在引导阶段，进程实际上使用了两种令牌：锁定令牌，也是进程令牌，还有初始令牌，被设置为初始线程的模拟令牌。事实上，真正的SetTokenLevel定义是：
+
 ```c
-Set令牌Level(令牌Level initial, 令牌Level lockdown)
+SetTokenLevel(TokenLevel initial, TokenLevel lockdown)
 ```
-After all the critical initialization is done, execution continues at main() or WinMain(), here the two 令牌s are still active, but only the initial thread can use the more powerful initial 令牌. It is the target's responsibility to discard the initial 令牌 when ready. This is done with a single call:
+在所有的初始化操作完成后，main()或WinMain()会继续执行，还有两个令牌会存活，但只有初始线程可以使用更强大的那个初始令牌。target的责任是在准备完成后销毁初始令牌。通过下面这个简单的调用实现：
 ```
-Lower令牌()
+LowerToken()
 ```
-After this call is issued by the target the only 令牌 available is the lockdown 令牌 and the full sandbox restrictions go into effect. The effects of this call cannot be undone. Note that the initial 令牌 is a impersonation 令牌 only valid for the main thread, other threads created in the target process use only the lockdown 令牌 and therefore should not attempt to obtain any system resources subject to a security check.
+在target声明这个调用之后，唯一可用的令牌是锁定令牌，完整的沙箱限制开始生效。这个调用不可以撤销。注意初始令牌是一个模拟令牌，它只对主线程有效，target进程创建的其他线程只使用锁定令牌，因此不会尝试获取任何需要安全检查的系统资源。
 
-The fact that the target starts with a privileged 令牌 simplifies the explicit policy since anything privileged that needs to be done once, at process startup can be done before the Lower令牌() call and does not require to have rules in the policy.
-
->**Important**
-
-> Make sure any sensitive OS handles obtained with the initial 令牌 are closed before calling Lower令牌(). Any leaked handle can be abused by malware to escape the sandbox.
+target始于特权令牌的事实简化了显式策略，因为任何特权相关的需要在进程启动时一次完成的东西，可用在LowerToken()调用前完成，并且不需要在策略中设置规则。
 
 
-##References
+>**重要**
+
+> 请确保初始令牌获取的任何敏感操作系统句柄在调用LowerToken()前关闭。任何泄露的句柄可能被恶意软件利用以逃离沙箱。
+
+
+##参考文献
 
 [01] Richter, Jeffrey "Make Your Windows 2000 Processes Play Nice Together With Job Kernel Objects" 
 
