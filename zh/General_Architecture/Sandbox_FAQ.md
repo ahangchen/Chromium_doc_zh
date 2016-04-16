@@ -18,17 +18,18 @@
 恩，有点像...除了你必须为Java沙箱的优点重写代码以使用Java。在我们的沙箱中，你可以向你现有的C/C++应用程序添加沙箱。由于代码并非执行于虚拟机中，你可以得到原生的速度，以及对Windows API的直接访问。
 
 
+###我需要安装驱动或者内核模块吗？用户需要有管理员身份吗？
 
-###Do I need to install a driver or kernel module? Does the user need to be Administrator?
+不用。沙箱是一个纯用户模式库，任何用户可以运行沙箱化进程。
 
-No and no. The sandbox is a pure user-mode library, and any user can run sandboxed processes.
+###如果没有虚拟机，你该怎样用C++实现沙箱？
 
-###How can you do this for C++ code if there is no virtual machine?
+我们为Windows安全模型划分等级。在Windows里，没有进行系统调用的话，代码不能执行任何形式的I/O（无论是磁盘，键盘，还是显示器）。在大多数系统调用里，Windows执行一些安全检查。沙箱会设置好环境，这样你不愿沙箱化进程执行的动作就会因安全检查而失败。在Chromium中，沙箱就是这样，因此所有访问检查都会失败。
 
-We leverage the Windows security model. In Windows, code cannot perform any form of I/O (be it disk, keyboard, or screen) without making a system call. In most system calls, Windows performs some sort of security check. The sandbox sets things up so that these security checks fail for the kinds of actions that you don’t want the sandboxed process to perform. In Chromium, the sandbox is such that all access checks should fail.
 
-###So how can a sandboxed process such as a renderer accomplish anything?
+###所以一个沙箱化进程（比如渲染器）是如何完成任务的？
 
+某些交流通道
 Certain communication channels are explicitly open for the sandboxed processes; the processes can write and read from these channels. A more privileged process can use these channels to do certain actions on behalf of the sandboxed process. In Chromium, the privileged process is usually the browser process.
 
 ###Doesn't Vista have similar functionality? 
