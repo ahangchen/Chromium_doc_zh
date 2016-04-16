@@ -1,19 +1,23 @@
-#Sandbox FAQ
-###What is the sandbox?
+#沙箱FAQ
+###什么是沙箱？
 
-The sandbox is a C++ library that allows the creation of sandboxed processes — processes that execute within a very restrictive environment. The only resources sandboxed processes can freely use are CPU cycles and memory. For example, sandboxes processes cannot write to disk or display their own windows. What exactly they can do is controlled by an explicit policy. Chromium renderers are sandboxed processes. 
+沙箱是一个允许沙箱进程创建的C++库，沙箱进程是一种运行在非常限制性的环境中的进程。沙箱进程可以唯一自由使用的资源是CPU周期和内存。例如，沙箱进程不能写磁盘或者显示他们自己的窗口。它们真正能做的事情由一种明确的策略锁控制。Chromium渲染器都是沙箱化进程。
 
-###What does and doesn't it protect against?
 
-The sandbox limits the severity of bugs in code running inside the sandbox. Such bugs cannot install persistent malware in the user's account (because writing to the filesystem is banned). Such bugs also cannot read and steal arbitrary files from the user's machine.
+###沙箱可以保护什么，不能保护什么？
 
-(In Chromium, the renderer processes are sandboxed and have this protection. Plugins for Chromium do not yet run inside the sandbox, because many are designed with the assumption that they have full access to the local system. Also note that Chromium renderer processes are isolated from the system, but not yet from the web. Therefore, domain-based data isolation is not yet provided).
+沙箱限制了运行在沙箱中的代码的bug的危害。这些bug不能在用户的账号中安装持久性的恶意软件（因为写文件系统被禁止），这些bug也不能读取或者从用户的设备中盗取任何文件。
 
-The sandbox cannot provide any protection against bugs in system components such as the kernel it is running on.
+（在Chromium中，渲染器进程是沙箱化的，它们处于这种保护中。Chromium插件还没有运行在沙箱中，因为许多插件的设计基于这样一个假设：它们对本地系统有着完全的访问权限。另外也要注意，Chromium渲染器进程与系统相隔离，但还未与网络相隔离。所以，基于域名的数据隔离还未提供）。
 
-###Is the sandbox like what you get with the Java VM?
+沙箱不能为系统组件（比如系统内核正在运行的组件）中的bug提供任何保护。
 
-Yeah, kind of... except that to take advantage of the Java sandbox, you must rewrite your code to use Java. With our sandbox you can add sandboxing to your existing C/C++ applications. Because the code is not executed inside a virtual machine, you get native speed and direct access to the Windows API.
+
+###沙箱像JVM？
+
+恩，有点像...除了你必须为Java沙箱的优点重写代码以使用Java。在我们的沙箱中，你可以向你现有的C/C++应用程序添加沙箱。由于代码并非执行于虚拟机中，你可以得到原生的速度，以及对Windows API的直接访问。
+
+
 
 ###Do I need to install a driver or kernel module? Does the user need to be Administrator?
 
