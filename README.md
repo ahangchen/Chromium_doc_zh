@@ -37,6 +37,8 @@
   - [Profile架构](General_Architecture/Profile_Architecture.md)
   - [安全浏览](General_Architecture/SafeBrowsing.md)
   - [沙箱](General_Architecture/Sandbox.md)
+    - [沙箱FAQ](General_Architecture/Sandbox_FAQ.md)
+    - [OSX中的沙箱设计](General_Architecture/OSX_Sandbox_design.md)
   - [安全架构](General_Architecture/Security_Architecture.md): Chromium沙箱绘制引擎是如何保护免受恶意软件侵害的
   - [启动](General_Architecture/Startup.md)
   - [线程](General_Architecture/Threading.md): 在chromium中如何使用线程
