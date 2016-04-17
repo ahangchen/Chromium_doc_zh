@@ -13,12 +13,12 @@
 
 #设计文档
 
-- [Start Here: 背景阅读](zh/zh/Start_Here_Background_Reading/README.md): 描述Chromium的宏观架构
-  - [多进程架构](zh/zh/Start_Here_Background_Reading/Multi-process_Architecture.md)
+- [Start Here: 背景阅读](zh/Start_Here_Background_Reading/README.md): 描述Chromium的宏观架构
+  - [多进程架构](zh/Start_Here_Background_Reading/Multi-process_Architecture.md)
   
     **Note**: 设计文档的大部分剩余部分都认为你对上面这个文档里的内容非常熟悉。
 
-  - [Chromium如何展示web界面](zh/zh/Start_Here_Background_Reading/How_Chromium_Displays_Web_Pages.md): 自底向上概述WebKit是如何嵌入到Chromium中的
+  - [Chromium如何展示web界面](zh/Start_Here_Background_Reading/How_Chromium_Displays_Web_Pages.md): 自底向上概述WebKit是如何嵌入到Chromium中的
   
 ##See Also: 源代码中的设计文档
 
@@ -26,34 +26,34 @@
 
 
 
-- ###[整体架构](zh/zh/General_Architecture/README.md)
-  - [跨平台开发的约定与模式](zh/zh/General_Architecture/Conventions_and_patterns_for_multi-platform_development.md)
-  - [扩展安全架构](zh/zh/General_Architecture/Extension_Security_Architecture.md): 扩展系统是如何降低扩展脆弱性的严重程度的
-  - [硬件视频加速](zh/zh/General_Architecture/HW_Video_Acceleration_in_Chrom{eium}{OS}.md)
-  - [跨进程通信](zh/zh/General_Architecture/Inter-process_Communication.md): 浏览进程，绘制器，插件进程是如何交流的
-  - [多进程资源加载](zh/zh/General_Architecture/Multi-process_Resource_Loading.md): 页面和图像是如何从网络加载到绘制器中的
-  - [插件架构](zh/zh/General_Architecture/Plugin_Architecture.md)
-  - [进程模型](zh/zh/General_Architecture/Process_Models.md): 创建新绘制进程的策略
-  - [Profile架构](zh/zh/General_Architecture/Profile_Architecture.md)
-  - [安全浏览](zh/zh/General_Architecture/SafeBrowsing.md)
-  - [沙箱](zh/zh/General_Architecture/Sandbox.md)
-    - [沙箱FAQ](zh/zh/General_Architecture/Sandbox_FAQ.md)
-    - [OSX中的沙箱设计](zh/zh/General_Architecture/OSX_Sandbox_design.md)
-  - [安全架构](zh/zh/General_Architecture/Security_Architecture.md): Chromium沙箱绘制引擎是如何保护免受恶意软件侵害的
-  - [启动](zh/zh/General_Architecture/Startup.md)
-  - [线程](zh/zh/General_Architecture/Threading.md): 在chromium中如何使用线程
+- ###[整体架构](zh/General_Architecture/README.md)
+  - [跨平台开发的约定与模式](zh/General_Architecture/Conventions_and_patterns_for_multi-platform_development.md)
+  - [扩展安全架构](zh/General_Architecture/Extension_Security_Architecture.md): 扩展系统是如何降低扩展脆弱性的严重程度的
+  - [硬件视频加速](zh/General_Architecture/HW_Video_Acceleration_in_Chrom{eium}{OS}.md)
+  - [跨进程通信](zh/General_Architecture/Inter-process_Communication.md): 浏览进程，绘制器，插件进程是如何交流的
+  - [多进程资源加载](zh/General_Architecture/Multi-process_Resource_Loading.md): 页面和图像是如何从网络加载到绘制器中的
+  - [插件架构](zh/General_Architecture/Plugin_Architecture.md)
+  - [进程模型](zh/General_Architecture/Process_Models.md): 创建新绘制进程的策略
+  - [Profile架构](zh/General_Architecture/Profile_Architecture.md)
+  - [安全浏览](zh/General_Architecture/SafeBrowsing.md)
+  - [沙箱](zh/General_Architecture/Sandbox.md)
+    - [沙箱FAQ](zh/General_Architecture/Sandbox_FAQ.md)
+    - [OSX中的沙箱设计](zh/General_Architecture/OSX_Sandbox_design.md)
+  - [安全架构](zh/General_Architecture/Security_Architecture.md): Chromium沙箱绘制引擎是如何保护免受恶意软件侵害的
+  - [启动](zh/General_Architecture/Startup.md)
+  - [线程](zh/General_Architecture/Threading.md): 在chromium中如何使用线程
   
  也可以看看 [V8](zh/http://code.google.com/apis/v8/)的文档, 这是Chromium使用的Javascript引擎
 
-- ###[UI Framework](zh/zh/UI_Framework/README.md)
-  - [UI开发实践](zh/zh/UI_Framework/UI_Development_Practices.md): 在Chrome的content区域内外开发的最佳实践
-  - [Views framework](zh/zh/UI_Framework/Views_framework.md): Windows和Chrome OS上使用的UI layout 层级
-  - [views Windowing系统](zh/zh/UI_Framework/views_Windowing_system.md): 如何用view构建对话框盒子和其他windowUI
-  - [Aura](zh/zh/UI_Framework/Aura.md): Chrome下一代硬件加速UI框架，新的ChromeOS 系统由它构建而成
-  - [Native控制](zh/zh/UI_Framework/NativeControls.md): 在view中使用平台原生widget
+- ###[UI Framework](zh/UI_Framework/README.md)
+  - [UI开发实践](zh/UI_Framework/UI_Development_Practices.md): 在Chrome的content区域内外开发的最佳实践
+  - [Views framework](zh/UI_Framework/Views_framework.md): Windows和Chrome OS上使用的UI layout 层级
+  - [views Windowing系统](zh/UI_Framework/views_Windowing_system.md): 如何用view构建对话框盒子和其他windowUI
+  - [Aura](zh/UI_Framework/Aura.md): Chrome下一代硬件加速UI框架，新的ChromeOS 系统由它构建而成
+  - [Native控制](zh/UI_Framework/NativeControls.md): 在view中使用平台原生widget
   - 用View和Aura实现聚焦与激活
-- ###[Graphics](zh/zh/Graphics/README.md)
-  - [概述](zh/zh/Graphics/Overview.md)
+- ###[Graphics](zh/Graphics/README.md)
+  - [概述](zh/Graphics/Overview.md)
   - [Chrome中使用的GPU加速](zh/Graphics/GPU_Accelerated_Compositing_in_Chrome.md)
   - [GPU特性状态仪表盘](zh/Graphics/GPU_Feature_Status_Dashboard.md)
   - [绘制架构图](zh/Graphics/Rendering_Architecture_Diagrams.md)
