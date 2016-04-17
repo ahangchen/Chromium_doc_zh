@@ -42,28 +42,33 @@
 可以。沙箱对Chromium浏览器没有任何重度依赖，它就是设计用于面向Internet的应用程序。主要的障碍在于你要把你的程序分成至少两个交互进程。一个进程具有比较高的优先级，执行I/O，与用户进行交互；另一个进程基本上没有什么优先权力，并执行不受信任的数据处理。
 
 
-###Isn't that a lot of work?
+###需要做很多工作吗？
 
-Possibly. But it's worth the trouble, especially if your application processes arbitrary untrusted data. Any buffer overflow or format decoding flaw that your code might have won't automatically result in malicious code compromising the whole computer. The sandbox is not a security silver bullet, but it is a strong last defense against nasty exploits.
+可能需要。但这是值得的，如果你的程序需要处理任意的不受信任的数据时更是如此。你的代码中可能有的任何缓冲溢出或者格式解码缺陷不会自动导致恶意代码对整台计算机造成危害。沙箱不是一个安全银弹，但对于那些恶意使用来说，沙箱是一道强大的最后屏障。
 
-###Should I be aware of any gotchas?
 
-Well, the main thing to keep in mind is that you should only sandbox code that you fully control or that you fully understand. Sandboxing third-party code can be very difficult. For example, you might not be aware of third-party code's need to create temporary files or display warning dialogs; these operations will not succeed unless you explicitly allow them. Furthermore, third-party components could get updated on the end-user machine with new behaviors that you did not anticipate.
+###我需要了解什么陷阱吗？
 
-###How about COM, Winsock, or DirectX — can I use them?
+你首先需要记住，你只需要将你完全可控的代码或者完全理解的代码沙箱化。沙箱化第三方代码可能非常困难。例如，你可能不知道第三方代码需要创建临时文件或者弹出警告对话框；除非你显式允许，这些操作不会成功执行。更进一步，第三方组件可以用你预料之外的新形式更新最终用户的设备。
 
-For the most part, no. We recommend against using them before lock-down. Once a sandboxed process is locked down, use of Winsock, COM, or DirectX will either malfunction or outright fail.
 
-###What do you mean by before lock-down? Is the sandboxed process not locked down from the start?
+###COM, Winsock, 或DirectX在这里又如何？ — 我可以使用它们吗？
 
-No, the sandboxed process does not start fully secured. The sandbox takes effect once the process makes a call to the sandbox method LowerToken(). This allows for a period during process startup when the sandboxed process can freely get hold of critical resources, load libraries, or read configuration files. The process should call LowerToken() as soon as feasible and certainly before it starts interacting with untrusted data. 
+在绝大多数情况下，不可以。我们不推荐在锁定前使用它们（但也只能在锁定前使用它们）。一旦一个沙箱化进程被锁定，使用Winsock，COM，或者DirectX不是会产生故障就是会彻底失败。
 
-Note: Any OS handle that is left open after calling LowerToken() can be abused by malware if your process gets infected. That's why we discourage calling COM or other heavyweight APIs; they leave some open handles around for efficiency in later calls.
 
-###So what APIs can you call?
+###在锁定前是什么意思？沙箱化进程不是从一开始就锁定了的吗？
 
-There is no master list of safe APIs. In general, structure your code such that the sandboxed code reads and writes from pipes or shared memory and just does operations over this data. In the case of Chromium, the entire WebKit code runs this way, and the output is mostly a rendered bitmap of the web pages. You can use Chromium as inspiration for your own memory- or pipe-based IPC.
+不是，沙箱化进程并非从一开始就是处于保护之中。沙箱在进程调用LowerToken()后才开始生效。这允许进程启动时有一段时间沙箱化进程可以自由地管理关键资源，加载库，或者读取配置文件。进程需要在它开始与不受信任的数据交互前尽快调用LowerToken()。
 
-###But can't malware just infect the process at the other end of the pipe or shared memory?
+注意：如果你的进程被恶意软件感染了，任何在调用LowerToken()后的仍然开放的操作系统句柄会被恶意软件滥用。所以我们不鼓励调用COM或者其他重量级API，它们会为了将来的调用效率遗留一些开放的句柄。
 
-Yes, it might, if there's a bug there. The key point is that it's easier to write and analyze a correct IPC mechanism than, say, a web browser engine. Strive to make the IPC code as simple as possible, and have it reviewed by others.
+
+###所以你可以调用什么API？
+
+并没有安全API的权威列表。通常，你应该结构化你的代码，这样沙箱化代码可以从管道或共享内存读写或者用其他方式操作数据。在Chromium中，整个WebKit代码都是用这种方式运行的，输出大部分是网页渲染后的位图。你可以将Chromium作为你自己的基于内存或基于管道的IPC的灵感来源。
+
+
+###恶意软件不可以感染管道或共享内存另一端的处理吗？
+
+是的，如果另一端有bug的话，它可以。关键在于，编写和分析一个正确的IPC机制比编写一个web浏览器引擎要简单得多。所以我们将IPC代码做得尽可能简单，并且交由他人去review。
