@@ -30,6 +30,7 @@ SandboxInitWrapper::InitializeSandbox() is the main entry point for initializing
 * Determines if the current process type needs to be sandboxed and if so, which sandbox configuration to use.
 * "Warm up" relevant system APIs by calling through to  sandbox::SandboxWarmup() .
 * Enable the Sandbox by calling through to  sandbox::EnableSandbox() .
+
 ###Diagnostics
 
 The OS X sandbox implementation supports the following flags:
