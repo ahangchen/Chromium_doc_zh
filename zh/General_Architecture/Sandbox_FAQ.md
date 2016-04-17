@@ -29,16 +29,18 @@
 
 ###所以一个沙箱化进程（比如渲染器）是如何完成任务的？
 
-某些交流通道
-Certain communication channels are explicitly open for the sandboxed processes; the processes can write and read from these channels. A more privileged process can use these channels to do certain actions on behalf of the sandboxed process. In Chromium, the privileged process is usually the browser process.
+某些交流通道会显式暴露给沙箱化进程；这些进程可以从这些通道进行读写。优先级更高的进程可以使用这些通道代表沙箱化进程执行一些动作。在Chromium中，优先级更高的进程通常是指浏览器进程。
 
-###Doesn't Vista have similar functionality? 
 
-Yes. It's called integrity levels (ILs). The sandbox detects Vista and uses integrity levels, as well. The main difference is that the sandbox also works well under Windows XP. The only application that we are aware of that uses ILs is Internet Explorer 7. In other words, leveraging the new Vista security features is one of the things that the sandbox library does for you.
+###Vista没有类似的功能吗？
 
-###This is very neat. Can I use the sandbox in my own programs?
+有的，它被成为信用等级（ILs）。沙箱检测Vista并使用信用等级。主要的不同在于沙箱在Windows XP下良好运行。我们知道的唯一使用信用等级的程序是IE7。换言之，沙箱库会帮你完成对新的Vista安全特性进行分级。
 
-Yes. The sandbox does not have any hard dependencies on the Chromium browser and was designed to be used with other Internet-facing applications. The main hurdle is that you have to split your application into at least two interacting processes. One of the processes is privileged and does I/O and interacts with the user; the other is not privileged at all and does untrusted data processing.
+
+###这看起来很干净。我可以在自己的程序里使用沙箱吗？
+
+可以。沙箱对Chromium浏览器没有任何重度依赖，它就是设计用于面向Internet的应用程序。主要的障碍在于你要把你的程序分成至少两个交互进程。一个进程具有比较高的优先级，执行I/O，与用户进行交互；另一个进程基本上没有什么优先权力，并执行不受信任的数据处理。
+
 
 ###Isn't that a lot of work?
 
