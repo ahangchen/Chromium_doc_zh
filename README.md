@@ -9,7 +9,7 @@
 
 > github地址： https://github.com/ahangchen/Chromium_doc_zh 
 
-> 也欢迎志同道合的朋友一起翻译。
+> 翻译了一段时间感觉工作量真的有点大，欢迎志同道合的朋友一起翻译。
 
 #设计文档
 
