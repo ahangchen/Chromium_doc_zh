@@ -1,6 +1,6 @@
-#The Security Architecture of the Chromium Browser
+#Chromium浏览器安全架构
 
-Most current web browsers employ a monolithic architecture that combines "the user" and "the web" into a single protection domain. An attacker who exploits an arbitrary code execution vulnerability in such a browser can steal sensitive files or install malware. In this paper, we present the security architecture of Chromium, the open-source browser upon which Google Chrome is built. Chromium has two modules in separate protection domains: a browser kernel, which interacts with the operating system, and a rendering engine, which runs with restricted privileges in a sandbox. This architecture helps mitigate high-severity attacks without sacrificing compatibility with existing web sites. We define a threat model for browser exploits and evaluate how the architecture would have mitigated past vulnerabilities.
+大部分当前web浏览器使用一种将用户和网络结合成一个单一保护域的单片结构。在这样的浏览器中，攻击者可以利用任意代码执行漏洞，盗取敏感信息或者安装恶意软件。在这篇文章里，我们展示了Chromium的安全架构。Chromium有着两个处于独立保护域 的模块：一个是浏览器内核，与操作系统交互，一个是渲染引擎，运行在只有限制权限的沙箱中。这种架构有助于减少高危攻击，而不牺牲与现有网站的兼容性。我们为浏览器漏洞定义了一个威胁模型，并评估了这种架构会如何减少过去的问题。
 
 
 **[The Security Architecture of the Chromium Browser](http://seclab.stanford.edu/websec/chromium/chromium-security-architecture.pdf)**
