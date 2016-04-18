@@ -16,12 +16,10 @@ Chrome大部分时候作为一个独立可执行程序运行，它知道怎样�
 
 ###Mac
 
-Mac上，Chrome也打包为框架和一个可执行文件，但它们被链接在一块：main()直接调用ChromeMain()。还有第二个入口，在chrome_main_app_mode_mac.mm中，作为app模式快捷方式：“在Mac上，谁也不能用命令行参数创建快捷方式”。相反，我们
-Mac is also packaged as a framework and an executable, but they're linked together: main() calls ChromeMain() directly.  There is also a second entry point, in chrome_main_app_mode_mac.mm, for app mode shortcuts: "On Mac, one can't make shortcuts with command-line arguments. Instead, we produce small app bundles which locate the Chromium framework and load it, passing the appropriate data."  This executable also calls ChromeMain().
+Mac上，Chrome也打包为框架和一个可执行文件，但它们被链接在一块：main()直接调用ChromeMain()。还有第二个入口，在chrome_main_app_mode_mac.mm中，作为app模式快捷方式：“在Mac上，谁也不能用命令行参数创建快捷方式”。相反，我们，做了小的app包，它们找到并加载Chromium框架，传递合适的数据。“这个可执行程序也会调用ChromeMain()。
+
 
 ###Linux
 
-On Linux due to the sandbox we launch subprocesses by repeatedly forking from a helper process.  This means that new subprocesses don't enter through main() again, but instead resume from clones in the middle of startup.  The initial launch of the helper process still executes the normal startup path, so any initialization that happens in ChromeMain() will have been run for all subprocesses but they will all share the same initialization.
-评论
-您没有权限添加评论。
-登录|最近的网站活动|举报滥用行为|打印页面|由 Google 协作平台强力驱动
+在Linux上，对于沙箱，我们通过重复地从helper进程fork出子进程。这意味着新的子进程不会再次进入main()，但相反的，会在启动过程中，从副本唤醒。helper进程的初始启动仍然在正常的启动路径中执行，所以任何在ChromeMain()中的初始化对于子进程来说都是已经运行过的，但它们都会共享同一个初始化过程。
+
