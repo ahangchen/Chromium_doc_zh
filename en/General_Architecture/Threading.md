@@ -158,15 +158,20 @@ class MyClass {
  private:
   base::WeakPtrFactory<MyClass> weak_factory_;
 };
-
+```
+      
 ...
+```c++
 Closure cancelable_closure = Bind(&MyClass::DoSomething, object->AsWeakPtr(), p);
 Callback<void(AnotherClass*)> cancelable_callback = Bind(&MyClass::DoSomething, object->AsWeakPtr());
+```
+      
 ...
-
+```c++
 void FunctionRunLater(const Closure& cancelable_closure,
                       const Callback<void(AnotherClass*)>& cancelable_callback) {
-  ...
+```
+      
   // Leak memory!
   cancelable_closure.Run();
   cancelable_callback.Run(p);
