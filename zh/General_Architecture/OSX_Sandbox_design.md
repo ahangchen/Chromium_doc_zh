@@ -27,27 +27,30 @@ Chromium使用的自定义沙箱配置在源代码树的.sb文件中。
 * content/browser/worker.sb - 用于工作进程。限制度最高 - 除了加载系统库之外，没有文件系统访问权限。
 * chrome/browser/nacl_loader.sb - 用户允许不受信任的原生客户端代码（例如，“user”）。
 
-One sticky point we run into is that the sandboxed process calls through to OS X system APIs. There is no documentation available about which privileges each API needs, such as whether they need access to on-disk files, or call other APIs to which the sandbox restricts access. Our approach to date has been to "warm up" any problematic API calls before turning the sandbox on. This means that we call through to the API, to allow it to cache whatever resource it needs. For example, color profiles and shared libraries can be loaded from disk before we "lock down" the process.
+一个让我们不愉快的点是，沙箱进程通过OS X系统API调用。而且没有每个API需要哪些权限的文档，比如它们是否需要访问磁盘文件，或者是否会调用沙箱限制访问的其他API？目前，我们的方法是，在打开沙箱前，对任何可能有问题的API调用做“热身”。例如，颜色配置和共享库可以在我们锁定进程前从磁盘加载。
 
-SandboxInitWrapper::InitializeSandbox() is the main entry point for initializing the Sandbox, it performs the following steps:
-* Determines if the current process type needs to be sandboxed and if so, which sandbox configuration to use.
-* "Warm up" relevant system APIs by calling through to  sandbox::SandboxWarmup() .
-* Enable the Sandbox by calling through to  sandbox::EnableSandbox() .
 
-###Diagnostics
+SandboxInitWrapper::InitializeSandbox()是初始化沙箱的主要入口，它按以下步骤执行：
 
-The OS X sandbox implementation supports the following flags:
-* --no-sandbox - Disable the sandbox entirely.
-* --enable-sandbox-logging - Verbose information about which system calls are blocked is logged to syslog.
+* 判断当前进程的类型是否需要沙箱化，如果需要，判断需要使用哪种沙箱配置。
+* 通过调用sandbox::SandboxWarmup() “热身”相关"系统API。
+* 通过调用sandbox::EnableSandbox()启动沙箱。
 
-[Debugging Chrome on OS X](https://www.chromium.org/developers/how-tos/debugging-on-os-x) contains more documentation on debugging and diagnostic tools provided by the Mac OS X sandbox API.
+###调试
 
-##Additional Reading
+OS X沙箱实现支持下面这些标志位：
+
+* --no-sandbox - 关闭整个沙箱
+* --enable-sandbox-logging - 关于哪个系统调用正在阻塞的详细信息被记录到syslog
+
+[Debugging Chrome on OS X](https://www.chromium.org/developers/how-tos/debugging-on-os-x)里有更多关于调试和Mac OS X 沙箱API诊断工具的文档。
+
+##扩展阅读
 
 * http://reverse.put.as/wp-content/uploads/2011/09/Apple-Sandbox-Guide-v1.0.pdf
 * http://www.318.com/techjournal/?p=107
-* sandbox man page (man 7 sandbox)
-* System sandbox files can be found under one of the following paths (depending on the OS Version):
+* 沙箱手册页 (man 7 sandbox)
+* 系统沙箱文件可以在下面的路径之一找到(取决于系统版本)：
 
   * /Library/Sandbox/Profiles
   * /System/Library/Sandbox/Profiles
