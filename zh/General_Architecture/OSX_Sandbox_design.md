@@ -11,21 +11,21 @@
 
 在Mac OS X上，从Leopard版本开始，每个进程通过使用BSD沙箱设施（在一些Apple的文档中也被成为Seatbelt）拥有自己的权限限制。这由一系列独立的API调用组成，sandbox_init()，设置进程彼时的访问限制。这意味着即使新的权限拒绝访问任何新创建的文件描述符，之前打开的文件描述符仍然生效。我们可以通过在进程启动前正确地设置来利用这一点，在我们将渲染器暴露给任何第三方输入（html，等等）前，切断所有访问。
 
+Seatbelt不会限制内存分配，多线程，或者对先前打开的系统设施的访问。因此，这应该不会影响其他的需求或者严重影响我们的IPC设计。
 
-Seatbelt does not place restrictions on memory allocation, threading, or access to previously opened OS facilities. As a result, this shouldn't impose any additional requirements or drastically alter our IPC designs. 
+OS X提供了对缓冲区溢出提供了额外的保护。在Leopard中，栈被标志为不可执行内存，因此更不易被作为执行恶意代码的攻击方向。这不能避免堆的内存溢出，但对于64位应用，除非内存的一部分被显式标识为可执行，否则Leopard不允许任何执行代码的企图。随着我们将来转入64位渲染器进程，这会变成另一个吸引人的安全特性。
 
-OS X provides additional protection against buffer overflows. In Leopard, the stack is marked as non-executable memory and thus less susceptible as an attack vector for executing malicious code. This doesn't prevent against buffer overruns in the heap, but for 64-bit apps, Leopard disallows any attempts to execute code unless that portion of memory is explicitly marked as executable. As we move towards 64-bit render processes in the future, this will be another attractive security feature. 
+sandbox_init()支持预定义沙箱访问限制和提供更精细控制的沙箱配置脚本。
 
-sandbox_init() has supports for both predefined sandbox access restrictions and sandbox profile scripts which provide finer grained control.
+Chromium使用的自定义沙箱配置在源代码树的.sb文件中。
 
-Chromium uses custom sandbox profiles defined in .sb files in the source tree.
+我们定义了下面这些配置文件（路径相对于源代码根目录）：
 
-The following profiles are defined (paths relative to root of source directory):
-* content/common/common.sb - used for common setup for all sandboxes.
-* content/renderer/renderer.sb - used for the extension & renderer processes. Enables access to the font server.
-* chrome/browser/utility.sb - used by the utility process. Allows access to a single configurable directory.
-* content/browser/worker.sb - used by the worker process.  Most restrictive - no file system access apart from loading system libraries.
-* chrome/browser/nacl_loader.sb - used for running Native Client untrusted (i.e., "user") code.
+* content/common/common.sb - 用于所有沙箱的常用安装
+* content/renderer/renderer.sb - 用于扩展和渲染器进程。允许访问字体服务器。
+* chrome/browser/utility.sb - 用于工具进程。允许访问单一可配置目录。
+* content/browser/worker.sb - 用于工作进程。限制度最高 - 除了加载系统库之外，没有文件系统访问权限。
+* chrome/browser/nacl_loader.sb - 用户允许不受信任的原生客户端代码（例如，“user”）。
 
 One sticky point we run into is that the sandboxed process calls through to OS X system APIs. There is no documentation available about which privileges each API needs, such as whether they need access to on-disk files, or call other APIs to which the sandbox restricts access. Our approach to date has been to "warm up" any problematic API calls before turning the sandbox on. This means that we call through to the API, to allow it to cache whatever resource it needs. For example, color profiles and shared libraries can be loaded from disk before we "lock down" the process.
 
