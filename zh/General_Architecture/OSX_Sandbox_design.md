@@ -1,13 +1,16 @@
-#OSX Sandboxing Design
-This document describes the process sandboxing mechanism used on Mac OS X.
-##Background
+#OS X 沙箱设计
+这个文档描述了Mac OS X上的进程沙箱机制。
 
-Sandboxing treats a process as a hostile environment which at any time can be compromised by a malicious attacker via buffer overruns or other such attack vectors. Once compromised, the goal is to allow the process in question access to as few resources of the user's machine as possible, above and beyond the standard file-system access control and user/group process controls enforced by the kernel.
+##背景
 
-See the overview document for goals and general architectural diagrams.
-##Implementation
+沙箱将进程视为一种恶劣的环境，因为进程任何时候都可能被一个恶意攻击者借由缓冲区溢出或者其他这样的攻击方式所影响。一旦进程被影响，我们的目标就变成了，让这个有问题的进程能访问的用户机器的资源越少越好，并尽量避免在标准文件系统访问控制以外，以及内核执行的用户/组进程控制相关的行为。
 
-On Mac OS X versions starting from Leopard, individual processes can have their privileges restricted using the sandbox(7) facility of BSD, also referred to in some Apple documentation as "Seatbelt". This is made up of a single API call, sandbox_init(), which sets the access restrictions of a process from that point on. This means that previously opened file descriptors continue working even if the new privileges would deny access to newly created descriptors. We can use this to our advantage by setting up everything correctly at the start of the process then cutting off all access before we expose the renderer to any 3rd party input (html, etc).
+查看概述文档了解目标与整体架构图表。
+
+##实现
+
+在Mac OS X上，从Leopard版本开始，每个进程通过使用BSD沙箱设施（在一些Apple的文档中也被成为Seatbelt）拥有自己的权限限制。这由一系列独立的API调用组成，sandbox_init()，设置进程彼时的访问限制。这意味着即使新的权限拒绝访问任何新创建的文件描述符，之前打开的文件描述符仍然生效。我们可以通过在进程启动前正确地设置来利用这一点，在我们将渲染器暴露给任何第三方输入（html，等等）前，切断所有访问。
+
 
 Seatbelt does not place restrictions on memory allocation, threading, or access to previously opened OS facilities. As a result, this shouldn't impose any additional requirements or drastically alter our IPC designs. 
 
