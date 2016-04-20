@@ -36,7 +36,8 @@ Thread对象定义于base/threading/thread.h中。通常你可能会使用下面
 
 ###base::Callback<>, 异步APIs, 和Currying
 
-A base::Callback<> (see the [docs in callback.h](http://src.chromium.org/viewvc/chrome/trunk/src/base/callback.h?content-type=text%2Fplain)) is templated class with a Run() method.  It is a generalization of a function pointer and is created by a call to base::Bind.  Async APIs often will take a base::Callback<> as a means to asynchronously return the  results of an operation.  Here is an example of a hypothetical FileRead API.
+base::Callback<> (查看[callback.h的文档](http://src.chromium.org/viewvc/chrome/trunk/src/base/callback.h?content-type=text%2Fplain)) 是有着一个Run()方法的模板类。它由对base::Bind的调用来创建。异步API通常将base::Callback<>作为一种异步返回操作结果的方式。这是一个假想的文件阅读API的例子。
+
 ```c++
 void ReadToString(const std::string& filename, const base::Callback<void(const std::string&)>& on_read);
 ```
@@ -50,7 +51,9 @@ void SomeFunc(const std::string& file) {
   ReadToString(file, base::Bind(&DisplayString));
 };
 ```
-In the example above, base::Bind takes the function pointer &DisplayString and turns it into a base::Callback<void(const std::string& result)>. The type of the generated base::Callback<> is inferred from the arguments.  Why not just pass the function pointer directly?  The reason is base::Bind allows the caller to adapt function interfaces and/or attach extra context via Currying (http://en.wikipedia.org/wiki/Currying).  For instance, if we had a utility function DisplayStringWithPrefix that took an extra argument with the prefix, we use base::Bind to adapt the interface as follows.
+在上面的例子中，base::Bind拿到&DisplayString的函数指针然后将它传给base::Callback&lt;void(const std::string& result)&gt;。生成的base::Callback<>的类型依赖于传入参数。为什么不直接传入函数指针呢？原因是base::Bind允许调用者适配功能接口或者通过Currying(http://en.wikipedia.org/wiki/Currying)绑定具体的上下文。例如，如果我们有一个工具函数DisplayStringWithPrefix，它接受一个有着前缀的具体参数，我们使用base::Bind以适配接口，如下所示：
+
+
 ```c++
 void DisplayStringWithPrefix(const std::string& prefix, const std::string& result) {
   LOG(INFO) << prefix << result;
@@ -61,7 +64,8 @@ void AnotherFunc(const std::string& file) {
   ReadToString(file, base::Bind(&DisplayStringWithPrefix, "MyPrefix: "));
 };
 ```
-This can be used in lieu of creating an adapter functions a small classes that holds prefix as a member variable.  Notice also that the "MyPrefix: " argument is actually a const char*, while DisplayStringWithPrefix actually wants a const std::string&.  Like normal function dispatch, base::Bind, will coerce parameters types if possible.  See "How arguments are handled by base::Bind()" below for more details about argument storage, copying, and special handling of references.
+这可以作为创建适配器，在一个小的类中将前缀作为成员变量而持有，的替代方案。也要注意“MyPrefix: ”参数事实上是一个const char\*，而DisplayStringWithPrefix需要的其实是const std::string&。正如常见的函数分配那样，base::Bind，可能的话，会进行强制参数类型转化。查看下面的“base::Bind()如何处理参数”以获取关于参数存储，复制，以及对引用的特殊处理的更多细节。
+
 
 ###PostTask
 
