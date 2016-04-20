@@ -1,4 +1,4 @@
- ###[Chromium整体架构](README.md)
+ ##[Chromium整体架构](README.md)
  将Chromium设计文档页面的内容整理成markdown格式，并翻译成中文，整体架构方面已翻译完成。
  
  原本是出于了解更多关于Android Webview的相关知识的目的开始翻译，但学到的更多的是架构设计方面的内容。
