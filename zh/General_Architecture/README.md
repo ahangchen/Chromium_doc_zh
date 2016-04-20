@@ -19,6 +19,6 @@
     - [OSX中的沙箱设计](OSX_Sandbox_design.md)
   - [安全架构](Security_Architecture.md): Chromium沙箱绘制引擎是如何保护免受恶意软件侵害的
   - [启动](Startup.md)
-  - [线程](Threading.md): 在chromium中如何使用线程
+  - [线程](Threading.md): 在Chromium中如何使用线程
   
  也可以看看 [V8](http://code.google.com/apis/v8/)的文档, 这是Chromium使用的Javascript引擎
