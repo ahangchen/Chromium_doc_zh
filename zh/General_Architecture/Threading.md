@@ -13,27 +13,28 @@ Thread对象定义于base/threading/thread.h中。通常你可能会使用下面
 
 * **ui_thread**: 应用从这个主线程启动
 * **io_thread**: 某种程度上讲，这个线程起错名字了。它是一个分发线程，它处理浏览器进程和其他所有子进程之间的交流。它也是所有资源请求（页面加载的）分发的起点（查看[多进程架构](../Start_Here_Background_Reading/Multi-process_Architecture.md)）。
-* **file_thread**: 一个用于文件操作的普通线程。A general process thread for file operations. When you want to do blocking filesystem operations (for example, requesting an icon for a file type, or writing downloaded files to disk), dispatch to this thread.
-* **db_thread**: A thread for database operations. For example, the cookie service does sqlite operations on this thread. Note that the history database doesn't use this thread yet.
+* **file_thread**: 一个用于文件操作的普通线程。当你想要做阻塞文件系统的操作（例如，为某种文件类型请求icon，或者向磁盘写下载文件），分配给这个线程。
+* **db_thread**: 用于数据库操作的线程。例如，cookie服务在这个线程上执行sqlite操作。注意，历史记录数据库还不会使用这个线程。
 * **safe_browsing_thread**
 
-Several components have their own threads:
+几个组件有它们自己的线程：
 
-* **History**: The history service object has its own thread. This might be merged with the db_thread above. However, we need to be sure that things happen in the correct order -- for example, that cookies are loaded before history since cookies are needed for the first load, and history initialization is long and will block it.
-* **Proxy service**: See net/http/http_proxy_service.cc.
-* **Automation proxy**: This thread is used to communicate with the UI test program driving the app.
+* **History**: 历史记录服务有它自己的线程。这可能会和上面的db_thread合并。然而我们需要保证这会按照正确的顺序发生 -- 例如，cookie在历史记录前会仙贝加载，因为首次加载需要cookie，历史记录初始化需要很长时间，会阻塞cookie的加载。
+* **Proxy service**: 查看net/http/http_proxy_service.cc.
+* **Automation proxy**: 这个线程用于和驱动应用的UI测试程序交流。
 
-##Keeping the browser responsive
+##保持浏览器积极响应
 
-As hinted in the overview, we avoid doing any blocking I/O on the UI thread to keep the UI responsive.  Less apparent is that we also need to avoid blocking I/O on the IO thread.  The reason is that if we block it for an expensive operation, say disk access, then IPC messages don't get processed.  The effect is that the user can't interact with a page.  Note that asynchronous/overlapped IO are fine.
+正如上面所暗示的，我们在UI线程里避免任何阻塞I/O，以保持UI积极响应。另一个不太明显的点是，我们也需要避免io_thread里执行阻塞I/O。因为如果我们因昂贵的操作阻塞了这个线程，比如磁盘访问，那么IPC信息不会得到处理，结果就是用户不能与页面进行交互。注意异步/平行 IO是可以的。
 
-Another thing to watch out for is to not block threads on one another.  Locks should only be used to swap in a shared data structure that can be accessed on multiple threads.  If one thread updates it based on expensive computation or through disk access, then that slow work should be done without holding on to the lock.  Only when the result is available should the lock be used to swap in the new data.  An example of this is in PluginList::LoadPlugins (src/content/common/plugin_list.cc). If you must use locks, [here](https://www.chromium.org/developers/lock-and-condition-variable) are some best practices and pitfalls to avoid.
+另一个需要注意的事情是，不要在一个线程里阻塞另一个线程。锁只能用于交换多线程访问的共享数据。如果一个线程基于昂贵的计算或者通过磁盘访问而更新，那么应当在不持有锁的情况下完成缓慢的工作。只有在结果可用后，锁才应该用于交换新数据。一个例子是，在PluginList::LoadPlugins (src/content/common/plugin_list.cc)中。如果你必须使用锁，[这里](https://www.chromium.org/developers/lock-and-condition-variable)有一些最佳实践以及一些需要避开的陷阱。
 
-In order to write non-blocking code, many APIs in Chromium are asynchronous. Usually this means that they either need to be executed on a particular thread and will return results via a custom delegate interface, or they take a base::Callback<> object that is called when the requested operation is completed.  Executing work on a specific thread is covered in the PostTask section below.
+为了编写不阻塞的代码，许多Chromium中的API是异步的。通常这意味着他们需要在一个特殊的线程里执行，并通过自定义的装饰接口返回结果，或者他们会在请求操作完成后调用base::Callback<>对象。在具体线程执行的工作会在下面的PostTask章节介绍。
 
-##Getting stuff to other threads
 
-###base::Callback<>, Async APIs, and Currying
+##把事情放到其他线程去
+
+###base::Callback<>, 异步APIs, 和Currying
 
 A base::Callback<> (see the [docs in callback.h](http://src.chromium.org/viewvc/chrome/trunk/src/base/callback.h?content-type=text%2Fplain)) is templated class with a Run() method.  It is a generalization of a function pointer and is created by a call to base::Bind.  Async APIs often will take a base::Callback<> as a means to asynchronously return the  results of an operation.  Here is an example of a hypothetical FileRead API.
 ```c++
