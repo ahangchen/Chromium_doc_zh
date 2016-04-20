@@ -1,0 +1,1 @@
+可以查看[V8](http://code.google.com/apis/v8/)的文档, 这是Chromium使用的Javascript引擎
