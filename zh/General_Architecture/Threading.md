@@ -7,13 +7,13 @@ Chromium是一个极其多线程的产品。我们努力让UI尽可能快速响�
 Thread对象定义于base/threading/thread.h中。通常你可能会使用下面描述的已有线程之一而非重新构建线程。我们已经有了很多难以追踪的线程。每个线程有一个消息循环（查看base/message_loop/message_loop.h），消息循环处理这个线程的消息。你可以使用Thread.message_loop()函数获取一个线程对应的消息循环。更多关于消息循环的内容可以在这里查看[Anatomy of Chromium MessageLoop](https://docs.google.com/document/d/1_pJUHO3f3VyRSQjEhKVvUU7NzCyuTCQshZvbWeQiCXU/edit#).
 
 
-##Existing threads
+##已有线程
 
-Most threads are managed by the BrowserProcess object, which acts as the service manager for the main "browser" process. By default, everything happens on the UI thread. We have pushed certain classes of processing into these other threads. It has getters for the following threads:
+大多数线程由BrowserProcess对象管理，它是主“浏览器”进程的服务管理器。默认情况下，所有的事情都发生在UI线程中。我们已经把某些类的处理过程放到了其他一些线程里。下面这些线程有getter接口：
 
-* **ui_thread**: Main thread where the application starts up.
-* **io_thread**: This thread is somewhat mis-named. It is the dispatcher thread that handles communication between the browser process and all the sub-processes. It is also where all resource requests (web page loads) are dispatched from (see [Multi-process Architecture](../Start_Here_Background_Reading/Multi-process_Architecture.md)).
-* **file_thread**: A general process thread for file operations. When you want to do blocking filesystem operations (for example, requesting an icon for a file type, or writing downloaded files to disk), dispatch to this thread.
+* **ui_thread**: 应用从这个主线程启动
+* **io_thread**: 某种程度上讲，这个线程起错名字了。它是一个分发线程，它处理浏览器进程和其他所有子进程之间的交流。它也是所有资源请求（页面加载的）分发的起点（查看[多进程架构](../Start_Here_Background_Reading/Multi-process_Architecture.md)）。
+* **file_thread**: 一个用于文件操作的普通线程。A general process thread for file operations. When you want to do blocking filesystem operations (for example, requesting an icon for a file type, or writing downloaded files to disk), dispatch to this thread.
 * **db_thread**: A thread for database operations. For example, the cookie service does sqlite operations on this thread. Note that the history database doesn't use this thread yet.
 * **safe_browsing_thread**
 
