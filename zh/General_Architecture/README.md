@@ -11,7 +11,7 @@
   - [跨进程通信](Inter-process_Communication.md): 浏览进程，绘制器，插件进程是如何交流的
   - [多进程资源加载](Multi-process_Resource_Loading.md): 页面和图像是如何从网络加载到绘制器中的
   - [插件架构](Plugin_Architecture.md)
-  - [进程模型](Process_Models.md): Our 创建新绘制进程的策略
+  - [进程模型](Process_Models.md): 我们创建新绘制进程的策略
   - [Profile架构](Profile_Architecture.md)
   - [安全浏览](SafeBrowsing.md)
   - [沙箱](Sandbox.md)
