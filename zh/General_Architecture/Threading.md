@@ -71,7 +71,7 @@ void AnotherFunc(const std::string& file) {
 
 分发线程的最底层是使用MessageLoop.PostTask和MessageLoop.PostDelayedTask（查看base/message_loop/message_loop.h）。PostTask会在一个特别的线程上进行一个任务调度。这个任务定义为一个base::Closure，这是base::Callback&lt;void(void)&gt;的一个子类型。PostDelayedTask会在一个特殊线程里，延迟发起一个任务。这个任务由base::Closure类表示，它包含一个Run()方法，并在base::Bind()被调用时创建。处理任务时，消息循环最终会调用base::CLosure的Run函数，然后丢掉对任务对象的引用。PostTask和PostDelayedTask都会接收一个tracked_objects::Location参数，用于轻量级调试（挂起的和完成的任务的计数和初始分析可以在调试构建版本中通过about:objects地址进行监控）。通常FROM_HERE宏的值适合赋给这个参数的。
 
-
+注意新的任务运行在消息循环队列里，任何指定的延迟受操作系统定时器策略影响。这意味着在Windows平台，非常小的超时（10毫秒内）很可能是不会发生的（超时时间会更长）
 Note that new tasks go on the message loop's queue, and any delay that is specified is subject to the operating system's timer resolutions. This means that under Windows, very small timeouts (under 10ms) will likely not be honored (and will be longer). Using a timeout of 0 in PostDelayedTask is equivalent to calling PostTask, and adds no delay beyond queuing delay. PostTask is also used to do something on the current thread "sometime after the current processing returns to the message loop." Such a continuation on the current thread can be used to assure that other time critical tasks are not starved on this thread.
 
 The following is an example of a creating a task for a function and posting it to another thread (in this example, the file thread):
