@@ -71,18 +71,18 @@ void AnotherFunc(const std::string& file) {
 
 分发线程的最底层是使用MessageLoop.PostTask和MessageLoop.PostDelayedTask（查看base/message_loop/message_loop.h）。PostTask会在一个特别的线程上进行一个任务调度。这个任务定义为一个base::Closure，这是base::Callback&lt;void(void)&gt;的一个子类型。PostDelayedTask会在一个特殊线程里，延迟发起一个任务。这个任务由base::Closure类表示，它包含一个Run()方法，并在base::Bind()被调用时创建。处理任务时，消息循环最终会调用base::CLosure的Run函数，然后丢掉对任务对象的引用。PostTask和PostDelayedTask都会接收一个tracked_objects::Location参数，用于轻量级调试（挂起的和完成的任务的计数和初始分析可以在调试构建版本中通过about:objects地址进行监控）。通常FROM_HERE宏的值适合赋给这个参数的。
 
-注意新的任务运行在消息循环队列里，任何指定的延迟受操作系统定时器策略影响。这意味着在Windows平台，非常小的超时（10毫秒内）很可能是不会发生的（超时时间会更长）
-Note that new tasks go on the message loop's queue, and any delay that is specified is subject to the operating system's timer resolutions. This means that under Windows, very small timeouts (under 10ms) will likely not be honored (and will be longer). Using a timeout of 0 in PostDelayedTask is equivalent to calling PostTask, and adds no delay beyond queuing delay. PostTask is also used to do something on the current thread "sometime after the current processing returns to the message loop." Such a continuation on the current thread can be used to assure that other time critical tasks are not starved on this thread.
+注意新的任务运行在消息循环队列里，任何指定的延迟受操作系统定时器策略影响。这意味着在Windows平台，非常小的超时（10毫秒内）很可能是不会发生的（超时时间会更长）。在PostDelayedTask里将超时时间设置为0也可以用于在当前线程里，当前进程返回消息队列之后的某个时候。当前线程中这样的一种持续可以用于确保其他时间敏感的任务不会在这个线程上进入饥饿状态。
 
-The following is an example of a creating a task for a function and posting it to another thread (in this example, the file thread):
+下面是一个为一个功能创建一个任务然后在另一个线程上执行这个任务的例子（在这个例子里，在文件线程里）：
+
 ```c++
 void WriteToFile(const std::string& filename, const std::string& data);
 BrowserThread::PostTask(BrowserThread::FILE, FROM_HERE,
                         base::Bind(&WriteToFile, "foo.txt", "hello world!"));
 ```
-You should always use BrowserThread to post tasks between threads.  Never cache MessageLoop pointers as it can cause bugs such as the pointers being deleted while you're still holding on to them.  More information can be found [here](https://www.chromium.org/developers/design-documents/threading/suble-threading-bugs-and-patterns-to-avoid-them).
+你应该总使用BrowserThread在线程间提交任务。永远不要缓存MessageLoop指针，因为它会导致一些bug，比如当你还持有指针时，它们被删掉了。更多信息可以在[这里](https://www.chromium.org/developers/design-documents/threading/suble-threading-bugs-and-patterns-to-avoid-them)找到。
 
-###base::Bind() and class methods.
+###base::Bind()和类方法
 
 The base::Bind() API also supports invoking class methods as well.  The syntax is very similar to calling base::Bind() on a function, except the first argument should be the object the method belongs to. By default, the object that PostTask uses must be a thread-safe reference-counted object. Reference counting ensures that the object invoked on another thread will stay alive until the task completes.
 ```c++
