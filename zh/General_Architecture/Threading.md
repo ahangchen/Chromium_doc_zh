@@ -146,18 +146,19 @@ class MyObject : public base::RefCountedThreadSafe<MyObject> {
 ```c++
 class MyObject : public base::RefCountedThreadSafe<MyObject, BrowserThread::DeleteOnIOThread> {
 ```
-##取消回调
+##撤销回调
 
-取消任务主要有两个原因（以回调的形式）：
+撤销任务主要有两个原因（以回调的形式）：
 
 * 你希望在之后对对象做一些事情，但在你的回调运行时，你的对象可能被销毁。
 * 当输入改变时（例如，用户输入），旧的任务会变得不必要。出于性能考虑，你应该取消它们。
 
 查看下面不同的方式取消任务：
 
-###Important notes about cancellation
+###关于撤销任务的重要提示
 
-It 's dangerous to cancel a task with owned parameters. See following example. (The example uses base::WeakPtr for cancellation, but the problem applies to all approaches).
+撤销一个持有参数的任务是很危险的。查看下面的例子（这里例子使用base::WeakPtr以执行撤销操作，但问题适用于其他情景）。
+
 ```c++
 class MyClass {
  public:
@@ -182,15 +183,13 @@ Callback<void(AnotherClass*)> cancelable_callback = Bind(&MyClass::DoSomething, 
 ...
 ```c++
 void FunctionRunLater(const Closure& cancelable_closure,
-                      const Callback<void(AnotherClass*)>& cancelable_callback) {
-```
-      
+                      const Callback<void(AnotherClass*)>& cancelable_callback) {   
   // Leak memory!
   cancelable_closure.Run();
   cancelable_callback.Run(p);
 }
 ```
-In FunctionRunLater, both Run() calls will leak p when object is already destructed. Using scoped_ptr can fix the bug.
+在FunctionRunLater中，当对象已经被销毁时，Run()调用会泄露p。使用scoped_ptr可以修复这个bug。
 ```c++
 class MyClass {
  public:
@@ -200,11 +199,11 @@ class MyClass {
   ...
 };
 ```
-###base::WeakPtr and Cancellation [NOT THREAD SAFE]
+###base::WeakPtr和撤销[非线程安全]
 
-You can use a base::WeakPtr and base::WeakPtrFactory (in base/memory/weak_ptr.h) to ensure that any invokes can not outlive the object they are being invoked on, without using reference counting. The base::Bind mechanism has special understanding for base::WeakPtr that will disable the task's execution if the base::WeakPtr has been invalidated. The base::WeakPtrFactory object can be used to generate base::WeakPtr instances that know about the factory object. When the factory is destroyed, all the base::WeakPtr will have their internal "invalidated" flag set, which will make any tasks bound to them to not dispatch. By putting the factory as a member of the object being dispatched to, you can get automatic cancellation.
+你可以使用base::WeakPtr和base::WeakPtrFactory(在base/memory/weak_ptr.h)以确保任何调用不会超过它们调用的对象的生命周期，而不执行引用计数。base::Bind机制对base::WeakPtr有特殊的理解，会在base::WeakPtr已经失效的情况下终止任务的执行。base::WeakPtrFactory对象可以用于生成base::WeakPtr实例，这些实例被工厂对象引用。当工厂被销毁时，所有的base::WeakPtr会设置它们内部的“invalidated”标志位，这些标志位会使得与其绑定的任何任务不被分发。通过将工厂作为被分发的对象的成员，可以实现自动撤销。
 
- NOTE:  This only works when the task is posted to the same thread. Currently there is not a general solution that works for tasks posted to other threads. See the next section about CancelableTaskTracker for an alternative solution.
+注意：这只在任务传递到相同的线程时才能生效。当前没有对于分发到其他线程的任务能够生效的普适解决方案。查看下一节，关于CancelableTaskTracker，了解其他解决方案。
 ```c++
 class MyObject {
  public:
@@ -226,8 +225,9 @@ class MyObject {
 };
 ```
 ###CancelableTaskTracker
+当base::WeakPtr在撤销任务时非常有效，它不是线程安全的，因此不能被用于取消运行在其他线程的任务。有时候会有关注性能的需求。例如，我们需要在用户改变输入文本时，撤销在DB线程的数据库查询任务。在这种情况下，CancelableTaskTracker比较合适。
 
-While base::WeakPtr is very helpful to cancel a task, it is not thread safe so can not be used to cancel tasks running on another thread. This is sometimes a performance critical requirement. E.g. We need to cancel database lookup task on DB thread when user changes inputed text. In this kind of situation CancelableTaskTracker is appropriate.
+
 
 With CancelableTaskTracker you can cancel a single task with returned TaskId. This is another reason to use CancelableTaskTracker instead of base::WeakPtr, even in a single thread context.
 
