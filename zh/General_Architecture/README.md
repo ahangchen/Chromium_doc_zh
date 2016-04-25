@@ -1,13 +1,14 @@
  ##[Chromium整体架构](README.md)
  > Translated by [ahangchen](https://github.com/ahangchen/)
+ > 
+ > 欢迎到github star收藏：https://github.com/ahangchen/Chromium_doc_zh
  
  将Chromium设计文档页面的内容整理成markdown格式，并翻译成中文，整体架构方面已翻译完成。
  
  原本是出于了解更多关于Android Webview的相关知识的目的开始翻译，但学到的更多的是架构设计方面的内容。
  
  > 翻译了这个部分后发现工作量挺大的，希望感兴趣的同学[一起来翻译](https://github.com/ahangchen/Chromium_doc_zh)，共同进步。
- > 
- > 也欢迎到github star收藏：https://github.com/ahangchen/Chromium_doc_zh
+ 
  
   - [跨平台开发的约定与模式](Conventions_and_patterns_for_multi-platform_development.md)
   - [扩展安全架构](Extension_Security_Architecture.md): 扩展系统是如何降低扩展脆弱性的严重程度的
