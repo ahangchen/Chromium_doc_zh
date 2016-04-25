@@ -270,9 +270,10 @@ class UserInputHandler : public base::RefCountedThreadSafe<UserInputHandler> {
 
 注意，可撤销的请求已经过期了。请不要在新代码里使用它。为了撤销运行在同一线程中的任务，使用WeakPtr。为了撤销不同线程中的任务，使用CancelableTaskTracker。
 
-可撤销的请求使得在另一个线程上发起请求，异步返回你想要的数据变得容易。
-A cancelable request makes it easier to make requests to another thread with that thread returning some data to you asynchronously. Like the revokable store system, it uses objects that track whether the originating object is alive. When the calling object is deleted, the request will be canceled to prevent invalid callbacks.
-Like the revokable store system, a user of a cancelable request has an object (here, called a "Consumer") that tracks whether it is alive and will auto-cancel any outstanding requests on deleting.
+可撤销的请求使得在另一个线程上发起请求，异步返回你想要的数据变得容易。和可撤销存储系统相同，它使用对象追踪原始对象是否存活。当调用对象被删除时，请求会被撤销以避免无效的回调。
+
+和可撤销存储系统相同，一个可撤销请求的用户有一个对象（在这里，被成为消费者），这个对象会追踪它是否存活，并自动撤销删除时任何显式的请求。
+
 ```c++
 class MyClass {
   void MakeRequest() {
