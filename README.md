@@ -193,9 +193,7 @@
   - [网络实验](zh/Other/Network_Experiments.md)
   - [将float的inlinebox转为layout单元](zh/Other/Transitioning_InlineBoxes_from_floats_to_LayoutUnits.md)
 
-> 如果觉得我的文章对您有帮助，请随意打赏～
 
-![](1792645569.jpg)
 
 
 
