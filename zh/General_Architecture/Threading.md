@@ -51,7 +51,7 @@ void SomeFunc(const std::string& file) {
   ReadToString(file, base::Bind(&DisplayString));
 };
 ```
-在上面的例子中，base::Bind拿到&DisplayString的函数指针然后将它传给base::Callback&lt;void(const std::string& result)&gt;。生成的base::Callback<>的类型依赖于传入参数。为什么不直接传入函数指针呢？原因是base::Bind允许调用者适配功能接口或者通过Currying(http://en.wikipedia.org/wiki/Currying)绑定具体的上下文。例如，如果我们有一个工具函数DisplayStringWithPrefix，它接受一个有着前缀的具体参数，我们使用base::Bind以适配接口，如下所示：
+在上面的例子中，base::Bind拿到&DisplayString的函数指针然后将它传给base::Callback&lt;void(const std::string& result)&gt;。生成的base::Callback<>的类型依赖于传入参数。为什么不直接传入函数指针呢？原因是base::Bind允许调用者适配功能接口或者通过Currying(http://en.wikipedia.org/wiki/Currying) 绑定具体的上下文。例如，如果我们有一个工具函数DisplayStringWithPrefix，它接受一个有着前缀的具体参数，我们使用base::Bind以适配接口，如下所示：
 
 
 ```c++
