@@ -227,11 +227,10 @@ class MyObject {
 ###CancelableTaskTracker
 当base::WeakPtr在撤销任务时非常有效，它不是线程安全的，因此不能被用于取消运行在其他线程的任务。有时候会有关注性能的需求。例如，我们需要在用户改变输入文本时，撤销在DB线程的数据库查询任务。在这种情况下，CancelableTaskTracker比较合适。
 
+使用CancelableTaskTracker你可以用返回的TaskId撤销一个单独的任务。这是使用CancelableTaskTracker而非base::WeakPtr的另一个原因，即使是在单线程上下文里。
 
+CancelableTaskTracker有两个Post方法，它们做的事情和base::TaskRunner里的post方法一样，但有额外的撤销支持。
 
-With CancelableTaskTracker you can cancel a single task with returned TaskId. This is another reason to use CancelableTaskTracker instead of base::WeakPtr, even in a single thread context.
-
-CancelableTaskTracker has 2 Post methods doing the same thing as the ones in base::TaskRunner, with additional cancellation support. 
 ```c++
 class UserInputHandler : public base::RefCountedThreadSafe<UserInputHandler> {
   // Runs on UI thread.
@@ -257,19 +256,21 @@ class UserInputHandler : public base::RefCountedThreadSafe<UserInputHandler> {
   ...
 };
 ```
-Since task runs on other threads, there's no guarantee it can be successfully canceled.
+因为任务运行在其他线程上，没有保证它可以被成功撤销。
 
-When TryCancel() is called:
-* If neither task nor reply has started running, both will be canceled.
-* If task is already running or has finished running, reply will be canceled.
-* If reply is running or has finished running, cancelation is a noop.
+当TryCancel()被调用时：
 
-Like base::WeakPtrFactory, CancelableTaskTracker will cancel all tasks on destruction.
+* 如果任务或者响应还没有开始运行，它们都会被撤销。
+* 如果任务已经在运行或者已经结束运行，响应会被撤销。
+* 如果响应已经运行或者已经结束运行，撤销就没有生效。
 
-###Cancelable request (DEPRECATED)
+与base::WeakPtrFactory一样, CancelableTaskTracker会在析构函数撤销所有任务。
 
-Note. Cancelable request is deprecated. Please do not use it in new code. For canceling tasks running on the same thread, use WeakPtr. For canceling tasks running on a different thread, use CancelableTaskTracker.
+###可撤销的请求(DEPRECATED)
 
+注意，可撤销的请求已经过期了。请不要在新代码里使用它。为了撤销运行在同一线程中的任务，使用WeakPtr。为了撤销不同线程中的任务，使用CancelableTaskTracker。
+
+可撤销的请求使得在另一个线程上发起请求，异步返回你想要的数据变得容易。
 A cancelable request makes it easier to make requests to another thread with that thread returning some data to you asynchronously. Like the revokable store system, it uses objects that track whether the originating object is alive. When the calling object is deleted, the request will be canceled to prevent invalid callbacks.
 Like the revokable store system, a user of a cancelable request has an object (here, called a "Consumer") that tracks whether it is alive and will auto-cancel any outstanding requests on deleting.
 ```c++
