@@ -140,7 +140,6 @@
     - [JNI绑定](OS-Specific/Android/JNI_Bindings.md)
     - [WebView代码组织](OS-Specific/Android/WebView_code_organization.md)
   - [Chrome OS](OS-Specific/Chrome_OS/README.md)
-    - 查看[Chrome OS设计文档相关章节](OS-Specific/Chrome_OS/Chrome_OS_design_documents_section..md)
   - [Mac OS X](OS-Specific/Mac_OS_X/README.md)
     - [Apple脚本Support](OS-Specific/Mac_OS_X/AppleScript_Support.md)
     - [BrowserWindowController对象所有权](OS-Specific/Mac_OS_X/BrowserWindowController_Object_Ownership.md)
