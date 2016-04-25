@@ -1,7 +1,7 @@
  ##[Chromium整体架构](README.md)
  > Translated by [ahangchen](https://github.com/ahangchen/)
  > 
- > 欢迎到github star收藏：https://github.com/ahangchen/Chromium_doc_zh
+ > 欢迎到github star：https://github.com/ahangchen/Chromium_doc_zh
  
  将Chromium设计文档页面的内容整理成markdown格式，并翻译成中文，整体架构方面已翻译完成。
  
