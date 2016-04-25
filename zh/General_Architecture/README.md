@@ -1,7 +1,5 @@
  ##[Chromium整体架构](README.md)
  > Translated by [ahangchen](https://github.com/ahangchen/)
- > 
- > 欢迎到github star：https://github.com/ahangchen/Chromium_doc_zh
  
  将Chromium设计文档页面的内容整理成markdown格式，并翻译成中文，整体架构方面已翻译完成。
  
@@ -27,3 +25,6 @@
   - [线程](Threading.md): 在Chromium中如何使用线程
   
  也可以看看 [V8](http://code.google.com/apis/v8/)的文档, 这是Chromium使用的Javascript引擎
+ 
+ 
+ > 觉得有帮助的话，不给个star？ https://github.com/ahangchen/Chromium_doc_zh
