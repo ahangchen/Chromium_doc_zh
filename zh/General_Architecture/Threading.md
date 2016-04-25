@@ -289,11 +289,12 @@ class MyClass {
   CancelableRequestConsumer consumer_;
 };
 ```
-Note that the MyClass::RequestComplete, is bounded with base::Unretained(this) here.
+注意这里MyClass::RequestComplete与base::Unretained(this)绑定。
 
-The consumer also allows you to associate extra data with a request. Use CancelableRequestConsumer which will allow you to associate arbitrary data with the handle returned by the provider service when you invoke the request. The data will be automatically destroyed when the request is canceled.
+消费者也允许你将请求与具体的数据相关联。使用CancelableRequestConsumer可以允许你在调用请求时，将任意数据与provider服务返回的句柄相关联。当请求被撤销时，数据会自动被销毁。
 
-A service handling requests inherits from CancelableRequestProvider. This object provides methods for canceling in-flight requests, and will work with the consumers to make sure everything is cleaned up properly on cancel. This frontend service just tracks the request and sends it to a backend service on another thread for actual processing. It would look like this:
+一个服务处理请求继承自CancelableRequestProvider，这个对象提供了方法来撤销执行中的请求，并且会与消费者一同工作以确保所有东西在撤销时得到正确的清理。这个前端服务只会追踪请求，在另一个线程将它发送给一个后端服务进行具体的处理。它大概会是这样的：
+
 ```c++
 class FrontendService : public CancelableRequestProvider {
   typedef base::Callback<void(int)> RequestCallbackType;
@@ -314,7 +315,7 @@ class FrontendService : public CancelableRequestProvider {
   }
 };
 ```
-The backend service runs on another thread. It does processing and forwards the result back to the original caller. It would look like this:
+后端服务允许在其他线程上，它执行处理过程，并将结果转发回原始调用者。它大概是这样的：
 ```c++
 class BackendService : public base::RefCountedThreadSafe<BackendService> {
   void DoRequest(
