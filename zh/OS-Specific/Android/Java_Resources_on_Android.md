@@ -1,7 +1,8 @@
-#Java Resources on Android
-##Overview
+#Android上的Java资源
+##概览
 
-Chrome for Android uses certain resources in Java code (e.g. Android layouts and associated strings or images).  These resources are stored according to Android's resource directory structure within a Java root folder.
+Android上的Chrome使用了Java代码中的一些资源（例如，Android layout和相关的字符串或图像）。这些资源依照Android的资源目录结构存储于Java根目录内，
+
 * content/public/android/java/res - Java resources available within content and anything that depends on content
 * chrome/android/java/res - Java resources available within chrome and anything that depends on chrome
 * ui/android/java/res - Java resources available within ui and anything that depends on ui
