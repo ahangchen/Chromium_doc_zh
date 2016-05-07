@@ -7,7 +7,7 @@ Android上的Chrome使用了Java代码中的一些资源（例如，Android layo
 * chrome/android/java/res - Java resources available within chrome and anything that depends on chrome
 * ui/android/java/res - Java resources available within ui and anything that depends on ui
 
-Java code can reference these resources in the normal way using a generated R class, being sure to qualify it with the correct package name.
+Java代码可以使用自动生成的R类正常地引用这些资源，但请确认使用正确的包名修饰R类。
 ```java
 // Use a resource from content
 setImageResource(org.chromium.content.R.drawable.globe_favicon);
@@ -15,7 +15,7 @@ setImageResource(org.chromium.content.R.drawable.globe_favicon);
 // Use a resource from chrome
 setContentView(org.chromium.chrome.R.layout.month_picker);
 ```
-##How resources are packaged
+##资源如何打包
 
 While compiling the Java code in content, an R.java file is generated based on the Java resources in content.  This R.java contains non-final constants and is used only while compiling content (and any non-APK target that depends on content) but is not included in the content jar.
 
