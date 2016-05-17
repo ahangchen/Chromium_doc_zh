@@ -1,5 +1,5 @@
 #JNI on Chromium for Android
-Documentation and quick reference are found in sample_for_tests.h & SampleForTests.java.
+文档和快速引用可以在sample_for_tests.h和SampleForTests.java找到。
 
 ##Overview
 
