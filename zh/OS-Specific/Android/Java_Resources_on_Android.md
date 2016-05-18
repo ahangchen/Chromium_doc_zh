@@ -17,7 +17,8 @@ setContentView(org.chromium.chrome.R.layout.month_picker);
 ```
 ##资源如何打包
 
-While compiling the Java code in content, an R.java file is generated based on the Java resources in content.  This R.java contains non-final constants and is used only while compiling content (and any non-APK target that depends on content) but is not included in the content jar.
+在编译Java代码时，会基于Java上下文资源生成一个R.java文件。这个R.java包含了一些非常量的变量，只在编译（以及任何基于content的非APK目的）的时候使用，R.java不会被包含在content jar包中。
+
 
 When building an APK target, such as content_shell_apk, resources are merged from content, any other dependencies, and from content shell itself.  These merged resources are processed and included in the APK.  Based on these resources, a new R.java is generated with the correct resource -> ID mappings.  This R.java is copied into the R packages needed by each dependency (e.g. org.chromium.content.R and org.chromium.content_shell.R), and all these copies are included in the APK.
 
