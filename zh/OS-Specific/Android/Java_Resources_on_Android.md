@@ -19,8 +19,7 @@ setContentView(org.chromium.chrome.R.layout.month_picker);
 
 在编译Java代码时，会基于Java上下文资源生成一个R.java文件。这个R.java包含了一些非常量的变量，只在编译（以及任何基于content的非APK目的）的时候使用，R.java不会被包含在content jar包中。
 
-
-When building an APK target, such as content_shell_apk, resources are merged from content, any other dependencies, and from content shell itself.  These merged resources are processed and included in the APK.  Based on these resources, a new R.java is generated with the correct resource -> ID mappings.  This R.java is copied into the R packages needed by each dependency (e.g. org.chromium.content.R and org.chromium.content_shell.R), and all these copies are included in the APK.
+在构建一个APK的时候，比如content_shell_apk，资源会从content、任何其他依赖、content shell本身中合并进来。这些合并的资源会得到处理并包含在APK中。基于这些资源，会生成一个有着正确的资源-&gt;ID映射的新的R.java文件。这个R.java会被复制到每个依赖R的包中 (例如. org.chromium.content.R和org.chromium.content_shell.R), 所有这些副本会被包含在APK中。
 
 This process closely follows Android's handling of resources in library projects, where content and chrome are the "libraries", though we don't use the SDK to compile our "libraries".  Hence some of the same caveats apply.  In particular, two resources with the same ID cannot coexist.  The resource highest in the dependency chain (e.g. in content shell) will override the others (e.g. in content).
 ##Supporting resources in gyp
