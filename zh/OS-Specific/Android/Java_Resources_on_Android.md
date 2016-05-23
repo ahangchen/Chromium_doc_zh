@@ -21,7 +21,8 @@ setContentView(org.chromium.chrome.R.layout.month_picker);
 
 在构建一个APK的时候，比如content_shell_apk，资源会从content、任何其他依赖、content shell本身中合并进来。这些合并的资源会得到处理并包含在APK中。基于这些资源，会生成一个有着正确的资源-&gt;ID映射的新的R.java文件。这个R.java会被复制到每个依赖R的包中 (例如. org.chromium.content.R和org.chromium.content_shell.R), 所有这些副本会被包含在APK中。
 
-This process closely follows Android's handling of resources in library projects, where content and chrome are the "libraries", though we don't use the SDK to compile our "libraries".  Hence some of the same caveats apply.  In particular, two resources with the same ID cannot coexist.  The resource highest in the dependency chain (e.g. in content shell) will override the others (e.g. in content).
+这个过程遵循Android对于library工程的资源的处理方式，在这些工程中，content和chrome都是library，尽管我们不会用Android的SDK去编译我们的library。因此同样有些警告是有效的。尤其是，两个有着相同ID的资源不可以共存。在最高依赖链（比如，在content shell）上的资源会覆盖其他的资源（比如，在content中）。
+
 ##Supporting resources in gyp
 
 To add resources to another Java root folder, add the variables has_java_resources, R_package, and R_package_relpath to the gyp target that builds that Java code.  For example:
