@@ -23,9 +23,9 @@ setContentView(org.chromium.chrome.R.layout.month_picker);
 
 这个过程遵循Android对于library工程的资源的处理方式，在这些工程中，content和chrome都是library，尽管我们不会用Android的SDK去编译我们的library。因此同样有些警告是有效的。尤其是，两个有着相同ID的资源不可以共存。在最高依赖链（比如，在content shell）上的资源会覆盖其他的资源（比如，在content中）。
 
-##Supporting resources in gyp
+##支持gyp资源
 
-To add resources to another Java root folder, add the variables has_java_resources, R_package, and R_package_relpath to the gyp target that builds that Java code.  For example:
+为了增加资源到另一个Java根目录，需要添加has_java_resources, R_package, 和 R_package_relpath变量到gyp target，以构建java代码。例如：
 ```json
 {
   'target_name': 'content_java',
