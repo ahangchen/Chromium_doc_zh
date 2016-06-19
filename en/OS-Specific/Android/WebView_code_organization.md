@@ -6,14 +6,14 @@ Organization of code for Android WebView
 
 ![](webview_org.png)
 
-A copy of the chromium source code (rooted from src.chromium.org/viewvc/chrome/trunk/src/) is mirrored into the Android build tree under external/chromium_org
+A copy of the chromium source code (rooted from [src.chromium.org/viewvc/chrome/trunk/src/](https://src.chromium.org/viewvc/chrome/trunk/src/)) is mirrored into the Android build tree under external/chromium_org
 
 
-CHROMIUM TREE (“upstream”: trunk/src; “downstream”: external/chromium_org)
+[CHROMIUM TREE](https://src.chromium.org/viewvc/chrome/trunk/src/) (“upstream”: trunk/src; “downstream”: external/chromium_org)
 - android_webview/java
   - Top-level entry-point into the chromium stack for webview.
   - Provides a semi-stable façade / wrapper over the chromium code stack for consumption by the downstream android tree. Unlike other chromium java code, the public interface to public classes in this package are considered first-class public API with consumers that are independently versioned outside of this git repository.
-  - For the majority of WebView APIs the backend functionality is provided by the chromium content module, or ancillary browser components; for these features it forwards calls to the public Java APIs in other layers of the chromium stack, and to native counterparts over JNI via the android_webview/native folder.
+  - For the majority of WebView APIs the backend functionality is provided by the chromium [content module](http://dev.chromium.org/developers/content-module), or ancillary [browser components](http://dev.chromium.org/developers/design-documents/browser-components); for these features it forwards calls to the public Java APIs in other layers of the chromium stack, and to native counterparts over JNI via the android_webview/native folder.
 - android_webview/native
   - Would be more appropriately named ‘jni’. In general code in here is responsible for crossing the Java<->native boundary. Classes here tend to reflect their java counterpart naming, and primarily responsible for creational and object ownership and cleanup roles
   - Where possible avoid placing complex implementation logic in here instead factor out into more focused feature specific classes inside the android_webview/browser folder or as a component in the top-level components/ folder (e.g. if needs to be shared with Chrome browser).
@@ -21,7 +21,7 @@ CHROMIUM TREE (“upstream”: trunk/src; “downstream”: external/chromium_or
 - android_webview/browser
   - Provides non-trivial behavioral and functional classes for implementing features not directly exported by the content module public API.
   - By convention, any complex native threading code should be encapsulated here.
-  - DEPS enforces that classes in this folder have no static dependency on the higher layer android_webview/native JNI wrappers. This aims to make the pieces in browser/ more modular and testable, and minimize the big ball of mud tendency.
+  - DEPS enforces that classes in this folder have no static dependency on the higher layer android_webview/native JNI wrappers. This aims to make the pieces in browser/ more modular and testable, and minimize the [big ball of mud tendency](http://laputan.org/mud/mud.html).
 - android_webview/renderer
   - Contains all code that logically resides in the renderer process. While WebView currently only supports single process mode, the browser/renderer separation is maintained as it is a useful architectural separation between the (implicitly trusted) java application and the (potentially untrusted) web-platform code.
 - android_webview/lib
@@ -45,20 +45,20 @@ CHROMIUM TREE (“upstream”: trunk/src; “downstream”: external/chromium_or
   - Java support code for C++ unittests. This is necessary to test any code that uses JNI, for example any logic checked into the android_webview/native layer.
 
 
-ANDROID TREE
-- frameworks/base -- core/java/android/webkit/…
+[ANDROID TREE](https://android.googlesource.com/)
+- [frameworks/base](https://android.googlesource.com/) -- core/java/android/webkit/…
   - Defines the public API to the android.webkit package (WebView, WebSettings, etc)
   - Declares the [hidden] abstract WebViewFactoryProvider, WebViewProvider interface that webview implementations must subclass.
   - Defines various “POD” like data types that are passed between the application and the concrete WebView implementation (e.g. WebViewTransport) and ancillary utility classes (e.g. URLUtil)
   - (Historic; pre-KK) Defines the WebViewClassic & related classes that powered the legacy webview implementation
-- frameworks/webview -- chromium/java
+- [frameworks/webview](https://android.googlesource.com/platform/frameworks/webview/) -- chromium/java
   - often referred to as the “glue layer” this bridges between the core android framework, and external/chromium_org
   - Performs dependency inversion so frameworks/base and external/chromium_org have no interdependency on internal details of each other. This is the main entry-point on the java side for the chromium WebViewFactory
   - The goal is this should only depend on android_webview public APIs (some accidental exceptions exist, e.g. ThreadUtils, LibraryLoader etc) and not contain complex logic; just method forwarding (interface adaption) across the boundary.
   - By convention, this module also provides all the mappings from embedding application targetSdkVersion to specific set of settings for workarounds & quirks that should be runtime enabled in the underlying chromium stack
-- frameworks/webview --   - chromium/plat_support
+- [frameworks/webview](https://android.googlesource.com/platform/frameworks/webview/) --   - chromium/plat_support
   - provides a native support library to bind a select few internal native platform APIs to android_webview/public counterparts (e.g. GL functor, gralloc, and skia bitmap access utilities).
   - Dependency injection of code in this folder avoids any build-time dependency of external/chromium_org on non-NDK symbols.
-- cts -- tests/tests/webkit/src/android/webkit/cts
+- [cts](https://android.googlesource.com/platform/cts/) -- tests/tests/webkit/src/android/webkit/cts
   - Android Compatibility Test Suite for the android.webkit.\* APIs. These tests have only access to the ‘public’ WebView API and test the WebView implementation in an configuration identical to when it’s actually running in an application.
   - There should be at least one test for every publicly exposed API in the suite. This makes sure everything is ‘hooked up’ correctly.
