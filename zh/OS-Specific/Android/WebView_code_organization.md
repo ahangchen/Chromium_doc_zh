@@ -1,4 +1,4 @@
-# Organization of code for Android WebView
+# Android WebView代码组织
 
 *android-webview-dev@chromium.org*
 
@@ -6,7 +6,7 @@
 
 ![](webview_org.png)
 
-A copy of the chromium source code (rooted from [src.chromium.org/viewvc/chrome/trunk/src/](https://src.chromium.org/viewvc/chrome/trunk/src/)) is mirrored into the Android build tree under external/chromium_org
+Android build tree中，external/chromium_org是chromium源代码(根目录位于[src.chromium.org/viewvc/chrome/trunk/src/](https://src.chromium.org/viewvc/chrome/trunk/src/))的一个镜像。
 
 
 [CHROMIUM TREE](https://src.chromium.org/viewvc/chrome/trunk/src/) (“upstream”: trunk/src; “downstream”: external/chromium_org)
