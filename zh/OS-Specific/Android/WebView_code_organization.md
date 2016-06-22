@@ -12,7 +12,7 @@ Android build tree中，external/chromium_org是chromium源代码(根目录位�
 [CHROMIUM TREE](https://src.chromium.org/viewvc/chrome/trunk/src/) (“upstream”: trunk/src; “downstream”: external/chromium_org)
 - android_webview/java
   - Webview chromium栈的顶层入口点
-  - Provides a semi-stable façade / wrapper over the chromium code stack for consumption by the downstream android tree. Unlike other chromium java code, the public interface to public classes in this package are considered first-class public API with consumers that are independently versioned outside of this git repository.
+  - 在chromium代码栈上为downstream android代码树的使用提供一个半稳定的表层/wrapper。不像其他chromium java代码，这个包中public类的public接口被作为第一类public API,而使用方则与这个git仓库版本独立。
   - For the majority of WebView APIs the backend functionality is provided by the chromium [content module](http://dev.chromium.org/developers/content-module), or ancillary [browser components](http://dev.chromium.org/developers/design-documents/browser-components); for these features it forwards calls to the public Java APIs in other layers of the chromium stack, and to native counterparts over JNI via the android_webview/native folder.
 - android_webview/native
   - Would be more appropriately named ‘jni’. In general code in here is responsible for crossing the Java<->native boundary. Classes here tend to reflect their java counterpart naming, and primarily responsible for creational and object ownership and cleanup roles
