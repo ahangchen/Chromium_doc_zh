@@ -197,7 +197,7 @@
 
 土豪请打赏支持，一分也是爱：
 
-<img src="1792645569.jpg.jpg" width = "400" height = "400" alt="图片名称" align=center />
+<img src="1792645569.jpg" width = "400" height = "400" alt="图片名称" align=center />
 
 
 
