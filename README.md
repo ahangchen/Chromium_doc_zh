@@ -5,11 +5,11 @@
 
 > 还未完全完成，不断更新ing，欢迎star
 
-> gitbook地址：https://ahangchen.gitbooks.io/chromium_doc_zh/content/zh// 适合阅读，可以导出pdf
+> gitbook地址：https://ahangchen.gitbooks.io/chromium_doc_zh/content/zh/ 适合阅读，可以导出pdf
 
 > github地址： https://github.com/ahangchen/Chromium_doc_zh 
 
-> 翻译了一段时间感觉工作量真的有点大，欢迎志同道合的朋友一起翻译。
+> 翻译了一段时间感觉内容真的好多，欢迎志同道合的朋友一起翻译。
 
 #设计文档
 
