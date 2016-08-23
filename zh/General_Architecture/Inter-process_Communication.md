@@ -1,7 +1,7 @@
 #跨进程通信 (IPC)
 ##概览
 
-Chromium有一个[多进程架构](Start_Here_Background_Reading/Multi-process_Architecture.md)，这意味着我们有许多需要互相交流的进程。我们的主要跨进程交流元素是命名管道。在Linux和OS X上，我们使用socketpair()。每个渲染器进程可以分配到一个命名管道来跟浏览器进程交流。这些管道是用异步方式使用的，确保没有哪个端会等待另一个端。
+Chromium有一个[多进程架构](../Start_Here_Background_Reading/Multi-process_Architecture.md)，这意味着我们有许多需要互相交流的进程。我们的主要跨进程交流元素是命名管道。在Linux和OS X上，我们使用socketpair()。每个渲染器进程可以分配到一个命名管道来跟浏览器进程交流。这些管道是用异步方式使用的，确保没有哪个端会等待另一个端。
 
 想要得到如何编写安全的IPC端点的知识，请查看[IPC安全要点](https://www.chromium.org/Home/chromium-security/education/security-tips-for-ipc).
 
