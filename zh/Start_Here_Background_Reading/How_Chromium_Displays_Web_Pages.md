@@ -1,8 +1,8 @@
-#Chromium如何展示网页
+# Chromium如何展示网页
 
 这个文档从底层描述了Chromium是如何展示网页的。请确认你已经读过[多进程架构](Multi-process_Architecture.md)这篇文章。你会特别想要了解主要组件的框架。你也可能对[多进程资源加载](General_Architecture/Multi-process_Resource_Loading.md)感兴趣，以了解网页是如何从网络中获取到的。
 
-##应用概念层
+## 应用概念层
 
 ![img](../layer.png)
 
@@ -23,18 +23,18 @@
 
 - Tab Helpers：可以被绑定到WebContent的独立对象（通过WebContentsUserData混杂）。浏览器将这些独立对象中的一种绑定到WebContent给它持有，一个给网站图标，一个给信息栏，等等。
 
-##WebKit
+## WebKit
 
 我们使用WebKit开源工程来布局web页面。这部分代码是从Apple中pull过来的，存储在/third_party/WebKit目录。WebKit主要由“WebCore”组成，这代表了核心的布局功能，还有“JavaScriptCore”，这被用来运行JavaScript。我们只在测试时运行JavaScriptCore，通常情况下，我们用我们自己高性能的V8 Javascript引擎来代替它。事实上，我们不完全是使用Apple称之为“WebKit”的那一层，这是WebCore和OS X应用程序（比如Safari）之间的嵌入API。为了方便，我们通常把从Apple学到的代码称为“WebKit”。
 
-###The WebKit port
+### The WebKit port
 
 在最低层，我们有我们的WebKit “port”。这是我们对于需要的平台相关功能的实现，它们与平台无关的WebCore代码交互。这些文件在WebKit树上，通常在chromium目录，或以Chromium为后缀的文件中。我们的port中的大部分其实是与操作系统无关的：你可以把它认为WebCore的“Chromium port”。但某些方面，比如字体渲染，必须在不同平台上做不同的处理。
 
 - 网络交流由我们的[多进程资源加载](General_Architecture/Multi-process_Resource_Loading.md)系统处理，而非直接从渲染线程跳到操作系统处理
 - 图像使用了为Android开发的Skia图形库。这是一个跨平台的图形库，处理所有的图形和图像，除了文本。Skia在/third_party/skia里。图形操作的主要入口是/webkit/port/platform/graphics/GraphicsContextSkia.cpp。它在这个目录里，使用了许多其他的文件，还有那些/base/gfx里的文件。
 
-###The WebKit glue（胶水）
+### The WebKit glue（胶水）
 
 Chromium应用程序使用不同的类型，编码风格，以及代码布局和第三方的WebKit代码。WebKit胶水使用Google编码传统与类型为WebKit提供了一个更加方便的嵌入式API（例如，我们使用std::string而非WebCore::String，使用GURL而非KURL）。胶水代码位于/webkit/glue。glue对象通常有与WebKit对象相似的命名，但在开头有Web前缀。例如， WebCore::Frame变成了WebFrame。
 
@@ -42,7 +42,7 @@ WebKit胶水层将Chromium代码的其他部分与WebCore数据类型隔离开�
 
 test shell应用程序是一个为测试我们的WebKit port和胶水代码的裸web浏览器。它在与WebKit交流时，像Chromium那样使用一样的胶水接口。它为开发者提供了简单的方式去测试新的代码，而不用理会许多复杂的浏览器特性，线程和进程。这个应用程序也被用于运行自动化WebKit测试。然而，test shell的缺点在于，它不像Chromium那样用多进程方式实践WebKit。内容模块嵌入在一个被称为“content shell”的应用程序，它很快就能用于测试工作。
 
-##渲染器进程
+## 渲染器进程
 ![img](../Renderingintherenderer-v2.png)
 
 
@@ -52,15 +52,15 @@ RenderView与浏览器进程通过全局（每个渲染器进程）RenderProcess
 
 **FAQ:RenderWidget和RenderViewHost之间的区别在哪里？**RenderWidget通过在胶水层实现抽象接口（称为WebWidgetDelegate）映射到一个WebCore::Widget对象。基本一个屏幕上的window接收输入事件和我们画进去的东西。一个RenderView继承自RenderWidget，并且是一个标签页或一个填出窗口的内容。除了绘制与组件输入事件外，它还处理导航指令。只有一种情况下，RenderWidget可以在没有RenderView时存在，就是网页中的下拉选择框（select box）。下拉选择框必须用native window来渲染，这样他们可以在任何其他空间上方出现，并在必要时弹出。这些window需要绘制和接受输入，但他们没有独立的web页面（RenderView）。
 
-###渲染器中的线程
+### 渲染器中的线程
 
 每个渲染器有两个线程（查看[多进程架构](Multi-process_Architecture.md)页面来查看图表，或者[threading in Chromium](General_Architecture/Threading.md)来理解如何用它们编程）。渲染线程是主要的对象，比如RenderView和所有的WebKit代码运行的地方。当它与浏览器交流时，消息一开始发送到主线程，主线程轮流分发消息给浏览器进程。在其他情况里，这允许我们从渲染器同步发送消息到浏览器。当一个来自浏览器的结果是用于后续操作时，这可以用于小量的操作。一个例子是，JavaScript从网页请求cookie。渲染器线程会阻塞，主线程会让所有的接收到的消息排队，直到得到正确的响应。此时任何接收到的消息会突然发送给渲染器线程以执行普通的处理。
 
-##浏览器进程
+## 浏览器进程
 
 ![img](../rendering_browser.png)
 
-###底层浏览器进程对象
+### 底层浏览器进程对象
 
 所有的与渲染器进程交流的[IPC](General_Architecture)是在浏览器的I/O线程完成的。这个线程也处理所有的[网络交流](Multi-process_Resource_Loading.md),使得它不受用户界面的干扰。
 
@@ -68,7 +68,7 @@ RenderView与浏览器进程通过全局（每个渲染器进程）RenderProcess
 
 UI线程中的RenderProcessHost负责分发所有view相关消息给合适的RenderViewHost（它自己处理有限数量的与View相关的消息）。这种分发发生在RenderProcessHost::OnMessageReceived。
 
-###上层浏览器进程对象
+### 上层浏览器进程对象
 
 View相关消息出现在RenderViewHost::OnMessageReceived。这里处理的大部分消息，剩下的部分转发给RenderWidgetHost基类。这两个对象在渲染器里里映射到RenderView和RenderWidget（查看上面的“渲染器进程”来理解它们的含义）。每个平台有一个view类(RenderWidgetHostView[Aura|Gtk|Mac|Win])以集成到native view系统。
 
@@ -76,11 +76,11 @@ View相关消息出现在RenderViewHost::OnMessageReceived。这里处理的大�
 
 WebContents对象包含在一个TabContentsWrapper中，它位于chrome/。负责标签页。
 
-##说明样例
+## 说明样例
 
 额外的例子（包含了导航和启动相关代码）在[Getting Around the Chromium Source Code](https://www.chromium.org/developers/how-tos/getting-around-the-chrome-source-code)里。
 
-###“设置光标”消息的生命周期
+### “设置光标”消息的生命周期
 
 设置光标是一个渲染器发往浏览器的典型消息的例子。在渲染器端，以下是发生的事情：
 
@@ -102,7 +102,7 @@ WebContents对象包含在一个TabContentsWrapper中，它位于chrome/。负�
 
   这个映射到content/browser/renderer_host/render_view_host_impl.cc的消息最终在RenderWidgetHost::OnMsgSetCursor接收到消息，并调用合适的UI函数来设置鼠标的光标。
 
-###“鼠标点击”消息的生命周期
+### “鼠标点击”消息的生命周期
 
 发送一个鼠标点击是一个经典的浏览器到渲染器的例子。
 
