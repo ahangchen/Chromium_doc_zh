@@ -4,7 +4,7 @@ Chromium中文文档 for
 https://www.chromium.org/developers/design-documents
 
 
-#Design Documents
+# Design Documents
 
 - [Start Here: Background Reading](Start_Here_Background_Reading/README.md): Describes the high-level architecture of Chromium 
   - [Multi-process Architecture](Start_Here_Background_Reading/Multi-process_Architecture.md)
@@ -13,11 +13,11 @@ https://www.chromium.org/developers/design-documents
 
   - [How Chromium Displays Web Pages](Start_Here_Background_Reading/How_Chromium_Displays_Web_Pages.md): Bottom-to-top overview of how WebKit is embedded in Chromium
   
-##See Also: Design docs in source code
+## See Also: Design docs in source code
 
     https://chromium.googlesource.com/chromium/src/+/master/docs/
 
-##General Architecture
+## General Architecture
 
 - [General Architecture](General_Architecture/README.md)
   - [Conventions and patterns for multi-platform development](General_Architecture/Conventions_and_patterns_for_multi-platform_development.md)
