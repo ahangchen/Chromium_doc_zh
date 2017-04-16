@@ -1,4 +1,4 @@
-##General Architecture
+## General Architecture
 
 - [General Architecture](README.md)
   - [Conventions and patterns for multi-platform development](Conventions_and_patterns_for_multi-platform_development.md)

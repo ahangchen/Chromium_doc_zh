@@ -1,12 +1,12 @@
-#Threading
+# Threading
 
-##Overview
+## Overview
 
 Chromium is a very multithreaded product. We try to keep the UI as responsive as possible, and this means not blocking the UI thread with any blocking I/O or other expensive operations. Our approach is to use message passing as the way of communicating between threads. We discourage locking and threadsafe objects. Instead, objects live on only one thread, we pass messages between threads for communication, and we use callback interfaces (implemented by message passing) for most cross-thread requests.
 
 The Thread object is defined in base/threading/thread.h. In general you should probably use one of the existing threads described below rather than make new ones. We already have a lot of threads that are difficult to keep track of. Each thread has a MessageLoop (see base/message_loop/message_loop.h) that processes messages for that thread. You can get the message loop for a thread using the Thread.message_loop() function.  More details about MessageLoop can be found in [Anatomy of Chromium MessageLoop](https://docs.google.com/document/d/1_pJUHO3f3VyRSQjEhKVvUU7NzCyuTCQshZvbWeQiCXU/edit#).
 
-##Existing threads
+## Existing threads
 
 Most threads are managed by the BrowserProcess object, which acts as the service manager for the main "browser" process. By default, everything happens on the UI thread. We have pushed certain classes of processing into these other threads. It has getters for the following threads:
 
@@ -22,7 +22,7 @@ Several components have their own threads:
 * **Proxy service**: See net/http/http_proxy_service.cc.
 * **Automation proxy**: This thread is used to communicate with the UI test program driving the app.
 
-##Keeping the browser responsive
+## Keeping the browser responsive
 
 As hinted in the overview, we avoid doing any blocking I/O on the UI thread to keep the UI responsive.  Less apparent is that we also need to avoid blocking I/O on the IO thread.  The reason is that if we block it for an expensive operation, say disk access, then IPC messages don't get processed.  The effect is that the user can't interact with a page.  Note that asynchronous/overlapped IO are fine.
 
@@ -30,9 +30,9 @@ Another thing to watch out for is to not block threads on one another.  Locks sh
 
 In order to write non-blocking code, many APIs in Chromium are asynchronous. Usually this means that they either need to be executed on a particular thread and will return results via a custom delegate interface, or they take a base::Callback<> object that is called when the requested operation is completed.  Executing work on a specific thread is covered in the PostTask section below.
 
-##Getting stuff to other threads
+## Getting stuff to other threads
 
-###base::Callback<>, Async APIs, and Currying
+### base::Callback<>, Async APIs, and Currying
 
 A base::Callback<> (see the [docs in callback.h](http://src.chromium.org/viewvc/chrome/trunk/src/base/callback.h?content-type=text%2Fplain)) is templated class with a Run() method.  It is a generalization of a function pointer and is created by a call to base::Bind.  Async APIs often will take a base::Callback<> as a means to asynchronously return the  results of an operation.  Here is an example of a hypothetical FileRead API.
 ```c++
@@ -61,7 +61,7 @@ void AnotherFunc(const std::string& file) {
 ```
 This can be used in lieu of creating an adapter functions a small classes that holds prefix as a member variable.  Notice also that the "MyPrefix: " argument is actually a const char*, while DisplayStringWithPrefix actually wants a const std::string&.  Like normal function dispatch, base::Bind, will coerce parameters types if possible.  See "How arguments are handled by base::Bind()" below for more details about argument storage, copying, and special handling of references.
 
-###PostTask
+### PostTask
 
 The lowest level of dispatching to another thread is to use the MessageLoop.PostTask and MessageLoop.PostDelayedTask (see base/message_loop/message_loop.h). PostTask schedules a task to be run on a particular thread.  A task is defined as a base::Closure, which is a typedef for a base::Callback<void(void)>. PostDelayedTask schedules a task to be run after a delay on a particular thread. A task is represented by the base::Closure typedef, which contains a Run() function, and is created by calling base::Bind().  To process a task, the message loop eventually calls base::Closure's Run function, and then drops the reference to the task object. Both PostTask and PostDelayedTask take a tracked_objects::Location parameter, which is used for lightweight debugging purposes (counts and primitive profiling of pending and completed tasks can be monitored in a debug build via the url about:objects). Generally the macro value FROM_HERE is the appropriate value to use in this parameter.
 
@@ -75,7 +75,7 @@ BrowserThread::PostTask(BrowserThread::FILE, FROM_HERE,
 ```
 You should always use BrowserThread to post tasks between threads.  Never cache MessageLoop pointers as it can cause bugs such as the pointers being deleted while you're still holding on to them.  More information can be found [here](https://www.chromium.org/developers/design-documents/threading/suble-threading-bugs-and-patterns-to-avoid-them).
 
-###base::Bind() and class methods.
+### base::Bind() and class methods.
 
 The base::Bind() API also supports invoking class methods as well.  The syntax is very similar to calling base::Bind() on a function, except the first argument should be the object the method belongs to. By default, the object that PostTask uses must be a thread-safe reference-counted object. Reference counting ensures that the object invoked on another thread will stay alive until the task completes.
 ```c++
@@ -99,7 +99,7 @@ class MyObject : public base::RefCountedThreadSafe<MyObject> {
 };
 ```
 If you have external synchronization structures that can completely insure that an object will always be alive while the task is waiting to execute, you can wrap the object pointer with base::Unretained() when calling base::Bind() to disable the refcounting.  This will also allow using base::Bind() on classes that are not refcounted.  Be careful when doing this!
-###How arguments are handled by base::Bind().
+### How arguments are handled by base::Bind().
 
 The arguments given to base::Bind() are copied into an internal InvokerStorage structure object (defined in base/bind_internal.h). When the function is finally executed, it will see copies of the arguments.  This is important if your target function or method takes a const reference; the reference will be to a copy of the argument.  If you need a reference to the original argument, you can wrap the argument with base::ConstRef().  Use this carefully as it is likely dangerous if target of the reference cannot be guaranteed to live past when the task is executed.  In particular, it is almost never safe to use base::ConstRef() to a variable on the stack unless you can guarantee the stack frame will not be invalidated until the asynchronous task finishes.
 
@@ -136,13 +136,13 @@ If your object has a non-trivial destructor that needs to run on a specific thre
 ```c++
 class MyObject : public base::RefCountedThreadSafe<MyObject, BrowserThread::DeleteOnIOThread> {
 ```
-##Callback cancellation
+## Callback cancellation
 
 There are 2 major reasons to cancel a task (in the form of a Callback):
 * You want to do something later on your object, but at the time your callback runs, your object may have been destroyed.
 * When input changes (e.g. user input), old tasks become unnecessary. For performance consideration, you should cancel them.
 See following about different approaches for cancellation.
-###Important notes about cancellation
+### Important notes about cancellation
 
 It 's dangerous to cancel a task with owned parameters. See following example. (The example uses base::WeakPtr for cancellation, but the problem applies to all approaches).
 ```c++

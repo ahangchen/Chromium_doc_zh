@@ -11,7 +11,7 @@
 
 > 翻译了一段时间感觉内容真的好多，欢迎志同道合的朋友一起翻译。
 
-#设计文档
+# 设计文档
 
 - [Start Here: 背景阅读](zh/Start_Here_Background_Reading/README.md): 描述Chromium的宏观架构
   - [多进程架构](zh/Start_Here_Background_Reading/Multi-process_Architecture.md)
@@ -20,7 +20,7 @@
 
   - [Chromium如何展示web界面](zh/Start_Here_Background_Reading/How_Chromium_Displays_Web_Pages.md): 自底向上概述WebKit是如何嵌入到Chromium中的
   
-##See Also: 源代码中的设计文档
+## See Also: 源代码中的设计文档
 
     https://chromium.googlesource.com/chromium/src/+/master/docs/
 

@@ -1,5 +1,5 @@
-#Android上的Java资源
-##概览
+# Android上的Java资源
+## 概览
 
 Android上的Chrome使用了Java代码中的一些资源（例如，Android layout和相关的字符串或图像）。这些资源依照Android的资源目录结构存储于Java根目录内，
 
@@ -15,7 +15,7 @@ setImageResource(org.chromium.content.R.drawable.globe_favicon);
 // Use a resource from chrome
 setContentView(org.chromium.chrome.R.layout.month_picker);
 ```
-##资源如何打包
+## 资源如何打包
 
 在编译Java代码时，会基于Java上下文资源生成一个R.java文件。这个R.java包含了一些非常量的变量，只在编译（以及任何基于content的非APK目的）的时候使用，R.java不会被包含在content jar包中。
 
@@ -23,7 +23,7 @@ setContentView(org.chromium.chrome.R.layout.month_picker);
 
 这个过程遵循Android对于library工程的资源的处理方式，在这些工程中，content和chrome都是library，尽管我们不会用Android的SDK去编译我们的library。因此同样有些警告是有效的。尤其是，两个有着相同ID的资源不可以共存。在最高依赖链（比如，在content shell）上的资源会覆盖其他的资源（比如，在content中）。
 
-##支持gyp资源
+## 支持gyp资源
 
 为了增加资源到另一个Java根目录，需要添加has_java_resources, R_package, 和 R_package_relpath变量到gyp target，以构建java代码。例如：
 ```json
