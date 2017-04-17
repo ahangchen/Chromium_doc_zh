@@ -1,13 +1,13 @@
-#线程
+# 线程
 
-##概览
+## 概览
 
 Chromium是一个极其多线程的产品。我们努力让UI尽可能快速响应，这意味着任何阻塞I/O或者其他昂贵操作不能阻塞UI线程。我们的做法是在线程间传递消息作为交流的方式。我们不鼓励锁和线程安全对象。相反的，对象仅存在与单个线程中，我们只为通信而在线程间传递消息，我们会在大多数跨进程请求间使用回调接口（由消息传递实现）。
 
 Thread对象定义于base/threading/thread.h中。通常你可能会使用下面描述的已有线程之一而非重新构建线程。我们已经有了很多难以追踪的线程。每个线程有一个消息循环（查看base/message_loop/message_loop.h），消息循环处理这个线程的消息。你可以使用Thread.message_loop()函数获取一个线程对应的消息循环。更多关于消息循环的内容可以在这里查看[Anatomy of Chromium MessageLoop](https://docs.google.com/document/d/1_pJUHO3f3VyRSQjEhKVvUU7NzCyuTCQshZvbWeQiCXU/edit#).
 
 
-##已有线程
+## 已有线程
 
 大多数线程由BrowserProcess对象管理，它是主“浏览器”进程的服务管理器。默认情况下，所有的事情都发生在UI线程中。我们已经把某些类的处理过程放到了其他一些线程里。下面这些线程有getter接口：
 
@@ -23,7 +23,7 @@ Thread对象定义于base/threading/thread.h中。通常你可能会使用下面
 * **Proxy service**: 查看net/http/http_proxy_service.cc.
 * **Automation proxy**: 这个线程用于和驱动应用的UI测试程序交流。
 
-##保持浏览器积极响应
+## 保持浏览器积极响应
 
 正如上面所暗示的，我们在UI线程里避免任何阻塞I/O，以保持UI积极响应。另一个不太明显的点是，我们也需要避免io_thread里执行阻塞I/O。因为如果我们因昂贵的操作阻塞了这个线程，比如磁盘访问，那么IPC信息不会得到处理，结果就是用户不能与页面进行交互。注意异步/平行 IO是可以的。
 
@@ -32,9 +32,9 @@ Thread对象定义于base/threading/thread.h中。通常你可能会使用下面
 为了编写不阻塞的代码，许多Chromium中的API是异步的。通常这意味着他们需要在一个特殊的线程里执行，并通过自定义的装饰接口返回结果，或者他们会在请求操作完成后调用base::Callback<>对象。在具体线程执行的工作会在下面的PostTask章节介绍。
 
 
-##把事情放到其他线程去
+## 把事情放到其他线程去
 
-###base::Callback<>, 异步APIs, 和Currying
+### base::Callback<>, 异步APIs, 和Currying
 
 base::Callback<> (查看[callback.h的文档](http://src.chromium.org/viewvc/chrome/trunk/src/base/callback.h?content-type=text%2Fplain)) 是有着一个Run()方法的模板类。它由对base::Bind的调用来创建。异步API通常将base::Callback<>作为一种异步返回操作结果的方式。这是一个假想的文件阅读API的例子。
 
@@ -67,7 +67,7 @@ void AnotherFunc(const std::string& file) {
 这可以作为创建适配器，在一个小的类中将前缀作为成员变量而持有，的替代方案。也要注意“MyPrefix: ”参数事实上是一个const char\*，而DisplayStringWithPrefix需要的其实是const std::string&。正如常见的函数分配那样，base::Bind，可能的话，会进行强制参数类型转化。查看下面的“base::Bind()如何处理参数”以获取关于参数存储，复制，以及对引用的特殊处理的更多细节。
 
 
-###PostTask
+### PostTask
 
 分发线程的最底层是使用MessageLoop.PostTask和MessageLoop.PostDelayedTask（查看base/message_loop/message_loop.h）。PostTask会在一个特别的线程上进行一个任务调度。这个任务定义为一个base::Closure，这是base::Callback&lt;void(void)&gt;的一个子类型。PostDelayedTask会在一个特殊线程里，延迟发起一个任务。这个任务由base::Closure类表示，它包含一个Run()方法，并在base::Bind()被调用时创建。处理任务时，消息循环最终会调用base::CLosure的Run函数，然后丢掉对任务对象的引用。PostTask和PostDelayedTask都会接收一个tracked_objects::Location参数，用于轻量级调试（挂起的和完成的任务的计数和初始分析可以在调试构建版本中通过about:objects地址进行监控）。通常FROM_HERE宏的值适合赋给这个参数的。
 
@@ -82,7 +82,7 @@ BrowserThread::PostTask(BrowserThread::FILE, FROM_HERE,
 ```
 你应该总使用BrowserThread在线程间提交任务。永远不要缓存MessageLoop指针，因为它会导致一些bug，比如当你还持有指针时，它们被删掉了。更多信息可以在[这里](https://www.chromium.org/developers/design-documents/threading/suble-threading-bugs-and-patterns-to-avoid-them)找到。
 
-###base::Bind()和类方法
+### base::Bind()和类方法
 
 base::Bind() API也支持调用类方法。语法与在一个函数里调用base::Bind()类似，除了第一个参数必须是这个方法所属的对象。默认情况下，PostTask使用的对象必须是一个线程安全引用计数对象。引用计数保证了另一个线程调用的对象必须在线程完成前保活。
 
@@ -108,7 +108,7 @@ class MyObject : public base::RefCountedThreadSafe<MyObject> {
 ```
 如果你有外部同步结构，而且它能保证对象在任务正在等待执行期间一直保活，你就可以在调用base::Bind()时用base::Unratained()包装这个对象指针，以关闭引用计数。这也允许在非引用计数的类上使用base::Bind()。但请小心处理这种情况！
 
-###base::Bind()怎么处理参数
+### base::Bind()怎么处理参数
 
 传给base::Bind()的参数会被复制到一个内部InvokerStorage结构对象（定义在base/bind_internal.h中）。当这个函数最终执行时，它会查看参数的这些副本。如果你的目标函数或者方法持有常量引用时，这是很重要的；这些引用会变成一份参数的副本。如果你需要原始参数的引用，你可以用base::ConstRef()包装参数。小心使用这个函数，因为如果引用的目标不能保证在任务执行过程中一直存活的话，这会很危险。尤其是，为栈中的变量调用base::ConstRef()几乎一定是不安全的，除非你可以保证栈帧不会在异步任务完成前无效化。
 
@@ -146,7 +146,7 @@ class MyObject : public base::RefCountedThreadSafe<MyObject> {
 ```c++
 class MyObject : public base::RefCountedThreadSafe<MyObject, BrowserThread::DeleteOnIOThread> {
 ```
-##撤销回调
+## 撤销回调
 
 撤销任务主要有两个原因（以回调的形式）：
 
@@ -155,7 +155,7 @@ class MyObject : public base::RefCountedThreadSafe<MyObject, BrowserThread::Dele
 
 查看下面不同的方式取消任务：
 
-###关于撤销任务的重要提示
+### 关于撤销任务的重要提示
 
 撤销一个持有参数的任务是很危险的。查看下面的例子（这里例子使用base::WeakPtr以执行撤销操作，但问题适用于其他情景）。
 
@@ -199,7 +199,7 @@ class MyClass {
   ...
 };
 ```
-###base::WeakPtr和撤销[非线程安全]
+### base::WeakPtr和撤销[非线程安全]
 
 你可以使用base::WeakPtr和base::WeakPtrFactory(在base/memory/weak_ptr.h)以确保任何调用不会超过它们调用的对象的生命周期，而不执行引用计数。base::Bind机制对base::WeakPtr有特殊的理解，会在base::WeakPtr已经失效的情况下终止任务的执行。base::WeakPtrFactory对象可以用于生成base::WeakPtr实例，这些实例被工厂对象引用。当工厂被销毁时，所有的base::WeakPtr会设置它们内部的“invalidated”标志位，这些标志位会使得与其绑定的任何任务不被分发。通过将工厂作为被分发的对象的成员，可以实现自动撤销。
 
@@ -224,7 +224,7 @@ class MyObject {
   base::WeakPtrFactory<MyObject> weak_factory_;
 };
 ```
-###CancelableTaskTracker
+### CancelableTaskTracker
 当base::WeakPtr在撤销任务时非常有效，它不是线程安全的，因此不能被用于取消运行在其他线程的任务。有时候会有关注性能的需求。例如，我们需要在用户改变输入文本时，撤销在DB线程的数据库查询任务。在这种情况下，CancelableTaskTracker比较合适。
 
 使用CancelableTaskTracker你可以用返回的TaskId撤销一个单独的任务。这是使用CancelableTaskTracker而非base::WeakPtr的另一个原因，即使是在单线程上下文里。
@@ -266,7 +266,7 @@ class UserInputHandler : public base::RefCountedThreadSafe<UserInputHandler> {
 
 与base::WeakPtrFactory一样, CancelableTaskTracker会在析构函数撤销所有任务。
 
-###可撤销的请求(DEPRECATED)
+### 可撤销的请求(DEPRECATED)
 
 注意，可撤销的请求已经过期了。请不要在新代码里使用它。为了撤销运行在同一线程中的任务，使用WeakPtr。为了撤销不同线程中的任务，使用CancelableTaskTracker。
 

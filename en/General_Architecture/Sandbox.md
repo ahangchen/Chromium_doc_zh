@@ -1,23 +1,23 @@
-#Sandbox
+# Sandbox
 Security is one of the most important goals for Chromium. The key to security is understanding: we can only truly secure a system if we fully understand its behaviors with respect to the combination of all possible inputs in all possible states. For a codebase as large and diverse as Chromium, reasoning about the combined behavior of all its parts is nearly impossible. The sandbox objective is to provide hard guarantees about what ultimately a piece of code can or cannot do no matter what its inputs are.
 
 Sandbox leverages the OS-provided security to allow code execution that cannot make persistent changes to the computer or access information that is confidential. The architecture and exact assurances that the sandbox provides are dependent on the operating system. This document covers the Windows implementation as well as the general design. The Linux implementation is described here, the OSX implementation here.
 
 If you don't feel like reading this whole document you can read the Sandbox FAQ instead. A description of what the sandbox does and doesn't protect against may also be found in the FAQ.
 
-##Design principles
+## Design principles
 
 * **Do not re-invent the wheel**: It is tempting to extend the OS kernel with a better security model. Don't. Let the operating system apply its security to the objects it controls. On the other hand, it is OK to create application-level objects (abstractions) that have a custom security model.
 * **Principle of least privilege**: This should be applied both to the sandboxed code and to the code that controls the sandbox. In other words, the sandbox should work even if the user cannot elevate to super-user.
 * **Assume sandboxed code is malicious code**: For threat-modeling purposes, we consider the sandbox compromised (that is, running malicious code) once the execution path reaches past a few early calls in the main() function. In practice, it could happen as soon as the first external input is accepted, or right before the main loop is entered.
 * **Be nimble**: Non-malicious code does not try to access resources it cannot obtain. In this case the sandbox should impose near-zero performance impact. It's ok to have performance penalties for exceptional cases when a sensitive resource needs to be touched once in a controlled manner. This is usually the case if the OS security is used properly.
 * **Emulation is not security**: Emulation and virtual machine solutions do not by themselves provide security. The sandbox should not rely on code emulation, code translation, or patching to provide security.
-##Sandbox windows architecture
+## Sandbox windows architecture
 
 The Windows sandbox is a user-mode only sandbox. There are no special kernel mode drivers, and the user does not need to be an administrator in order for the sandbox to operate correctly. The sandbox is designed for both 32-bit and 64-bit processes and has been tested on all Windows OS flavors between Windows 7 and Windows 10, both 32-bit and 64-bit.
 
 Sandbox operates at process-level granularity. Anything that needs to be sandboxed needs to live on a separate process. The minimal sandbox configuration has two processes: one that is a privileged controller known as the broker, and one or more sandboxed processes known as the target. Throughout the documentation and the code these two terms are used with that precise connotation. The sandbox is provided as a static library that must be linked to both the broker and the target executables.
-###The broker process
+### The broker process
 
 In Chromium, the broker is always the browser process. The broker, is in broad terms, a privileged controller/supervisor of the activities of the sandboxed processes. The responsibilities of the broker process are:
 1. Specify the policy for each target process
@@ -28,7 +28,7 @@ In Chromium, the broker is always the browser process. The broker, is in broad t
 6. Perform the policy-allowed actions on behalf of the target process
 
 The broker should always outlive all the target processes that it spawned. The sandbox IPC is a low-level mechanism (different from Chromium's IPC) that is used to transparently forward certain windows API calls from the target to the broker: these calls are evaluated against the policy. The policy-allowed calls are then executed by the broker and the results returned to the target process via the same IPC. The job of the interceptions manager is to patch the windows API calls that should be forwarded via IPC to the broker.
-###The target process
+### The target process
 
 In Chromium, the renderers are always target processes, unless the --no-sandbox command line has been specified for the browser process. The target process hosts all the code that is going to run inside the sandbox, plus the sandbox infrastructure client side:
 1. All code to be sandboxed
@@ -44,7 +44,7 @@ It is the expectation that in the future most plugins will run inside a target p
 
 ![](sbox_top_diagram.PNG)
 
-##Sandbox restrictions
+## Sandbox restrictions
 
 At its core, the sandbox relies on the protection provided by four Windows mechanisms:
 * A restricted token
@@ -59,7 +59,7 @@ These mechanisms are highly effective at protecting the OS, its configuration, a
 
 ** Note that extra mitigations above and beyond this base/core will be described in the "Process Mitigations" section below.**
 
-###The token
+### The token
 
 One issue that other similar sandbox projects face is how restricted can the token and job be while still having a properly functioning process. For the Chromium sandbox, the most restrictive token for Windows XP takes the following form:
 
@@ -87,7 +87,7 @@ By design, the sandbox token cannot protect the following non-securable resource
 * 
 More information about the Windows token object can be found at [02].
 
-###The Job object
+### The Job object
 
 The target process also runs under a Job object. Using this Windows mechanism, some interesting global restrictions that do not have a traditional object or security descriptor associated with them are enforced:
 * Forbid per-use system-wide changes using SystemParametersInfo(), which can be used to swap the mouse buttons or set the screen saver timeout
@@ -107,7 +107,7 @@ Chromium renderers normally run with all these restrictions active. Each rendere
 
 More information about Windows Job Objects can be found in [1]. 
 
-###The alternate desktop
+### The alternate desktop
 
 The token and the job object define a security boundary: that is, all processes with the same token and in the same job object are effectively in the same security context. However, one not-well-understood fact is that applications that have windows on the same desktop are also effectively in the same security context because the sending and receiving of window messages is not subject to any security checks. Sending messages across desktops is not allowed. This is the source of the infamous "shatter" attacks, which is why services should not host windows on the interactive desktop. A Windows desktop is a regular kernel object that can be created and assigned a security descriptor.
 
@@ -117,7 +117,7 @@ The only disadvantage of an alternate desktop is that it uses approximately 4MB 
 
 More information about Window Stations
 
-###The integrity levels
+### The integrity levels
 
 Integrity levels are available on Windows Vista and later versions. They don't define a security boundary in the strict sense, but they do provide a form of mandatory access control (MAC) and act as the basis of Microsoft's Internet Explorer sandbox. 
 
@@ -140,7 +140,7 @@ You'll notice that the previously described attributes of the token, job object,
 
 More information on integrity levels can be found at [03].
 
-###Process mitigation policies
+### Process mitigation policies
 
 Most process mitigation policies can be applied to the target process by means of SetProcessMitigationPolicy.  The sandbox uses this API to set various policies on the target process for enforcing security characteristics.
 
@@ -204,13 +204,13 @@ Most process mitigation policies can be applied to the target process by means o
 * If the Job level <= JOB_LIMITED_USER, set PROC_THREAD_ATTRIBUTE_CHILD_PROCESS_POLICY to PROCESS_CREATION_CHILD_PROCESS_RESTRICTED via UpdateProcThreadAttribute().
 * This is an extra layer of defense, given that Job levels can be broken out of. [REF: ticket, Project Zero blog.]
 
-###Other caveats
+### Other caveats
 
 The operating system might have bugs. Of interest are bugs in the Windows API that allow the bypass of the regular security checks. If such a bug exists, malware will be able to bypass the sandbox restrictions and broker policy and possibly compromise the computer. Under Windows, there is no practical way to prevent code in the sandbox from calling a system service.
 
 In addition, third party software, particularly anti-malware solutions, can create new attack vectors. The most troublesome are applications that inject dlls in order to enable some (usually unwanted) capability. These dlls will also get injected in the sandbox process. In the best case they will malfunction, and in the worst case can create backdoors to other processes or to the file system itself, enabling specially crafted malware to escape the sandbox. 
 
-##Sandbox policy
+## Sandbox policy
 
 The actual restrictions applied to a target process are configured by a policy. The policy is just a programmatic interface that the broker calls to define the restrictions and allowances. Four functions control the restrictions, roughly corresponding to the four Windows mechanisms:
 * TargetPolicy::SetTokenLevel()
@@ -235,7 +235,7 @@ This rule specifies that access will be granted if a target wants to open a file
 
 Rules can only be added before each target process is spawned, and cannot be modified while a target is running, but different targets can have different rules.
 
-##Target bootstrapping
+## Target bootstrapping
 
 Targets do not start executing with the restrictions specified by policy. They start executing with a token that is very close to the token the regular user processes have. The reason is that during process bootstrapping the OS loader accesses a lot of resources, most of them are actually undocumented and can change at any time. Also, most applications use the standard CRT provided with the standard development tools; after the process is bootstrapped the CRT needs to initialize as well and there again the internals of the CRT initialization are undocumented.
 
@@ -256,7 +256,7 @@ The fact that the target starts with a privileged token simplifies the explicit 
 > Make sure any sensitive OS handles obtained with the initial token are closed before calling LowerToken(). Any leaked handle can be abused by malware to escape the sandbox.
 
 
-##References
+## References
 
 [01] Richter, Jeffrey "Make Your Windows 2000 Processes Play Nice Together With Job Kernel Objects" 
 

@@ -1,4 +1,4 @@
-#Profile Architecture
+# Profile Architecture
 
 This page details an ongoing design refactoring, started in January 2012.
 
@@ -9,7 +9,7 @@ Chromium has lots of features that hook into a **Profile**, a bundle of data abo
 Profile should be a minimal reference, a sort of handle object that doesn't own the world.
 
 
-##Design Goals
+## Design Goals
 
 - **We must be able to move to the new architecture piece-wise.** One service and feature at a time. We can not stop the world and convert everything in one operation. As of this writing, we've moved 19 services out of Profile.
   - We should only make small modifications at the callsite where a Profile is used to get the service in question.
@@ -18,9 +18,9 @@ Profile should be a minimal reference, a sort of handle object that doesn't own 
 - We must allow features to be compiled in and out. Now that we have chromium variants that don't contain all the features in a standard Windows/Mac/Linux Google Chrome build, we need a way to allow these variants to compile without #ifdefing profile.h and profile_impl.h into a mess. These variants also have their own services that they'd like to provide. (Letting chromium variants add their own services also touches on why we can't rely on manual ordering in Profile shutdown.)
   - Stretch goal: Separate features go in their own .a/.so files to further minimize our ridiculous linking time.
 
-##BrowserContextKeyedServiceFactory
+## BrowserContextKeyedServiceFactory
 
-###The Old Way: Profile interface and ProfileImpl
+### The Old Way: Profile interface and ProfileImpl
 
 In the previous design, services were fetched through an accessor on Profile:
 ```c++
@@ -36,7 +36,7 @@ In the previous system, Profile was an interface with mostly pure virtual access
 
 In this world, the Profile was the center of all activity. The profile owned all of its service and handed them out. Profile destruction was according to whatever order the services were listed in ProfileImpl. There wasn't a way for another variant to add its own services (or leave out ones it didn't need) without modifying the Profile interface.
 
-###The New Way: BrowserContextKeyedServiceFactory
+### The New Way: BrowserContextKeyedServiceFactory
 
 Instead of having the Profile own FooService, we have a dedicated singleton FooServiceFactory, like this minimal one:
 ```c++
@@ -74,10 +74,10 @@ In addition, BrowserContextKeyedServiceFactory provides these other knobs for ho
 - BCKSF gives you multiple ways to control behavior during unit tests. See the header for more details.
 - BCKSF gives you a way to augment and tweak the shutdown and deallocation behavior.
 
-###A Few Types of Factories
+### A Few Types of Factories
 
 Not all objects have the same lifecycle and memory management. The previous paragraph was a major simplification; there is a base class BrowserContextKeyedBaseFactory that defines the most general dependency stuff while BrowserContextKeyedServiceFactory is a specialization that deals with normal objects. There is a second RefcountedBrowserContextKeyedServiceFactory that gives slightly different semantics and storage for RefCountedThreadSafe objects.
-###A Brief Interlude About Complexity
+### A Brief Interlude About Complexity
 
 So the above, from an implementation standpoint is significantly more complex than what came before it. Is all this really worth it?
 
@@ -86,7 +86,7 @@ So the above, from an implementation standpoint is significantly more complex th
 We absolutely have to address the interdependency of services. As it stands today, we do not shut down profiles after they are no longer needed in multiprofile mode because our crash rate when shutting down a profile is too high to ship to users. We have about 75 components that plug into the profile lifecycle and their dependency graph is complex enough that our naive manual ordering can not handle the complexity. All of the overrideable behavior above exists because it was implemented per service, ad hoc and copy pasted.
 
 We likewise need to make it easy for other chromium variants to add their own features/compile features out of their build.
-###Dependency Management Overview
+### Dependency Management Overview
 
 With that in mind, let's look at how dependency management works. There is a single ProfileDependencyManager singleton, which is what is alerted to Profile creation and destruction. A PKSF will register and unregister itself with the ProfileDependencyManager. The job of the ProfileDependencyManager is to make sure that individual services are created and destroyed in a safe ordering.
 
@@ -109,7 +109,7 @@ GammaServiceFactory::GammaServiceFactory()
 The explicitly stated dependencies in this simplified graph mean that the only valid creation order for services is [Alpha, Beta, Gamma] and the destruction order is [Gamma, Beta, Alpha]. The above is all you, as a user of the framework, have to do to specify dependencies.
 
 Behind the scenes, ProfileDependencyManager takes the stated dependency edges, performs a Kahn topological sort, and uses that in CreateProfileServices() and DestroyProfileServices().
-##The Five Minute Tutorial of How to Convert Your Code
+## The Five Minute Tutorial of How to Convert Your Code
 
 1. ***Make Your Existing FooService derive from BrowserContextKeyedService.**
 2. **If possible, make your FooService no longer refcounted.** Most of the refcounted objects that hang off of Profile appear to be that way because they aren't using [base::bind/WeakPtrFactory](Threading.md) instead of needing to own data on multiple threads. (In case you have a real reason for being a RefCountedThreadSafe, such as being accessed on multiple threads, derive your factory from RefcountedBrowserContextKeyedServiceFactory and everything should just work.)
@@ -125,9 +125,9 @@ If you need an example of what the above looks like, try looking at these patche
 - [r100516](http://src.chromium.org/viewvc/chrome?view=rev&revision=100516): A simple example, adding a new ProfileKeyedService. This shows off a minimal ServiceFactory subclass.
 - [r104806](http://src.chromium.org/viewvc/chrome?view=rev&revision=104806): plugin_prefs_factory.h gives an example of how to deal with things that are (and have to stay) refcounted. This patch also shows off how to move your preferences into your ProfileKeyedServiceFactory.
 
-##Debugging Tips
+## Debugging Tips
 
-###Using the dependency visualizer
+### Using the dependency visualizer
 
 Chrome has a built in method to dump the profile dependency graph to a file in [GraphViz](http://www.graphviz.org/) format. When you run chrome with the command line flag  --dump-browser-context-graph, chrome will write the dependency information to your /path/to/profile/browser-context-dependencies.dot file. You can then convert this text file with dot, which is part of GraphViz:
 ```
@@ -139,7 +139,7 @@ This will give you a visual graph like this (generated January 23rd, 2012, click
 
 Graph as of Aug 15, 2012
 
-###Crashes at Shutdown
+### Crashes at Shutdown
 
 If you get a stack that looks like this:
 ```

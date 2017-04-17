@@ -1,7 +1,7 @@
-#JNI on Chromium for Android
+# JNI on Chromium for Android
 文档和快速引用可以在sample_for_tests.h和SampleForTests.java找到。
 
-##Overview
+## Overview
 
 On other platforms, the underlying system / platform APIs (win32, cocoa, gtk) are directly accessible via C/C++.
 
@@ -39,7 +39,7 @@ base/android/jni_generator/
 
 The reason for it to be in base is that the generated code and its tests depend on base.
 
-##GYP Rules for jni headers
+## GYP Rules for jni headers
 
 There are two gypi files that provides rules for generating jni bindings for Java-files.
 The first one sits in //build/jni_generator.gypi

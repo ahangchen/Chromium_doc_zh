@@ -1,11 +1,11 @@
-#OSX Sandboxing Design
+# OSX Sandboxing Design
 This document describes the process sandboxing mechanism used on Mac OS X.
-##Background
+## Background
 
 Sandboxing treats a process as a hostile environment which at any time can be compromised by a malicious attacker via buffer overruns or other such attack vectors. Once compromised, the goal is to allow the process in question access to as few resources of the user's machine as possible, above and beyond the standard file-system access control and user/group process controls enforced by the kernel.
 
 See the overview document for goals and general architectural diagrams.
-##Implementation
+## Implementation
 
 On Mac OS X versions starting from Leopard, individual processes can have their privileges restricted using the sandbox(7) facility of BSD, also referred to in some Apple documentation as "Seatbelt". This is made up of a single API call, sandbox_init(), which sets the access restrictions of a process from that point on. This means that previously opened file descriptors continue working even if the new privileges would deny access to newly created descriptors. We can use this to our advantage by setting up everything correctly at the start of the process then cutting off all access before we expose the renderer to any 3rd party input (html, etc).
 
@@ -31,7 +31,7 @@ SandboxInitWrapper::InitializeSandbox() is the main entry point for initializing
 * "Warm up" relevant system APIs by calling through to  sandbox::SandboxWarmup() .
 * Enable the Sandbox by calling through to  sandbox::EnableSandbox() .
 
-###Diagnostics
+### Diagnostics
 
 The OS X sandbox implementation supports the following flags:
 * --no-sandbox - Disable the sandbox entirely.
@@ -39,7 +39,7 @@ The OS X sandbox implementation supports the following flags:
 
 [Debugging Chrome on OS X](https://www.chromium.org/developers/how-tos/debugging-on-os-x) contains more documentation on debugging and diagnostic tools provided by the Mac OS X sandbox API.
 
-##Additional Reading
+## Additional Reading
 
 * http://reverse.put.as/wp-content/uploads/2011/09/Apple-Sandbox-Guide-v1.0.pdf
 * http://www.318.com/techjournal/?p=107
