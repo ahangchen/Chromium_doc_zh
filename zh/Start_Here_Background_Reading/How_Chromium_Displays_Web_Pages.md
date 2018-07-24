@@ -6,7 +6,7 @@
 
 ![img](../layer.png)
 
-(关于这个阐述的原始Google文档是http://goo.gl/MsEJX，开放给所有@chromium.org的人编辑)
+(关于这个阐述的原始Google文档是http://goo.gl/MsEJX ，开放给所有@chromium.org的人编辑)
 
 每个矩形代表了一个应用概念层，每一层都不了解上一层，也对上一层没有依赖。
 
