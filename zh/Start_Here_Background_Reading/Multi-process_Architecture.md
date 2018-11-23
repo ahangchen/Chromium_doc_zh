@@ -25,7 +25,7 @@
 
 每个渲染进程有一个以上的RenderView对象，由RenderProcess管理（它与标签页的内容相关）。对应的RenderProcessHost维护一个与渲染器中每个view相关的RenderViewHost。每个view被赋予一个view ID,以区分同一个渲染器中的不同view。这些ID在每个渲染器内是唯一的，但在浏览器中不是，所以区分一个view需要一个RenderProcessHost和一个view ID。
 
-浏览器与一个包含内容的特定标签页之间的交流是通过这些RenderViewHost对象来完成的，它们知道如何通过他们的RenderProcessHost向RenderProcess和RenderView送消息。
+浏览器与一个包含内容的特定标签页之间的交流是通过这些RenderViewHost对象来完成的，它们知道如何通过他们的RenderProcessHost向RenderProcess和RenderView发送消息。
 
 ## 组件与接口
 
@@ -48,7 +48,7 @@
 
 通常，每个新的window或标签页是在一个新进程里打开的。浏览器会生成一个新的进程，然后指导它去创建一个*RenderView*。
 
-有时候，有这样一种必要或欲望在标签页或窗口间共享渲染进程。一个web应用程序会在期望同步交流时，打开一个新的窗口，比如，在javascript里使用window.open。这种情况下，当我们创建一个新的window或标签页时，我们需要重用打开这个window的进程。我们也有一些策略来把新的标签页分配的已有的进程（如果总的进程数太大的话，或者如果用户已经为这个域名打开了一个进程）。这些策略在[Process Models](../General_Architecture/Process_Models.md)里也有阐述。
+有时候，有这样一种必要或欲望在标签页或窗口间共享渲染进程。一个web应用程序会在期望同步交流时，打开一个新的窗口，比如，在javascript里使用window.open。这种情况下，当我们创建一个新的window或标签页时，我们需要重用打开这个window的进程。我们也有一些策略来把新的标签页分配给已有的进程（如果总的进程数太大的话，或者如果用户已经为这个域名打开了一个进程）。这些策略在[Process Models](../General_Architecture/Process_Models.md)里也有阐述。
 
 
 ## 检测crash或者失误的渲染
